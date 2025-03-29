@@ -13,9 +13,10 @@ This repository contains a mock implementation of the Department of Health and A
 
 ### Main Structure
 - `cmd/server/main.go` - Application entry point
+- `cmd/server/spa/` - Built frontend files served by the Go server
 - `internal/api/api.go` - Router configuration
 - `Makefile` - Build and run commands
-- `frontend` - React application demonstrating API value
+- `frontend` - React application (Bun, Vite, TypeScript, shadcn/ui) demonstrating API value
 
 ### Handlers
 - `internal/handlers/auth/auth.go` - Authentication endpoints
@@ -81,6 +82,12 @@ make run
 ```bash
 cd frontend && bun run dev
 ```
+
+### Building the Frontend
+```bash
+cd frontend && bun run build
+```
+This will build the frontend and place the files in the `cmd/server/spa` directory, which is served by the Go server.
 
 ### Testing Endpoints
 Use the examples in `docs/examples/README.md` for testing each API.

@@ -2,12 +2,20 @@
 
 A mock implementation of the Department of Health and Aged Care's B2G APIs for healthcare providers.
 
+## Notes
+Frontend uses bun, vite, react, typescript + swc and shadcnui
+Install via shadcnui first, then get AI to write
+
+- Create demo with something here, need to simplify the dashboard likely
+- pull things from the backend
+- update docker and fly.io deploy
+
 ## Overview
 
 This project provides a mock server that implements the following APIs:
 
 1. **Authentication API**: OAuth2 authentication and client registration
-2. **Provider Healthcare Service API**: Provider and service discovery 
+2. **Provider Healthcare Service API**: Provider and service discovery
 3. **Quality Indicators API**: Questionnaire retrieval and submission
 4. **Registered Nurses API**: Attendance tracking and reporting
 
@@ -41,14 +49,23 @@ Start the server:
 go run cmd/server/main.go
 ```
 
-The server will start on port 8080 by default. You can configure a different port using the `PORT` environment variable.
+The server will start on port 8080 by default. You can configure a different port using the `PORT` environment variable. The server will also serve the built frontend from the `/cmd/server/spa` directory.
 
-Start the frontend demo:
+For development, you can start the frontend separately:
 ```
 cd frontend && bun run dev
 ```
 
-The frontend will start on port 5173 by default.
+The development frontend will start on port 5173 by default.
+
+### Building the Frontend
+
+To build the frontend for production:
+```
+cd frontend && bun run build
+```
+
+The built files will be placed in the `/cmd/server/spa` directory automatically.
 
 ## API Documentation
 
@@ -69,12 +86,13 @@ For detailed examples and usage scenarios, see the [examples documentation](docs
 The application uses the following structure:
 
 - `cmd/server`: Main application entry point
+- `cmd/server/spa`: Serving the built frontend files
 - `internal/api`: API configuration and router setup
 - `internal/handlers`: Request handlers for each API
 - `internal/middleware`: Middleware components, including authentication
 - `internal/models`: Data models for the API resources
 - `docs/examples`: Documentation and examples
-- `frontend`: React-based demo application showcasing API integration value
+- `frontend`: React-based demo application (Bun, Vite, TypeScript, shadcn/ui) showcasing API integration value
 
 ## Value Demonstration
 

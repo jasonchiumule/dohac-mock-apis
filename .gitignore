@@ -1,1 +1,3 @@
  llm-context
+/cmd/server/spa/*
+!/cmd/server/spa/index.html
