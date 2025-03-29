@@ -1,14 +1,19 @@
+# fly.toml app configuration file generated for dohac-apis on 2025-03-29T22:47:45+11:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
 app = 'dohac-apis'
 primary_region = 'syd'
 
 [build]
 
 [http_service]
-internal_port = 8080
-force_https = true
-auto_stop_machines = 'suspend'
-auto_start_machines = true
-processes = ['app']
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'suspend'
+  auto_start_machines = true
+  processes = ['app']
 
 [[vm]]
-size = 'shared-cpu-1x'
+  size = 'shared-cpu-1x'
