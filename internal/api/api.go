@@ -15,7 +15,7 @@ import (
 )
 
 // NewRouter creates a new router with all the registered handlers
-func NewRouter() http.Handler {
+func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
 
 	// Middleware
@@ -36,27 +36,30 @@ func NewRouter() http.Handler {
 	})
 	r.Use(corsMiddleware.Handler)
 
-	// Public routes that don't require authentication
-	r.Group(func(r chi.Router) {
-		// Health check
-		r.Get("/health", healthCheck)
+	// API routes
+	r.Route("/api", func(r chi.Router) {
+		// Public routes that don't require authentication
+		r.Group(func(r chi.Router) {
+			// Health check
+			r.Get("/health", healthCheck)
 
-		// Authentication endpoints
-		auth.RegisterHandlers(r)
-	})
+			// Authentication endpoints
+			auth.RegisterHandlers(r)
+		})
 
-	// Protected routes that require authentication
-	r.Group(func(r chi.Router) {
-		r.Use(custommiddleware.AuthMiddleware)
+		// Protected routes that require authentication
+		r.Group(func(r chi.Router) {
+			r.Use(custommiddleware.AuthMiddleware)
 
-		// Provider and Healthcare Service endpoints
-		provider.RegisterHandlers(r)
+			// Provider and Healthcare Service endpoints
+			provider.RegisterHandlers(r)
 
-		// Quality Indicators endpoints
-		quality.RegisterHandlers(r)
+			// Quality Indicators endpoints
+			quality.RegisterHandlers(r)
 
-		// Registered Nurses endpoints
-		nurses.RegisterHandlers(r)
+			// Registered Nurses endpoints
+			nurses.RegisterHandlers(r)
+		})
 	})
 
 	return r

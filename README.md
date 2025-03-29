@@ -18,6 +18,7 @@ The mock server is intended for accelerating development and testing of systems 
 ### Prerequisites
 
 - Go 1.16 or higher
+- Bun 1.0+ (for the frontend demo)
 
 ### Installation
 
@@ -30,6 +31,7 @@ The mock server is intended for accelerating development and testing of systems 
 2. Install dependencies:
    ```
    go mod download
+   cd frontend && bun install
    ```
 
 ### Running the Server
@@ -40,6 +42,13 @@ go run cmd/server/main.go
 ```
 
 The server will start on port 8080 by default. You can configure a different port using the `PORT` environment variable.
+
+Start the frontend demo:
+```
+cd frontend && bun run dev
+```
+
+The frontend will start on port 5173 by default.
 
 ## API Documentation
 
@@ -53,6 +62,7 @@ For detailed examples and usage scenarios, see the [examples documentation](docs
 - **Example Data**: Pre-populated with example data for providers, services, quality indicators, and nurse attendances
 - **Full API Implementation**: Implements all endpoints from the original APIs
 - **Realistic Responses**: Returns properly structured FHIR-compliant responses
+- **Demo Frontend**: Interactive dashboards demonstrating the value of API integration
 
 ## Architecture
 
@@ -64,6 +74,21 @@ The application uses the following structure:
 - `internal/middleware`: Middleware components, including authentication
 - `internal/models`: Data models for the API resources
 - `docs/examples`: Documentation and examples
+- `frontend`: React-based demo application showcasing API integration value
+
+## Value Demonstration
+
+The project includes two demonstration scenarios:
+
+1. **Automated Compliance Management System**: Integrates all APIs to provide a real-time compliance dashboard, reducing administrative burden and ensuring regulatory requirements are met.
+
+2. **Care Quality Optimization Platform**: Correlates nurse staffing data with quality indicators to enable data-driven staffing decisions and improve resident outcomes.
+
+These demonstrations showcase how API integration delivers tangible benefits:
+- Reduced administrative burden
+- Improved data accuracy
+- Enhanced compliance monitoring
+- More time for resident care
 
 ## Limitations
 
