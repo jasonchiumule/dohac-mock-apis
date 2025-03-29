@@ -1,0 +1,2001 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "2.0.5",
+    "title": "Registered Nurses Experience API",
+    "description": "Registered Nurses Experience API"
+  },
+  "security": [
+  	{
+  		"jwt-enforcement": []
+  	}  	
+  ],
+  "paths": {
+    "/RegisteredNurseAttendance": {
+      "get":        
+       {
+        "description": "Find registered nurse attendance records",
+        "parameters": [
+          
+          {
+            "$ref": "#/components/parameters/transaction-id"
+          },
+          {
+            "$ref": "#/components/parameters/organization"
+          },
+          {
+            "$ref": "#/components/parameters/service"
+          },
+          {
+            "$ref": "#/components/parameters/summary"
+          },
+          {
+            "$ref": "#/components/parameters/reporting-period"
+          },
+          {
+            "$ref": "#/components/parameters/_count"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/BundleType"
+                      },
+                      {
+                        "$ref": "#/components/schemas/RegisteredNurseAttendanceType"
+                      }
+                    ]
+                  }
+                },
+                "examples": {
+                  "get-registered-nurse-attendances-bundle": {
+                    "$ref": "#/components/examples/get-registered-nurse-attendances-bundle-example"
+                  },
+                  "get-registered-nurse-attendances-summary": {
+                    "$ref": "#/components/examples/get-registered-nurse-attendances-summary-example"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "405": {
+            "$ref": "#/components/responses/405"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"},
+          "500": {
+            "$ref": "#/components/responses/500"
+          },
+          "501": {
+            "$ref": "#/components/responses/501"
+          },
+          "502": {
+            "$ref": "#/components/responses/502"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          },
+          "504": {
+            "$ref": "#/components/responses/504"
+          }
+        }
+      }
+    },
+    "/RegisteredNurseAttendance/{id}": {
+      "get": {
+        "description": "Find registered nurse attendance records utilising a specific attendance ID",
+        "parameters": [
+          {
+             "$ref": "#/components/parameters/id"
+          },         
+          {
+            "$ref": "#/components/parameters/transaction-id"
+          },          
+          {
+            "$ref": "#/components/parameters/organization"
+          },
+          {
+            "$ref": "#/components/parameters/service"
+          },
+          {
+            "$ref": "#/components/parameters/reporting-period"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegisteredNurseAttendanceType"
+                  }
+                },
+                "examples": {
+                  "get-registered-nurse-attendance-id-1": {
+                    "$ref": "#/components/examples/get-registered-nurse-attendance-id-example-1"
+                  },
+                  "get-registered-nurse-attendance-id-2": {
+                    "$ref": "#/components/examples/get-registered-nurse-attendance-id-example-2"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "405": {
+            "$ref": "#/components/responses/405"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"},
+          "500": {
+            "$ref": "#/components/responses/500"
+          },
+          "501": {
+            "$ref": "#/components/responses/501"
+          },
+          "502": {
+            "$ref": "#/components/responses/502"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          },
+          "504": {
+            "$ref": "#/components/responses/504"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update registered nurse attendance records utilising a specific attendance id",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          },          
+          {
+            "$ref": "#/components/parameters/transaction-id"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisteredNurseAttendanceType"
+              },
+              "examples": {
+                "patch-registered-nurse-attendance-1": {
+                  "$ref": "#/components/examples/update-registered-nurse-attendance-example-1"
+                },
+                "patch-registered-nurse-attendance-2": {
+                  "$ref": "#/components/examples/update-registered-nurse-attendance-example-2"
+                },
+                "patch-registered-nurse-attendance-3": {
+                  "$ref": "#/components/examples/update-registered-nurse-attendance-example-3"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "405": {
+            "$ref": "#/components/responses/405"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"},
+          "500": {
+            "$ref": "#/components/responses/500"
+          },
+          "501": {
+            "$ref": "#/components/responses/501"
+          },
+          "502": {
+            "$ref": "#/components/responses/502"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          },
+          "504": {
+            "$ref": "#/components/responses/504"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      
+      "transaction-id": {
+        "$ref": "/parameters/header-parameters.json#/transaction-id"
+      },    
+      "organization": {
+        "$ref": "/parameters/query-parameters.json#/organization"
+      },
+      "service": {
+        "$ref": "/parameters/query-parameters.json#/service"
+      },
+      "summary": {
+        "$ref": "/parameters/query-parameters.json#/summary"
+      },
+      "reporting-period": {
+        "$ref": "/parameters/query-parameters.json#/reporting-period"
+      },
+      "_count": {
+        "$ref": "/parameters/query-parameters.json#/_count"
+      },
+      "page": {
+        "$ref": "/parameters/query-parameters.json#/page"
+      },
+      "id": {
+        "$ref": "/parameters/uri-parameters.json#/attendance-id"
+      }
+    },
+    "x-amf-securitySchemes": {
+      "jwt-enforcement": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT"      
+    }
+    },    
+   "schemas": {     
+      "BundleType": {
+        "type": "object",
+        "required": [
+          "resourceType",
+          "type"
+        ],
+        "properties": {
+          "resourceType": {
+            "description": "Indicates this is a domain resource of type 'Bundle'",
+            "x-signature": "LhQGGsajwq",
+            "type": "string"
+          },
+          "identifier": {
+            "description": "A persistent identifier for the bundle that won't change as a bundle is copied from server to server.",
+            "x-signature": "PKRX+Z8Gds",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentifierType"
+            }
+          },
+          "type": {
+            "description": "Indicates the purpose of this bundle - how it is intended to be used. Permissible Values | document | message | transaction | transaction-response | batch | batch-response | history | searchset | collection | subscription-notification",
+            "x-signature": "MAoXyW7qbb",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "timestamp": {
+            "description": "The date/time that the bundle was assembled - i.e. when the resources were placed in the bundle.",
+            "x-signature": "Reeqjkr9na",
+            "type": "string",
+            "pattern": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+          },
+          "total": {
+            "description": "If a set of search matches, this is the (potentially estimated) total number of entries of type 'match' across all pages in the search. It does not include search.mode = 'include' or 'outcome' entries and it does not provide a count of the number of entries in the Bundle.",
+            "x-signature": "Q0lHCcmTFR",
+            "type": "integer"
+          },
+          "link": {
+            "description": "A series of links that provide context to this bundle.",
+            "x-signature": "fexa7UB6ZK",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkType"
+            }
+          },
+          "entry": {
+            "description": "An entry in a bundle resource - will either contain a resource or information about a resource (transactions and history only).",
+            "x-signature": "UPn8S4DV8O",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EntryType"
+            }
+          }
+        }
+      },
+      "IdentifierType": {
+        "type": "object",
+        "properties": {
+          "use": {
+            "description": "usual | official | temp | secondary | old (If known)",
+            "x-signature": "lI9Cwk0nYZ",
+            "type": "string"
+          },
+          "type": {
+            "description": "Description of identifier",
+            "x-signature": "izphBn8kou",
+            "type": "string"
+          },
+          "system": {
+            "description": "The namespace for the identifier value",
+            "x-signature": "BY4PnjO9Vu",
+            "type": "string",
+            "pattern": "^\\S*$"
+          },
+          "value": {
+            "description": "The value that is unique",
+            "x-signature": "jJWDYuvJc7",
+            "type": "string"
+          },
+          "period": {
+            "description": "Time period when id is/was valid for use",
+            "x-signature": "V/gwMvTFL2",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PeriodType"
+            }
+          }
+        }
+      },
+      "LinkType": {
+        "type": "object",
+        "required": [
+          "relation",
+          "url"
+        ],
+        "properties": {
+          "relation": {
+            "description": "A name which details the functional use for this link - see http://www.iana.org/assignments/link-relations/link-relations.xhtml#link-relations-1 icon.",
+            "x-signature": "IlBqy3n0XJ",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "url": {
+            "description": "The reference details for the link.",
+            "x-signature": "TwiAwVuwwn",
+            "type": "string",
+            "pattern": "^\\S*$"
+          }
+        }
+      },
+      "EntryType": {
+        "type": "object",
+        "properties": {
+          "fullUrl": {
+            "description": "The Absolute URL for the resource. Except for transactions and batches, each entry in a Bundle must have a fullUrl. The fullUrl SHALL NOT disagree with the id in the resource - i.e. if the fullUrl is not a urn:uuid, the URL shall be version-independent URL consistent with the Resource.id. The fullUrl is a version independent reference to the resource. Even when not required, fullUrl MAY be set to a urn:uuid to allow referencing entries in a transaction. The fullUrl can be an arbitrary URI and is not limited to urn:uuid, urn:oid, http, and https. The fullUrl element SHALL have a value except when:  | invoking a create | invoking or responding to an operation where the body is not a single identified resource | invoking or returning the results of a search or history operation.",
+            "x-signature": "Eg3tEl7FJO",
+            "type": "string",
+            "pattern": "^\\S*$"
+          },
+          "resource": {
+            "description": "This specification defines a series of different types of resource that can be used to exchange and/or store data in order to solve a wide range of healthcare related problems, both clinical and administrative. In addition, this specification defines several different ways of exchanging the resources.",
+            "x-signature": "lhma9frizy",
+            "type": "object",
+            "properties": {
+              "meta": {
+                "description": "The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.",
+                "x-signature": "haXj0rccyp",
+                "type": "object",
+                "properties": {
+                  "versionId": {
+                    "description": "The version specific identifier, as it appears in the version portion of the URL. This value changes when the resource is created, updated, or deleted.",
+                    "x-signature": "bvS7qypYb8",
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9\\-\\.]{1,64}$"
+                  },
+                  "profile": {
+                    "description": "A list of profiles (references to StructureDefinition resources) that this resource claims to conform to. The URL is a reference to StructureDefinition.url.",
+                    "x-signature": "APdPK+iRlW",
+                    "type": "string",
+                    "pattern": "^\\S*$"
+                  },
+                  "source": {
+                    "description": "A uri that identifies the source system of the resource. This provides a minimal amount of Provenance information that can be used to track or differentiate the source of information in the resource. The source may identify another FHIR server, document, message, database, etc.",
+                    "x-signature": "T1esinViXN",
+                    "type": "string",
+                    "pattern": "^\\S*$"
+                  },
+                  "security": {
+                    "description": "Security labels applied to this resource. These tags connect specific resources to the overall security policy and infrastructure.",
+                    "x-signature": "VfAldhp0c4",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/CodingType"
+                    }
+                  },
+                  "tag": {
+                    "description": "Tags applied to this resource. Tags are intended to be used to identify and relate resources to process and workflow, and applications are not required to consider the tags when interpreting the meaning of a resource.",
+                    "x-signature": "RwAy1+Qat7",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/CodingType"
+                    }
+                  },
+                  "lastUpdated": {
+                    "description": "An instant in time in a format that is a subset of [ISO8601] icon: YYYY-MM-DDThh:mm:ss.sss+zz:zz (e.g. 2015-02-07T13:28:17.239+02:00 or 2017-01-01T00:00:00Z). The time SHALL specified at least to the second and SHALL include a timezone offset. Actual timezone codes can be sent using the [[[http://hl7.org/fhir/StructureDefinition/timezone extension]]], if desired. Note: This is intended for when precisely observed times are required (typically system logs etc.), and not human-reported times - for those, use date or dateTime (which can be as precise as instant, but is not required to be). instant is a more constrained dateTime",
+                    "x-signature": "DBWSuI5bQK",
+                    "type": "string",
+                    "pattern": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+                  }
+                }
+              },
+              "language": {
+                "description": "The base language in which the resource is written.",
+                "x-signature": "eP1hkLDVKm",
+                "type": "string",
+                "pattern": "^[^\\s]+( [^\\s]+)*$"
+              },
+              "id": {
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "x-signature": "b7lzRVz4nN",
+                "type": "string",
+                "pattern": "^[A-Za-z0-9\\-\\.]{1,64}$"
+              },
+              "implicitRules": {
+                "description": "A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide that defines the special rules along with other profiles etc.",
+                "x-signature": "cmmPkMt5UO",
+                "type": "string",
+                "pattern": "^\\S*$"
+              }
+            }
+          }
+        }
+      },
+      "RegisteredNurseAttendanceType": {
+        "type": "object",
+        "required": [
+          "resourceType",
+          "nominatedServiceIdentifier",
+          "submissionStatus"
+        ],
+        "properties": {
+          "resourceType": {
+            "description": "The type indicates what information the resource payload relates to: 'RegisteredNurseAttendance'",
+            "x-signature": "LhQGGsajwq",
+            "type": "string"
+          },
+          "id": {
+            "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+            "x-signature": "lBqVAuvGtD",
+            "type": "string"
+          },
+          "nominatedServiceIdentifier": {
+            "description": "This refers to the service identifier that the attendance submission is about. Supported Systems:  | official = 'Integration ID' - This is the GPMS identifier for the Service",
+            "x-signature": "al+REF9fUI",
+            "type": "object",
+            "properties": {
+              "use": {
+                "description": "usual | official | temp | secondary | old (If known)",
+                "x-signature": "lI9Cwk0nYZ",
+                "type": "string"
+              },
+              "value": {
+                "description": "The value that is unique",
+                "x-signature": "jJWDYuvJc7",
+                "type": "string"
+              },
+              "period": {
+                "description": "Time period when id is/was valid for use",
+                "x-signature": "V/gwMvTFL2",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PeriodType"
+                }
+              },
+              "type": {
+                "description": "Description of identifier",
+                "x-signature": "izphBn8kou",
+                "type": "string"
+              },
+              "system": {
+                "description": "The namespace for the identifier value",
+                "x-signature": "BY4PnjO9Vu",
+                "type": "string",
+                "pattern": "^\\S*$"
+              }
+            }
+          },
+          "submissionStatus": {
+            "description": "This refers to the submission state. Permissible values are: Not started: no data has been entered in the portal for the service for the month and, no report has been received in B2G for the provider for the month.  | In progress: some data has been entered but the report has not yet been submitted  | Submitted: data has been entered in the portal for the service for the full month or, A report has been Submitted through the B2G for the provider for the month and the declaration has been received. Re-Issued: the original status of the new submission record created when the provider requests their submission be re-issued | Submission Re-Issued: the status automatically assigned to the original submission when the provider requests their submission be re-issued | Re-submitted: This is the status of a re-issued submission record that has been subsequently submitted before the re-submission due date | Deleted: This status is automatically assigned to a re-issued submission if the provider fails to re-submit it before the re-submission due date. Cancelled: The submission was cancelled by the Department on behalf of the provider",
+            "x-signature": "UjG77qa5EB",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "reportingPeriod": {
+            "description": "This refers to the time period coverage of the data in the submission. For example, for the current month period.",
+            "x-signature": "d+CDXoAkzH",
+            "type": "object",
+            "properties": {
+              "start": {
+                "description": "The start of the period. The boundary is inclusive. ISO8601: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss:sss",
+                "x-signature": "eEXt1Jsfnv",
+                "type": "string",
+                "pattern": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+              },
+              "end": {
+                "description": "The start of the period. The boundary is inclusive. ISO8601: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss:sss",
+                "x-signature": "H+tfQxzpD2",
+                "type": "string",
+                "pattern": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+              }
+            }
+          },
+          "attendanceDays": {
+            "description": "This refers to the list of attendance days.",
+            "x-signature": "Y4E/ZmPSTe",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttendanceDayType"
+            }
+          },
+          "totalCoverageHours": {
+            "description": "The total number of hours the service was operational in the submission period.",
+            "x-signature": "EAEyd361h6",
+            "type": "number"
+          },
+          "totalUnavailableHours": {
+            "description": "The total number of hours in the submission period a Registered Nurse was not on site and on duty.",
+            "x-signature": "FiUnhy/GeX",
+            "type": "number"
+          },
+          "totalHoursWithoutAltArrangement": {
+            "description": "The total number of hours in the submission period a Registered Nurse was not on site and on duty for which there was no alternate arrangement available",
+            "x-signature": "cPI2vXN1wy",
+            "type": "number"
+          },
+          "coveragePercentage": {
+            "description": "The Registered Nurse average availability for the reporting period, represented as a percentage.",
+            "x-signature": "O5APDJlcDU",
+            "type": "number"
+          },
+          "transferOption": {
+            "description": "Indicates whether for the reporting month, an alternative arrangement includes an option to transfer residents to a local health facility (including by ambulance).",
+            "x-signature": "ARNsWTMZby",
+            "type": "boolean"
+          },
+          "transferHealthFacilityType": {
+            "description": "describes the type of local health facility available for transfer of residents as an alternative arrangement. Required if answer to transferOption was 'true'. Permissible values: 'Another residential facility with 24/7 RN coverage that is under the same approved provider' | 'Multi-Purpose Service/Unit'  | 'Hospital with an emergency department'  | 'Other'",
+            "x-signature": "OWrugNXo3P",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "transferHealthFacilityOther": {
+            "description": "Describes the type of transfer health facility available as an alternative arrangement.  | Required if 'Other' was selected as the transferHealthFacilityType. maximum 80 characters allowed.",
+            "x-signature": "WN/L1FEYmt",
+            "type": "string"
+          },
+          "vacancyOpenDuration": {
+            "description": "indicates for the reporting month, whether a Registered Nurse position was vacant at the facility and if so, how long the vacancy has been open for. Permissible Values: 'Not applicable' | 'Less than 3 months' | '3-6 Months' | 'Greater than 6 months'",
+            "x-signature": "CoBMGR+PCm",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "activelyRecruiting": {
+            "description": "indicates, for the reporting month, whether there was active recruitment to fill the RN vacancy",
+            "x-signature": "k65GOvDArG",
+            "type": "boolean"
+          },
+          "vacancyFilled": {
+            "description": "indicates for the reporting month whether the RN vacancy was successfully filled. Required if answer to activelyRecruiting was 'false'",
+            "x-signature": "gVHK8W1wNp",
+            "type": "boolean"
+          },
+          "reporterDeclaration": {
+            "description": "This refers to an indicator that signified the reporter declaration confirming the submitted data is true and correct.",
+            "x-signature": "aAhrlTgcKX",
+            "type": "boolean"
+          }
+        }
+      },
+      "ResponseType": {
+        "$ref": "#/components/schemas/OperationOutcome"
+      },
+      "OperationOutcome": {
+        "type": "object",
+        "required": [
+          "resourceType",
+          "issue"
+        ],
+        "properties": {
+          "resourceType": {
+            "description": "Indicates this is a domain resource of type 'OperationOutcome'",
+            "x-signature": "LhQGGsajwq",
+            "type": "string"
+          },
+          "issue": {
+            "description": "A single issue associated with the action",
+            "x-signature": "IiWj/k08sV",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IssueType"
+            }
+          }
+        }
+      },
+      "PeriodType": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "description": "The start of the period. The boundary is inclusive. ISO8601: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss:sss",
+            "x-signature": "eEXt1Jsfnv",
+            "type": "string",
+            "pattern": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+          },
+          "end": {
+            "description": "The start of the period. The boundary is inclusive. ISO8601: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss:sss",
+            "x-signature": "H+tfQxzpD2",
+            "type": "string",
+            "pattern": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+          }
+        }
+      },
+      "AttendanceDayType": {
+        "type": "object",
+        "required": [
+          "id",
+          "reportingDate",
+          "attendanceDayStatus"
+        ],
+        "properties": {
+          "id": {
+            "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+            "x-signature": "lBqVAuvGtD",
+            "type": "string"
+          },
+          "reportingDate": {
+            "description": "This refers to the date of the attendance day.  | Expected format: 'YYYY-MM-DD' (ISO 8601)",
+            "x-signature": "fmrxfZx9QS",
+            "type": "string",
+            "pattern": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
+          },
+          "attendanceDayStatus": {
+            "description": "The code that captures the submission or attendance status of the day. Permissible Values:  | Not Started | Nurse On Site | Nurse not on site | Service was not operational on this day",
+            "x-signature": "IrGZ9DgwZy",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "nonAttendanceTime": {
+            "description": "This refers to the daily breakdown of intra-day periods where there was no registered nurse in attendance",
+            "x-signature": "aM+G7by5Gl",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NonAttendanceTimeType"
+            }
+          }
+        }
+      },
+      "IssueType": {
+        "type": "object",
+        "required": [
+          "severity",
+          "code"
+        ],
+        "properties": {
+          "severity": {
+            "description": "Indicates whether the issue indicates a variation from successful processing. fatal | error | warning | information | success | bounded to https://www.hl7.org/fhir/valueset-issue-severity.html (required)",
+            "x-signature": "Lv+bcLSxDt",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "code": {
+            "description": "Describes the type of the issue. The system that creates an OperationOutcome SHALL choose the most applicable code from the IssueType value set, and may additional provide its own code for the error in the details element.",
+            "x-signature": "BjZAF3EqCL",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "details": {
+            "description": "Describes the type of the issue. The system that creates an OperationOutcome SHALL choose the most applicable code from the IssueType value set, and may additional provide its own code for the error in the details element. Binding: https://www.hl7.org/fhir/valueset-operation-outcome.html (example)",
+            "x-signature": "fcjVcKcWVw",
+            "type": "object",
+            "properties": {
+              "coding": {
+                "description": "Code defined by a terminology system",
+                "x-signature": "I+esH1JKTE",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CodingType"
+                }
+              },
+              "text": {
+                "description": "Plain text representation of the concept",
+                "x-signature": "Ic/60UScHT",
+                "type": "string"
+              }
+            }
+          },
+          "diagnostics": {
+            "description": "Additional diagnostic information about the issue.",
+            "x-signature": "FUFBzjdCDX",
+            "type": "string"
+          },
+          "expression": {
+            "description": "A simple subset of FHIRPath limited to element names, repetition indicators and the default child accessor that identifies one of the elements in the resource that caused this issue to be raised.",
+            "x-signature": "hevbFgLdum",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "NonAttendanceTimeType": {
+        "type": "object",
+        "required": [
+          "unavailableStartTime",
+          "unavailableEndTime"
+        ],
+        "properties": {
+          "id": {
+            "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes unless the AttendanceDay parent resource specific to this record is PATCHED. In this scenario any existing attached NonAttendanceTime will be replaced with the newly provided array of NonAttendanceTime values with new ids assigned.",
+            "x-signature": "lBqVAuvGtD",
+            "type": "string"
+          },
+          "unavailableStartTime": {
+            "description": "This refers to the starting time of the period where a registered nurse was unavailable. If the unavailability period commenced on or before the start of the day, use value: '00:00:00' | Expected format: 'HH:MM:00' (ISO 8601, as per the data type validation rules, seconds are required, however will be ignored for this submission)",
+            "x-signature": "j3uYlKj9hH",
+            "type": "string",
+            "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?$"
+          },
+          "unavailableEndTime": {
+            "description": "This refers to the ending time of the period where a registered nurse was unavailable. If the unavailability period extended beyond the end of the day, use value: '00:00:00' | Expected format: 'HH:MM:00' (ISO 8601, as per the data type validation rules, seconds are required, however will be ignored for this submission)",
+            "x-signature": "IIv2WQgfp9",
+            "type": "string",
+            "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?$"
+          },
+          "unavailableReason": {
+            "description": "DEPRECATING: This field is not required for submissions for reporting months on or after July 2024. This refers to the reason(s) of no registered nurse coverage during the reporting time period. Permissible values: Temporary absence - unplanned | Temporary absence - planned | S/term RN vacancy - successful recruitment last 4wks | S/term RN vacancy - unsuccessful recruitment last 4 wks | Long term RN vacancy - recruitment last 4 wks | Long term RN vacancy - no recruitment last 4 wks",
+            "x-signature": "K3d08fMPZ7",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "alternateArrangement": {
+            "description": "DEPRECATING: This field is not required for submissions for reporting months on or after July 2024. This refers to the alternative arrangements that have been put in place to ensure quality care during the no registered nurse coverage time period.  | Permissible values: Access to RN in co-located health/aged care service | EN/PCW on site employed at facility | EN/PCW onsite & access to specialist telehealth | EN/PCW onsite phone/video access to GP/NP/RN | EN/PCW temporary or agency staff on site | GP/NP/RN on-call can attend in less than 15 mins | GP/NP/RN on-call can attend in more than 15 mins | GP/NP/RN on-call for advice but unable to attend | No alternate care arrangements | Other | Transfer to local health facility incl. ambulance",
+            "x-signature": "WGbBrJO0g3",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "absenceType": {
+            "description": "refers to the type of absence for this given period of registered nurse unavailability | Permissible Values: 'Planned' | 'Not planned' | NOTE: mandatory for submissions for a reporting month on or after July 2024",
+            "x-signature": "bEHC5f5rrp",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "authorityDelegatedTo": {
+            "description": "Describes who had delegated responsibility for nursing practice and clinical care delivery when a Registered Nurse was not on site and not on duty. Permissible values: 'EN' | 'PCW or AIN' | 'Other member of care staff (e.g. physiotherapist)'  | 'No one'",
+            "x-signature": "W+nuQ1xOPO",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "accessToSupport": {
+            "description": "describes what type of support the person or persons providing care had access to. Permissible Values: '1 - RN in immediately adjacent co-located health facility who can attend in person' | '2 - RN on-call who can attend in person' | '3 - NP on-call who can attend in person' | '4 - GP on-call who can attend in person' | '5 - RN on-call who is unable to attend in person' | '6 - NP on-call who is unable to attend in person' | '7 - GP on-call who is unable to attend in person' | '8 - Specialist telehealth services' | '9 - None of the above'",
+            "x-signature": "PXPQRQihpk",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "accessToClinicalDocumentation": {
+            "description": "indicates whether the on call support had access to residents' clinical records. Required if accessToSupport was answered with values 1-7",
+            "x-signature": "INz/qs5gE2",
+            "type": "boolean"
+          }
+        }
+      },
+      "CodingType": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "description": "Identity of the terminology system",
+            "x-signature": "BY4PnjO9Vu",
+            "type": "string",
+            "pattern": "^\\S*$"
+          },
+          "version": {
+            "description": "Version of the system - if relevant",
+            "x-signature": "eNwr/ek7bR",
+            "type": "string"
+          },
+          "code": {
+            "description": "Symbol in syntax defined by the system",
+            "x-signature": "hLfd/Bh0tD",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "display": {
+            "description": "Representation defined by the system",
+            "x-signature": "AhgXLN9og1",
+            "type": "string"
+          },
+          "userSelected": {
+            "description": "If this coding was chosen directly by the user",
+            "x-signature": "bFxVo9fV2x",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "examples": {
+      "get-registered-nurse-attendances-bundle-example": {
+        "value": [
+          {
+            "resourceType": "Bundle",
+            "id": "e95fa514-d433-4399-96db-0d0c6198f098",
+            "lastUpdated": "2024-03-26T20:03:58",
+            "type": "searchset",
+            "total": 25,
+            "link": [
+              {
+                "relation": "self",
+                "url": "https://api.health.gov.au/registered-nurses/exp/v2/RegisteredNurseAttendance&_count=5&page=3"
+              },
+              {
+                "relation": "first",
+                "url": "https://api.health.gov.au/registered-nurses/exp/v2/RegisteredNurseAttendance&_count=5&page=1"
+              },
+              {
+                "relation": "prev",
+                "url": "https://api.health.gov.au/registered-nurses/exp/v2/RegisteredNurseAttendance&_count=5&page=2"
+              },
+              {
+                "relation": "next",
+                "url": "https://api.health.gov.au/registered-nurses/exp/v2/RegisteredNurseAttendance&_count=5&page=4"
+              },
+              {
+                "relation": "last",
+                "url": "https://api.health.gov.au/registered-nurses/exp/v2/RegisteredNurseAttendance&_count=5&page=5"
+              }
+            ],
+            "entry": [
+              {
+                "fullUrl": "https://api.health.gov.au/api/registered-nurses",
+                "resource": {
+                  "resourceType": "RegisteredNurseAttendance",
+                  "nominatedServiceIdentifier": {
+                    "use": "official",
+                    "system": "https://api.health.gov.au/integrationID",
+                    "value": "SRV-00136"
+                  },
+                  "id": "Sub-240708-504",
+                  "submissionStatus": "In progress",
+                  "reportingPeriod": {
+                    "start": "2024-07-01",
+                    "end": "2024-07-31"
+                  },
+                  "attendanceDays": [
+                    {
+                      "id": "SD-240708-15403",
+                      "reportingDate": "2024-07-01",
+                      "attendanceDayStatus": "Nurse not on site",
+                      "nonAttendanceTime": [
+                        {
+                          "id": "RNU-3583",
+                          "unavailableStartTime": "09:00:00",
+                          "unavailableEndTime": "10:30:00",
+                          "absenceType": "Planned",
+                          "authorityDelegatedTo": "PCW or AIN",
+                          "accessToSupport": "4 - GP on-call who can attend in person",
+                          "accessToClinicalDocumentation": true
+                        }
+                      ]
+                    },
+                    {
+                      "id": "SD-240708-15404",
+                      "reportingDate": "2024-07-02",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15405",
+                      "reportingDate": "2024-07-03",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15406",
+                      "reportingDate": "2024-07-04",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15407",
+                      "reportingDate": "2024-07-05",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15408",
+                      "reportingDate": "2024-07-06",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15409",
+                      "reportingDate": "2024-07-07",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15410",
+                      "reportingDate": "2024-07-08",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15411",
+                      "reportingDate": "2024-07-09",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15412",
+                      "reportingDate": "2024-07-10",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15413",
+                      "reportingDate": "2024-07-11",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15414",
+                      "reportingDate": "2024-07-12",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15415",
+                      "reportingDate": "2024-07-13",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15416",
+                      "reportingDate": "2024-07-14",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15417",
+                      "reportingDate": "2024-07-15",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15418",
+                      "reportingDate": "2024-07-16",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15419",
+                      "reportingDate": "2024-07-17",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15420",
+                      "reportingDate": "2024-07-18",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15421",
+                      "reportingDate": "2024-07-19",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15422",
+                      "reportingDate": "2024-07-20",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15423",
+                      "reportingDate": "2024-07-21",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15424",
+                      "reportingDate": "2024-07-22",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15425",
+                      "reportingDate": "2024-07-23",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15426",
+                      "reportingDate": "2024-07-24",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15427",
+                      "reportingDate": "2024-07-25",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15428",
+                      "reportingDate": "2024-07-26",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15429",
+                      "reportingDate": "2024-07-27",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15430",
+                      "reportingDate": "2024-07-28",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15431",
+                      "reportingDate": "2024-07-29",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15432",
+                      "reportingDate": "2024-07-30",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240708-15433",
+                      "reportingDate": "2024-07-31",
+                      "attendanceDayStatus": "Not Started"
+                    }
+                  ]
+                }
+              },
+              {
+                "fullUrl": "https://api.health.gov.au/api/registered-nurses",
+                "resource": {
+                  "resourceType": "RegisteredNurseAttendance",
+                  "nominatedServiceIdentifier": {
+                    "use": "official",
+                    "system": "https://api.health.gov.au/integrationID",
+                    "value": "SRV-00137"
+                  },
+                  "id": "Sub-240605-505",
+                  "submissionStatus": "In progress",
+                  "reportingPeriod": {
+                    "start": "2024-06-01",
+                    "end": "2024-06-30"
+                  },
+                  "attendanceDays": [
+                    {
+                      "id": "SD-240605-15434",
+                      "reportingDate": "2024-06-01",
+                      "attendanceDayStatus": "Nurse On Site"
+                    },
+                    {
+                      "id": "SD-240605-15435",
+                      "reportingDate": "2024-06-02",
+                      "attendanceDayStatus": "Nurse On Site"
+                    },
+                    {
+                      "id": "SD-240605-15436",
+                      "reportingDate": "2024-06-03",
+                      "attendanceDayStatus": "Nurse not on site",
+                      "nonAttendanceTime": [
+                        {
+                          "id": "RNU-3684",
+                          "alternateArrangement": "No alternate care arrangements",
+                          "unavailableReason": "Temporary absence - planned",
+                          "unavailableStartTime": "19:00:00",
+                          "unavailableEndTime": "19:30:00"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "SD-240605-15437",
+                      "reportingDate": "2024-06-04",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15438",
+                      "reportingDate": "2024-06-05",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15439",
+                      "reportingDate": "2024-06-06",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15440",
+                      "reportingDate": "2024-06-07",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15441",
+                      "reportingDate": "2024-06-08",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15442",
+                      "reportingDate": "2024-06-09",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15443",
+                      "reportingDate": "2024-06-10",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15444",
+                      "reportingDate": "2024-06-11",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15445",
+                      "reportingDate": "2024-06-12",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15446",
+                      "reportingDate": "2024-06-13",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15447",
+                      "reportingDate": "2024-06-14",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15448",
+                      "reportingDate": "2024-06-15",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15449",
+                      "reportingDate": "2024-06-16",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15450",
+                      "reportingDate": "2024-06-17",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15451",
+                      "reportingDate": "2024-06-18",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15452",
+                      "reportingDate": "2024-06-19",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15453",
+                      "reportingDate": "2024-06-20",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15454",
+                      "reportingDate": "2024-06-21",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15455",
+                      "reportingDate": "2024-06-22",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15456",
+                      "reportingDate": "2024-06-23",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15457",
+                      "reportingDate": "2024-06-24",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15458",
+                      "reportingDate": "2024-06-25",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15459",
+                      "reportingDate": "2024-06-26",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15460",
+                      "reportingDate": "2024-06-27",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15461",
+                      "reportingDate": "2024-06-28",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15462",
+                      "reportingDate": "2024-06-29",
+                      "attendanceDayStatus": "Not Started"
+                    },
+                    {
+                      "id": "SD-240605-15463",
+                      "reportingDate": "2024-06-30",
+                      "attendanceDayStatus": "Not Started"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "get-registered-nurse-attendances-summary-example": {
+        "value": [
+          {
+            "resourceType": "RegisteredNurseAttendance",
+            "nominatedServiceIdentifier": {
+              "use": "official",
+              "system": "https://api.health.gov.au/integrationID",
+              "value": "SRV-2203"
+            },
+            "id": "Sub-240319-20920",
+            "submissionStatus": "In progress",
+            "reportingPeriod": {
+              "start": "2024-03-01",
+              "end": "2024-03-31"
+            },
+            "totalCoverageHours": 696,
+            "totalUnavailableHours": 0,
+            "coveragePercentage": 100
+          }
+        ]
+      },
+      "get-registered-nurse-attendance-id-example-1": {
+        "value": [
+          {
+            "resourceType": "RegisteredNurseAttendance",
+            "nominatedServiceIdentifier": {
+              "use": "official",
+              "system": "https://api.health.gov.au/integrationID",
+              "value": "SRV-1111"
+            },
+            "id": "Sub-230926-50",
+            "reportingPeriod": {
+              "start": "2023-10-01",
+              "end": "2023-10-31"
+            },
+            "submissionStatus": "In Progress",
+            "attendanceDays": [
+              {
+                "id": "SD-231109-14132",
+                "reportingDate": "2023-10-01",
+                "attendanceDayStatus": "Nurse On Site"
+              },
+              {
+                "id": "SD-231109-14133",
+                "reportingDate": "2023-10-02",
+                "attendanceDayStatus": "Nurse On Site"
+              },
+              {
+                "id": "SD-231109-14134",
+                "reportingDate": "2023-10-03",
+                "attendanceDayStatus": "Nurse On Site"
+              },
+              {
+                "id": "SD-231109-14135",
+                "reportingDate": "2023-10-04",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14136",
+                "reportingDate": "2023-10-05",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14137",
+                "reportingDate": "2023-10-06",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14138",
+                "reportingDate": "2023-10-07",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14139",
+                "reportingDate": "2023-10-08",
+                "attendanceDayStatus": "Service was not operational on this day"
+              },
+              {
+                "id": "SD-231109-14140",
+                "reportingDate": "2023-10-09",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14141",
+                "reportingDate": "2023-10-10",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14142",
+                "reportingDate": "2023-10-11",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14143",
+                "reportingDate": "2023-10-12",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14144",
+                "reportingDate": "2023-10-13",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14145",
+                "reportingDate": "2023-10-14",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14146",
+                "reportingDate": "2023-10-15",
+                "attendanceDayStatus": "Service was not operational on this day"
+              },
+              {
+                "id": "SD-231109-14147",
+                "reportingDate": "2023-10-16",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14148",
+                "reportingDate": "2023-10-17",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14149",
+                "reportingDate": "2023-10-18",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14150",
+                "reportingDate": "2023-10-19",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14151",
+                "reportingDate": "2023-10-20",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14152",
+                "reportingDate": "2023-10-21",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14153",
+                "reportingDate": "2023-10-22",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14154",
+                "reportingDate": "2023-10-23",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14155",
+                "reportingDate": "2023-10-24",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14156",
+                "reportingDate": "2023-10-25",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14157",
+                "reportingDate": "2023-10-26",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14158",
+                "reportingDate": "2023-10-27",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14159",
+                "reportingDate": "2023-10-28",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14160",
+                "reportingDate": "2023-10-29",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14161",
+                "reportingDate": "2023-10-30",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-231109-14162",
+                "reportingDate": "2023-10-31",
+                "attendanceDayStatus": "Nurse not on site",
+                "nonAttendanceTime": [
+                  {
+                    "id": "RNU-0",
+                    "unavailableReason": "Temporary absence - unplanned",
+                    "alternateArrangement": "No alternate care arrangements",
+                    "unavailableStartTime": "12:00:00",
+                    "unavailableEndTime": "12:30:00"
+                  },
+                  {
+                    "id": "RNU-1",
+                    "unavailableReason": "Temporary absence - unplanned",
+                    "alternateArrangement": "No alternate care arrangements",
+                    "unavailableStartTime": "13:00:00",
+                    "unavailableEndTime": "13:30:00"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "get-registered-nurse-attendance-id-example-2": {
+        "value": [
+          {
+            "resourceType": "RegisteredNurseAttendance",
+            "nominatedServiceIdentifier": {
+              "use": "official",
+              "system": "https://api.health.gov.au/integrationID",
+              "value": "SRV-00136"
+            },
+            "id": "Sub-240708-504",
+            "submissionStatus": "In progress",
+            "reportingPeriod": {
+              "start": "2024-07-01",
+              "end": "2024-07-31"
+            },
+            "attendanceDays": [
+              {
+                "id": "SD-240708-15403",
+                "reportingDate": "2024-07-01",
+                "attendanceDayStatus": "Nurse not on site",
+                "nonAttendanceTime": [
+                  {
+                    "id": "RNU-3583",
+                    "unavailableStartTime": "09:00:00",
+                    "unavailableEndTime": "10:30:00",
+                    "absenceType": "Planned",
+                    "authorityDelegatedTo": "PCW or AIN",
+                    "accessToSupport": "4 - GP on-call who can attend in person",
+                    "accessToClinicalDocumentation": true
+                  }
+                ]
+              },
+              {
+                "id": "SD-240708-15404",
+                "reportingDate": "2024-07-02",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15405",
+                "reportingDate": "2024-07-03",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15406",
+                "reportingDate": "2024-07-04",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15407",
+                "reportingDate": "2024-07-05",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15408",
+                "reportingDate": "2024-07-06",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15409",
+                "reportingDate": "2024-07-07",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15410",
+                "reportingDate": "2024-07-08",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15411",
+                "reportingDate": "2024-07-09",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15412",
+                "reportingDate": "2024-07-10",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15413",
+                "reportingDate": "2024-07-11",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15414",
+                "reportingDate": "2024-07-12",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15415",
+                "reportingDate": "2024-07-13",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15416",
+                "reportingDate": "2024-07-14",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15417",
+                "reportingDate": "2024-07-15",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15418",
+                "reportingDate": "2024-07-16",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15419",
+                "reportingDate": "2024-07-17",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15420",
+                "reportingDate": "2024-07-18",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15421",
+                "reportingDate": "2024-07-19",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15422",
+                "reportingDate": "2024-07-20",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15423",
+                "reportingDate": "2024-07-21",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15424",
+                "reportingDate": "2024-07-22",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15425",
+                "reportingDate": "2024-07-23",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15426",
+                "reportingDate": "2024-07-24",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15427",
+                "reportingDate": "2024-07-25",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15428",
+                "reportingDate": "2024-07-26",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15429",
+                "reportingDate": "2024-07-27",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15430",
+                "reportingDate": "2024-07-28",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15431",
+                "reportingDate": "2024-07-29",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15432",
+                "reportingDate": "2024-07-30",
+                "attendanceDayStatus": "Not Started"
+              },
+              {
+                "id": "SD-240708-15433",
+                "reportingDate": "2024-06-31",
+                "attendanceDayStatus": "Not Started"
+              }
+            ]
+          }
+        ]
+      },
+      "update-registered-nurse-attendance-example-1": {
+        "value": {
+          "resourceType": "RegisteredNurseAttendance",
+          "nominatedServiceIdentifier": {
+            "use": "official",
+            "system": "https://api.health.gov.au/integrationID",
+            "value": "SRV-1111"
+          },
+          "submissionStatus": "In Progress",
+          "reportingPeriod": {
+            "start": "2023-11-01",
+            "end": "2023-11-30"
+          },
+          "attendanceDays": [
+            {
+              "id": "SD-230926-1524",
+              "reportingDate": "2023-11-01",
+              "attendanceDayStatus": "Nurse not on site",
+              "nonAttendanceTime": [
+                {
+                  "unavailableReason": "Temporary absence - unplanned",
+                  "alternateArrangement": "No alternate care arrangements",
+                  "unavailableStartTime": "12:00:00",
+                  "unavailableEndTime": "12:30:00"
+                },
+                {
+                  "unavailableReason": "Temporary absence - unplanned",
+                  "alternateArrangement": "No alternate care arrangements",
+                  "unavailableStartTime": "13:00:00",
+                  "unavailableEndTime": "13:30:00"
+                }
+              ]
+            },
+            {
+              "id": "SD-230926-1525",
+              "reportingDate": "2023-11-02",
+              "attendanceDayStatus": "Nurse On Site"
+            }
+          ]
+        }
+      },
+      "update-registered-nurse-attendance-example-2": {
+        "value": {
+          "resourceType": "RegisteredNurseAttendance",
+          "nominatedServiceIdentifier": {
+              "system":"https://api.health.gov.au/integrationID",
+              "value": "SRV-1234"
+          },
+          "submissionStatus": "In progress",
+          "reportingPeriod": {
+            "start": "2024-07-01",
+            "end": "2024-07-31"
+          },
+          "attendanceDays": [
+            {
+              "id": "SD-240726-1534",
+              "reportingDate": "2024-07-01",
+              "attendanceDayStatus" : "Nurse On Site"
+            },
+            {
+              "id": "SD-240726-1535",
+              "reportingDate": "2024-07-02",
+              "attendanceDayStatus" : "Service was not operational on this day"
+            },
+            {
+              "id": "SD-240726-1536",
+              "reportingDate": "2024-07-03",
+              "attendanceDayStatus" : "Nurse not on site",
+              "nonAttendanceTime": [
+                {
+                  "unavailableStartTime": "14:15:00",
+                  "unavailableEndTime": "14:30:00",
+                  "absenceType": "Planned",
+                  "authorityDelegatedTo": "PCW or AIN",
+                  "accessToSupport": "4 - GP on-call who can attend in person",
+                  "accessToClinicalDocumentation": true
+                }
+              ]
+            },
+            {
+              "id": "SD-240726-1537",
+              "reportingDate": "2024-07-04",
+              "attendanceDayStatus" : "Nurse On Site"
+            }
+          ]
+        }
+      },
+      "update-registered-nurse-attendance-example-3": {
+        "value": {
+          "resourceType": "RegisteredNurseAttendance",
+          "nominatedServiceIdentifier": {
+            "use": "official",
+            "system": "https://api.health.gov.au/integrationID",
+            "value": "SRV-00136"
+          },
+          "id": "Sub-240708-504",
+          "submissionStatus": "Submitted",
+          "reporterDeclaration": true,
+          "reportingPeriod": {
+            "start": "2024-07-01",
+            "end": "2024-07-31"
+          },
+          "attendanceDays": [
+            {
+              "id": "SD-240708-15403",
+              "reportingDate": "2024-07-01",
+              "attendanceDayStatus": "Nurse not on site",
+              "nonAttendanceTime": [
+                {
+                  "id": "RNU-3583",
+                  "unavailableStartTime": "09:00:00",
+                  "unavailableEndTime": "10:30:00",
+                  "absenceType": "Planned",
+                  "authorityDelegatedTo": "PCW or AIN",
+                  "accessToSupport": "4 - GP on-call who can attend in person",
+                  "accessToClinicalDocumentation": true
+                }
+              ]
+            },
+            {
+              "id": "SD-240708-15404",
+              "reportingDate": "2024-07-02",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15405",
+              "reportingDate": "2024-07-03",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15406",
+              "reportingDate": "2024-07-04",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15407",
+              "reportingDate": "2024-07-05",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15408",
+              "reportingDate": "2024-07-06",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15409",
+              "reportingDate": "2024-07-07",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15410",
+              "reportingDate": "2024-07-08",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15411",
+              "reportingDate": "2024-07-09",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15412",
+              "reportingDate": "2024-07-10",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15413",
+              "reportingDate": "2024-07-11",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15414",
+              "reportingDate": "2024-07-12",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15415",
+              "reportingDate": "2024-07-13",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15416",
+              "reportingDate": "2024-07-14",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15417",
+              "reportingDate": "2024-07-15",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15418",
+              "reportingDate": "2024-07-16",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15419",
+              "reportingDate": "2024-07-17",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15420",
+              "reportingDate": "2024-07-18",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15421",
+              "reportingDate": "2024-07-19",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15422",
+              "reportingDate": "2024-07-20",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15423",
+              "reportingDate": "2024-07-21",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15424",
+              "reportingDate": "2024-07-22",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15425",
+              "reportingDate": "2024-07-23",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15426",
+              "reportingDate": "2024-07-24",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15427",
+              "reportingDate": "2024-07-25",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15428",
+              "reportingDate": "2024-07-26",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15429",
+              "reportingDate": "2024-07-27",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15430",
+              "reportingDate": "2024-07-28",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15431",
+              "reportingDate": "2024-07-29",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15432",
+              "reportingDate": "2024-07-30",
+              "attendanceDayStatus": "Nurse On Site"
+            },
+            {
+              "id": "SD-240708-15433",
+              "reportingDate": "2024-07-31",
+              "attendanceDayStatus": "Nurse On Site"
+            }
+          ],
+          "transferOption": true,
+          "transferHealthFacilityType": "Other",
+          "transferHealthFacilityOther": "Arrangement with alt Provider co-located in shared Facility",
+          "vacancyOpenDuration": "Not applicable",
+          "activelyRecruiting": false,
+          "vacancyFilled": false
+        }
+      }   
+    },
+    "responses": {
+      "400": {
+        "$ref": "/responses/common-error-responses.json#/400-bad-request"
+      },
+      "401": {
+        "$ref": "/responses/common-error-responses.json#/401-unauthorised"
+      },
+      "403": {
+        "$ref": "/responses/common-error-responses.json#/403-forbidden"
+      },
+      "404": {
+        "$ref": "/responses/common-error-responses.json#/404-not-found"
+      },
+      "405": {
+        "$ref": "/responses/common-error-responses.json#/405-not-supported"
+      },
+      "406": {
+        "$ref": "/responses/common-error-responses.json#/406-not-acceptable"
+      },
+      "409": {
+        "$ref": "/responses/common-error-responses.json#/409-conflict"
+      },
+      "415": {
+        "$ref": "/responses/common-error-responses.json#/415-media-not-supported"
+      },
+      "429":
+      {
+        "$ref": "/responses/common-error-responses.json#/429-too-many-request"
+      },
+      "500": {
+        "$ref": "/responses/common-error-responses.json#/500-server-error"
+      },
+      "501": {
+        "$ref": "/responses/common-error-responses.json#/501-not-implemented"
+      },
+      "502": {
+        "$ref": "/responses/common-error-responses.json#/502-bad-gateway"
+      },
+      "503": {
+        "$ref": "/responses/common-error-responses.json#/503-service-unavailable"
+      },
+      "504": {
+        "$ref": "/responses/common-error-responses.json#/504-timeout"
+      }
+    }
+  }
+}

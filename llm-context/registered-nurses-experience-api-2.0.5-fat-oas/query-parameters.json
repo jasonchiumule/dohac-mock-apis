@@ -1,0 +1,75 @@
+{
+  "organization": {
+    "name": "organization",
+    "description": "Provider Id",
+    "required": false,
+    "in": "query",
+    "schema": {
+      "description": "Provider Id",
+      "example": "PRV-1122",
+      "type": "string",
+      "pattern": "^PRV-\\d+$"
+    }
+  },
+  "service": {
+    "name": "service",
+    "description": "Service Id",
+    "required": false,
+    "in": "query",
+    "schema": {
+      "description": "Service Id",
+      "example": "SRV-1111",
+      "type": "string",
+      "pattern": "^SRV-\\d+$"
+    }
+  },
+  "summary": {
+    "name": "summary",
+    "description": "Attendance Summary",
+    "required": false,
+    "in": "query",
+    "schema": {
+      "description": "Attendance Summary",
+      "example": "false",
+      "type": "string",
+      "pattern": "^(true|false)$"
+    }
+  },
+  "reporting-period": {
+    "name": "reporting-period",
+    "description": "Attendance Reporting Period",
+    "required": false,
+    "in": "query",
+    "schema": {
+      "description": "Attendance Reporting Period",
+      "type": "string",
+      "example": "2023-09",
+      "pattern": "^(19|20)\\d{2}\\-(0[1-9]|1[012])$"
+    }
+  },
+  "_count": {
+    "name": "_count",
+    "description": "Number of records per page",
+    "required": false,
+    "in": "query",
+    "schema": {
+      "description": "Number of records per page",
+      "example": 50,
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 80
+    }
+  },
+  "page": {
+    "name": "page",
+    "description": "Page number",
+    "required": false,
+    "in": "query",
+    "schema": {
+      "description": "Page number",
+      "example": 1,
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

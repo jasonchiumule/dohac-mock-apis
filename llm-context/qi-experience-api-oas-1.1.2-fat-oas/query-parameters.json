@@ -1,0 +1,57 @@
+{
+  "organization": {
+    "name": "organization",
+    "description": "Organization",
+    "required": false,
+    "in": "query",
+    "schema": {
+      "description": "Organization",
+      "type": "string",
+      "pattern": "^PRV-\\d+$"
+    }
+  },
+  "subject": {
+    "name": "subject",
+    "description": "Subject",
+    "required": false,
+    "in": "query",
+    "schema": {
+      "description": "Subject",
+      "pattern": "^SRV-\\d+$",
+      "type": "string"
+    }
+  },
+  "required-subject": {
+    "name": "subject",
+    "description": "Subject",
+    "required": true,
+    "in": "query",
+    "schema": {
+      "description": "Subject",
+      "pattern": "^SRV-\\d+$",
+      "type": "string"
+    }
+  },
+  "reporting-start": {
+    "name": "reporting-start",
+    "description": "Reporting Start Period",
+    "required": false,
+    "in": "query",
+    "schema": {
+      "description": "Reporting Start Period",
+      "pattern": "^(19|20)\\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",
+      "type": "string"
+    }
+  },
+  "reporting-end": {
+    "name": "reporting-end",
+    "description": "Reporting End Period",
+    "required": false,
+    "in": "query",
+    "schema": {
+      "description": "Reporting End Period",
+      "pattern": "^(19|20)\\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",
+      "type": "string"
+    }
+  }
+}

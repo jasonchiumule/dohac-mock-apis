@@ -1,0 +1,15 @@
+{
+  "id": {
+  "name": "id",
+  "description": "The Registration ID of the consumer",
+  "required": true,
+  "in": "path",
+  "schema": {
+    "description": "The Registration ID of the consumer",
+    "example": "c64484a9-6cb3-4ad0-b9bd-5563567175de",
+    "type": "string",
+    "pattern": "^.*$"
+  }
+}
+}
+

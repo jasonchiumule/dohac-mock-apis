@@ -1,0 +1,14 @@
+{
+  "transaction-id": {
+    "name": "transaction_id",
+    "description": "The Transaction ID of the consumer",
+    "required": false,
+    "in": "header",
+    "schema": {
+      "description": "The Transaction ID of the consumer",
+      "example": "86032cbe-a804-4c3b-86ce-ec3041e3effc",
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9\\-\\_]*$"
+    }
+  }
+}

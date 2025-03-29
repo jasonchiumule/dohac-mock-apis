@@ -1,0 +1,367 @@
+{
+  "400-bad-request": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "400-bad-request-example": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "invalid",
+                  "details": {
+                    "text": "Bad request"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "401-unauthorised": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "401-unauthorised-example": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "security",
+                  "details": {
+                    "text": "Unauthorised. Incoming request is not authorized"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "403-forbidden": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "403-forbidden-example": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "forbidden",
+                  "details": {
+                    "text": "User is forbidden to perform this action"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "404-not-found": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "404-not-found-example": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "not-found",
+                  "details": {
+                    "text": "Requested resource not found"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "405-not-supported": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "405-not-supported-example": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "not-supported",
+                  "details": {
+                    "text": "Requested method is not supported by this resource"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "406-not-acceptable": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "406-not-acceptable-example": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "not-supported",
+                  "details": {
+                    "text": "Not acceptable. Data supplied in the Accept header is not supported by this resource"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "409-conflict": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "409-conflict": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "conflict",
+                  "details": {
+                    "text": "Request cannot be processed due to a conflict in the requested data"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "415-media-not-supported": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "415-media-not-supported-example": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "not-supported",
+                  "details": {
+                    "text": "Media type of the incoming request is not supported by this resource"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "429-too-many-request": {
+  "description": "Too Many Request",
+  "content": {
+    "application/json": {
+      "schema": {
+        "$ref": "#/components/schemas/ResponseType"
+      },
+      "examples": {
+        "400-bad-request-example": {
+          "value": {
+            "resourceType": "OperationOutcome",
+            "issue": [
+              {
+                "severity": "ERROR",
+                "code": "invalid",
+                "details": {
+                  "text": "Too Many Requests"
+                }
+                
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+},  
+  "500-server-error": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "500-server-error-example": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "exception",
+                  "details": {
+                    "text": "Internal Server Error. The Service you are trying to access is not available at the moment, please try after sometime"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "501-not-implemented": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "501-not-implemented-example": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "not-implemented",
+                  "details": {
+                    "text": "The resource you are trying to access is not implemented"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "502-bad-gateway": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "502-bad-gateway-example": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "transient",
+                  "details": {
+                    "text": "Bad Gateway. The Server is unable to process your request at the moment, please try after sometime"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "503-service-unavailable": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "503-service-unavailable-example": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "transient",
+                  "details": {
+                    "text": "Service Unavailable. The Service you are trying to access is not available at the moment, please try after sometime"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "504-timeout": {
+    "description": "",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResponseType"
+        },
+        "examples": {
+          "504-timeout-example": {
+            "value": {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "ERROR",
+                  "code": "timeout",
+                  "details": {
+                    "text": "Gateway timeout. The server processing your request is unable to respond within the stipulated timeframe"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "attendance-id": {
+    "name": "id",
+    "description": "Nurse Attendance Id",
+    "required": true,
+    "in": "path",
+    "schema": {
+    "description": "Nurse Attendance Id",
+    "type": "string",      
+    "pattern": "Sub-\\d+-\\d+$"  
+    }
+}
+}
+

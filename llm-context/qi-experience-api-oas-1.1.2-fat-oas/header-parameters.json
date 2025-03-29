@@ -1,0 +1,51 @@
+{
+  "authorization": {
+    "name": "authorization",
+    "description": "Bearer {JWT Token}",
+    "required": true,
+    "in": "header",
+    "schema": {
+      "description": "Bearer {JWT Token}",
+      "example": "Bearer rzYfAAUCas_9LNMP1jsmesfrmUxw31Q8CkniJ0v2cbcCzcIr-fU0WoR0lZ315LO2qWiTNA39mPU-2uqdGfo-hg",
+      "type": "string",
+      "pattern": "Bearer\\s[A-Za-z0-9-_]*.[A-Za-z0-9-_]*.[A-Za-z0-9-_]*"
+    }
+  },
+  "transaction_id": {
+    "name": "transaction_id",
+    "description": "The Transaction ID of the consumer",
+    "required": false,
+    "in": "header",
+    "schema": {
+      "description": "The Transaction ID of the consumer",
+      "example": "86032cbe-a804-4c3b-86ce-ec3041e3effc",
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9\\-\\_]*$"
+    }
+  },
+  "X-Federated-Id": {
+    "name": "X-Federated-Id",
+    "description": "TBC",
+    "required": false,
+    "in": "header",
+    "schema": {
+      "description": "TBC",
+      "example": "example@example.com",
+      "type": "string",
+      "pattern": "^\S+@\S+\.\S+$"
+    }
+  },
+  "X-User-Email": {
+    "name": "X-User-Email",
+    "description": "TBC",
+    "required": false,
+    "in": "header",
+    "schema": {
+      "description": "TBC",
+      "example": "example@example.com",
+      "type": "string",
+      "pattern": "^\S+@\S+\.\S+$"
+    }
+  }
+
+}

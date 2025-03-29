@@ -1,0 +1,926 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.10",
+    "title": "Provider Healthcare Service Experience API",
+    "description": "Provider Healthcare Service Experience API"
+  },
+  "security":[
+  	{
+  		"jwt-enforcement": []
+  	}
+  	
+  ],
+   "paths": {
+    "/Provider": {
+      "get": {
+        "description": "Find providers affiliated with my organisation",
+        "parameters": [          
+          { "$ref": "#/components/parameters/transaction_id"}
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProviderType"
+                    }
+                  },
+                  "examples":{
+                    "get-providers": {
+                      "$ref" :  "#/components/examples/get-providers-example"
+                    }
+                  }
+                }
+              }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"},
+          "401": {
+            "$ref": "#/components/responses/401"},
+          "403": {
+            "$ref": "#/components/responses/403"},
+          "404": {
+            "$ref": "#/components/responses/404"},
+          "405": {
+            "$ref": "#/components/responses/405"},
+          "406": {
+            "$ref": "#/components/responses/406"},
+          "409": {
+            "$ref": "#/components/responses/409"},
+          "415": {
+            "$ref": "#/components/responses/415"},
+          "429": {
+            "$ref": "#/components/responses/429"}, 
+          "500": {
+            "$ref": "#/components/responses/500"},
+          "501": {
+            "$ref": "#/components/responses/501"},
+          "502": {
+            "$ref": "#/components/responses/502"},
+          "503": {
+            "$ref": "#/components/responses/503"},
+          "504": {
+            "$ref": "#/components/responses/504"}
+        }
+      }
+    },
+    "/Provider/{id}": {
+      "get": {
+        "description": "Find a provider utilising a specific provider ID",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Provider Id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "description": "Provider Id",
+              "type": "string",
+              "pattern": "^PRV-\\d+$"
+            }
+          },         
+          
+          { "$ref": "#/components/parameters/transaction_id"}
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProviderType"
+                    }
+                  },
+                "examples":{
+                    "get-providers": {
+                      "$ref" :  "#/components/examples/get-providers-example"
+                    }
+                  }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"},
+          "401": {
+            "$ref": "#/components/responses/401"},
+          "403": {
+            "$ref": "#/components/responses/403"},
+          "404": {
+            "$ref": "#/components/responses/404"},
+          "405": {
+            "$ref": "#/components/responses/405"},
+          "406": {
+            "$ref": "#/components/responses/406"},
+          "409": {
+            "$ref": "#/components/responses/409"},
+          "415": {
+            "$ref": "#/components/responses/415"},
+          "429": {
+            "$ref": "#/components/responses/429"}, 
+          "500": {
+            "$ref": "#/components/responses/500"},
+          "501": {
+            "$ref": "#/components/responses/501"},
+          "502": {
+            "$ref": "#/components/responses/502"},
+          "503": {
+            "$ref": "#/components/responses/503"},
+          "504": {
+            "$ref": "#/components/responses/504"}
+        }
+      }
+    },
+    "/HealthcareService": {
+      "get": {
+        "description": "Find Healthcare services",
+        "parameters": [          
+          { "$ref": "#/components/parameters/transaction_id"},
+          { "$ref": "#/components/parameters/requiredOrganizationId"}
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HealthcareServiceType"
+                  }
+                },
+                "examples":{
+                    "get-healthcare-services": {
+                      "$ref" :  "#/components/examples/get-healthcare-services"
+                    }
+                  }
+              }
+            }
+          },
+         "400": {
+            "$ref": "#/components/responses/400"},
+          "401": {
+            "$ref": "#/components/responses/401"},
+          "403": {
+            "$ref": "#/components/responses/403"},
+          "404": {
+            "$ref": "#/components/responses/404"},
+          "405": {
+            "$ref": "#/components/responses/405"},
+          "406": {
+            "$ref": "#/components/responses/406"},
+          "409": {
+            "$ref": "#/components/responses/409"},
+          "415": {
+            "$ref": "#/components/responses/415"},
+          "429": {
+            "$ref": "#/components/responses/429"}, 
+          "500": {
+            "$ref": "#/components/responses/500"},
+          "501": {
+            "$ref": "#/components/responses/501"},
+          "502": {
+            "$ref": "#/components/responses/502"},
+          "503": {
+            "$ref": "#/components/responses/503"},
+          "504": {
+            "$ref": "#/components/responses/504"}
+        }
+      }
+    },
+    "/HealthcareService/{id}": {
+      "get": {
+        "description": "Find Healthcare service details utilising a specific service ID",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Service Id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "description": "Service Id",
+              "type": "string",
+              "pattern": "^SRV-\\d+$"
+            }
+          },         
+          { "$ref": "#/components/parameters/transaction_id"},
+          { "$ref": "#/components/parameters/organizationId"}
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HealthcareServiceType"
+                  }
+                },
+                "examples":{
+                    "get-questionnaires": {
+                      "$ref" :  "#/components/examples/get-healthcare-service"
+                    }
+                  }
+              }
+            }
+          },
+         "400": {
+            "$ref": "#/components/responses/400"},
+          "401": {
+            "$ref": "#/components/responses/401"},
+          "403": {
+            "$ref": "#/components/responses/403"},
+          "404": {
+            "$ref": "#/components/responses/404"},
+          "405": {
+            "$ref": "#/components/responses/405"},
+          "406": {
+            "$ref": "#/components/responses/406"},
+          "409": {
+            "$ref": "#/components/responses/409"},
+          "415": {
+            "$ref": "#/components/responses/415"},
+          "429": {
+            "$ref": "#/components/responses/429"}, 
+          "500": {
+            "$ref": "#/components/responses/500"},
+          "501": {
+            "$ref": "#/components/responses/501"},
+          "502": {
+            "$ref": "#/components/responses/502"},
+          "503": {
+            "$ref": "#/components/responses/503"},
+          "504": {
+            "$ref": "#/components/responses/504"}
+        }
+      }
+    }
+  },
+  "components": {
+   "parameters": {
+        
+        "transaction_id": {
+           "$ref": "/parameters/header-parameters.json#/transaction_id"
+        },
+        "providerId": {
+          "$ref": "/parameters/uri-parameters.json#/providerId"
+        },
+        "serviceId": {
+          "$ref": "/parameters/uri-parameters.json#/serviceId"
+        },
+        "requiredOrganizationId": {
+          "$ref": "/parameters/query-parameters.json#/requiredOrganizationId"
+        },
+        "organizationId": {
+          "$ref": "/parameters/query-parameters.json#/organizationId"
+        }
+      },
+      "x-amf-securitySchemes": {
+        "jwt-enforcement": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"      
+      }
+    },
+    "schemas": {
+      "ProviderType": {
+        "type": "object",
+        "required": [
+          "resourceType"
+        ],
+        "properties": {
+          "resourceType": {
+            "description": "The type indicates what information the resource payload relates to.",
+            "x-signature": "LhQGGsajwq",
+            "type": "string"
+          },
+          "id": {
+            "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+            "x-signature": "lBqVAuvGtD",
+            "type": "string"
+          },
+          "identifier": {
+            "description": "A unique external business identifier for the Provider. Supported Systems:  official = 'Integration ID' - This is the GPMS identifier for the Provider.",
+            "x-signature": "PKRX+Z8Gds",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentifierType"
+            }
+          },
+          "name": {
+            "description": "A name associated with the Provider",
+            "x-signature": "WFVbScAbIJ",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrganisationNameDetailsType"
+            }
+          },
+          "organisationType": {
+            "description": "The classification of the Organisation, defining if it is for financial profit or gain of its owners, members or shareholders. Permissible Values: Private Incorporated Body; Publicly Listed Company; Charitable; Community Based; Religious; Religious/Charitable; Local Government; State Government; Territory Government; Private Non-Incorporated Entity; Unknown; Funding approved but suspended",
+            "x-signature": "Eg1YhGoaZ9",
+            "type": "string"
+          },
+          "organisationPurpose": {
+            "description": "The purpose of the organisation. Permissible values: Government;   Private for Profit;   Not for Profit;   Unknown",
+            "x-signature": "CReZDoWbB+",
+            "type": "string"
+          },
+          "location": {
+            "description": "Proposed Future Field: This will be the address of the Provider",
+            "x-signature": "PQE/jOk8N0",
+            "type": "string"
+          },
+          "createdDate": {
+            "description": "The date the organisation was first approved/registered to become an aged care provider",
+            "x-signature": "QNA6i7nQBE",
+            "type": "string",
+            "pattern": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
+          }
+        }
+      },
+      "ResponseType": {
+        "$ref": "#/components/schemas/OperationOutcome"
+      },
+      "OperationOutcome": {
+        "type": "object",
+        "required": [
+          "resourceType",
+          "issue"
+        ],
+        "properties": {
+          "resourceType": {
+            "description": "Indicates this is a domain resource of type 'OperationOutcome'",
+            "x-signature": "LhQGGsajwq",
+            "type": "string"
+          },
+          "issue": {
+            "description": "A single issue associated with the action",
+            "x-signature": "IiWj/k08sV",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IssueType"
+            }
+          }
+        }
+      },
+      "HealthcareServiceType": {
+        "type": "object",
+        "required": [
+          "resourceType"
+        ],
+        "properties": {
+          "resourceType": {
+            "description": "The type indicates what information the resource payload relates to.",
+            "x-signature": "LhQGGsajwq",
+            "type": "string"
+          },
+          "id": {
+            "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+            "x-signature": "lBqVAuvGtD",
+            "type": "string"
+          },
+          "identifier": {
+            "description": "A unique external business identifier for the Service.  Supported Systems: official = 'Integration ID' - This is the GPMS identifier for the Service  | usual = AU Residential Aged Care Service Identifier - This is the residential aged care service identifier (RACS ID).",
+            "x-signature": "PKRX+Z8Gds",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentifierType"
+            }
+          },
+          "active": {
+            "description": "Whether this HealthcareService record is in active use",
+            "x-signature": "eQJqtKjokr",
+            "type": "boolean"
+          },
+          "status": {
+            "description": "The assigned status of the Service. (Extension) | Permissible Values:   Closed,   Closed - Combined,   Service Record Closed,   Inactive,   Offline,   Opened,   Operational,   Pre-Operational,   Offline - Temporary closure of facility,   Offline - Permanent closure of facility",
+            "x-signature": "UNmrZnouKe",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "providedBy": {
+            "description": "Provider that provides this service",
+            "x-signature": "UDK3jylKBi",
+            "type": "object",
+            "properties": {
+              "reference": {
+                "description": "Literal reference, Relative, internal or absolute URL",
+                "x-signature": "NW1dhipDLe",
+                "type": "string"
+              },
+              "identifier": {
+                "description": "Logical reference, when literal reference is not known",
+                "x-signature": "PKRX+Z8Gds",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/IdentifierType"
+                }
+              },
+              "display": {
+                "description": "Text alternative for the resource",
+                "x-signature": "AhgXLN9og1",
+                "type": "string"
+              },
+              "type": {
+                "description": "Type the reference refers to (e.g. 'Patient')",
+                "x-signature": "REtYpULEaj",
+                "type": "string",
+                "pattern": "^\\S*$"
+              }
+            }
+          },
+          "type": {
+             "description": "The type of care provided by the service",
+            "x-signature": "YttyaWTa8f",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CodeableConceptType"
+            }
+          },
+          "name": {
+            "description": "Name of the Service",
+            "x-signature": "JpPa//8K9f",
+            "type": "string"
+          },
+          "specialty": {
+            "description": "The sub type of care provided by the Service",
+            "x-signature": "lsXFB7ZlC6",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CodeableConceptType"
+            }
+          },
+          "location": {
+            "description": "Proposed Future Field: This will be the physical address of the Service",
+            "x-signature": "PQE/jOk8N0",
+            "type": "string"
+          },
+          "coverageArea": {
+            "description": "Proposed Future Field: The area services are made available to within the Community.",
+            "x-signature": "LPQwIWYIp3",
+            "type": "string"
+          }
+        }
+      },
+      "IdentifierType": {
+        "type": "object",
+        "properties": {
+          "use": {
+            "description": "usual | official | temp | secondary | old (If known)",
+            "x-signature": "lI9Cwk0nYZ",
+            "type": "string"
+          },
+          "type": {
+            "description": "Description of identifier",
+            "x-signature": "izphBn8kou",
+            "type": "string"
+          },
+          "system": {
+            "description": "The namespace for the identifier value",
+            "x-signature": "BY4PnjO9Vu",
+            "type": "string",
+            "pattern": "^\\S*$"
+          },
+          "value": {
+            "description": "The value that is unique",
+            "x-signature": "jJWDYuvJc7",
+            "type": "string"
+          },
+          "period": {
+            "description": "Time period when id is/was valid for use",
+            "x-signature": "V/gwMvTFL2",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PeriodType"
+            }
+          }
+        }
+      },
+      "OrganisationNameDetailsType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Organisation Name Details Identifier assigned by the Department. This Id uniquely identifies the organisation name.",
+            "x-signature": "lBqVAuvGtD",
+            "type": "string"
+          },
+          "organisationName": {
+            "description": "The full name of the organisation by which it trades or is recognised under",
+            "x-signature": "ZoQ9mcBe97",
+            "type": "string"
+          },
+          "organisationNameTypeCode": {
+           "description": "A code that represents the type of organisation name. Please refer to AS4590:2017 for further information | Permissable Values: MN - Main name (ABN registered name) | MTR - Main trading name (common name as known by customers and suppliers) | OTR - Other trading name | OTH - Other name | MAU - Management accounting unit | LGL - Legal organisation name | UNK - Unknown",
+            "x-signature": "azh3Rehzi7",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "organisationNameStartDate": {
+            "description": "This date should align to the date the name came into effect for your organisation.",
+            "x-signature": "RXprwImyJj",
+            "type": "string",
+            "pattern": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
+          },
+          "organisationNameEndDate": {
+            "description": "The date the use of the name ceased by your organisation.",
+            "x-signature": "G5O8RIzGGN",
+            "type": "string",
+            "pattern": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
+          }
+        }
+      },
+      "IssueType": {
+        "type": "object",
+        "required": [
+          "severity",
+          "code"
+        ],
+        "properties": {
+          "severity": {
+            "description": "Indicates whether the issue indicates a variation from successful processing. fatal | error | warning | information | success | bounded to https://www.hl7.org/fhir/valueset-issue-severity.html (required)",
+            "x-signature": "Lv+bcLSxDt",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "code": {
+            "description": "Describes the type of the issue. The system that creates an OperationOutcome SHALL choose the most applicable code from the IssueType value set, and may additional provide its own code for the error in the details element.",
+            "x-signature": "BjZAF3EqCL",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "details": {
+           "description": "Describes the type of the issue. The system that creates an OperationOutcome SHALL choose the most applicable code from the IssueType value set, and may additional provide its own code for the error in the details element. Binding: https://www.hl7.org/fhir/valueset-operation-outcome.html (example)",
+            "x-signature": "fcjVcKcWVw",
+            "type": "object",
+            "properties": {
+              "coding": {
+                "description": "Code defined by a terminology system",
+                "x-signature": "I+esH1JKTE",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CodeableConceptType"
+                }
+              },
+              "text": {
+                "description": "Plain text representation of the concept",
+                "x-signature": "Ic/60UScHT",
+                "type": "string"
+              }
+            }
+          },
+          "diagnostics": {
+            "description": "Additional diagnostic information about the issue.",
+            "x-signature": "FUFBzjdCDX",
+            "type": "string"
+          },
+          "expression": {
+             "description": "A simple subset of FHIRPath limited to element names, repetition indicators and the default child accessor that identifies one of the elements in the resource that caused this issue to be raised.",
+            "x-signature": "hevbFgLdum",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CodeableConceptType": {
+        "type": "object",
+        "properties": {
+          "coding": {
+            "description": "Code defined by a terminology system",
+            "x-signature": "I+esH1JKTE",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CodingType"
+            }
+          },
+          "text": {
+            "description": "Plain text representation of the concept",
+            "x-signature": "Ic/60UScHT",
+            "type": "string"
+          }
+        }
+      },
+      "ReferenceType": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "description": "Literal reference, Relative, internal or absolute URL",
+            "x-signature": "NW1dhipDLe",
+            "type": "string"
+          },
+          "type": {
+            "description": "Type the reference refers to (e.g. 'Patient')",
+            "x-signature": "REtYpULEaj",
+            "type": "string",
+            "pattern": "^\\S*$"
+          },
+          "identifier": {
+            "description": "Logical reference, when literal reference is not known",
+            "x-signature": "PKRX+Z8Gds",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentifierType"
+            }
+          },
+          "display": {
+            "description": "Text alternative for the resource",
+            "x-signature": "AhgXLN9og1",
+            "type": "string"
+          }
+        }
+      },
+      "PeriodType": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "description": "The start of the period. The boundary is inclusive. ISO8601: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss:sss",
+            "x-signature": "eEXt1Jsfnv",
+            "type": "string",
+            "pattern": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+          },
+          "end": {
+            "description": "The start of the period. The boundary is inclusive. ISO8601: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss:sss",
+            "x-signature": "H+tfQxzpD2",
+            "type": "string",
+            "pattern": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+          }
+        }
+      },
+      "CodingType": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "description": "Identity of the terminology system",
+            "x-signature": "BY4PnjO9Vu",
+            "type": "string",
+            "pattern": "^\\S*$"
+          },
+          "version": {
+            "description": "Version of the system - if relevant",
+            "x-signature": "eNwr/ek7bR",
+            "type": "string"
+          },
+          "code": {
+            "description": "Symbol in syntax defined by the system",
+            "x-signature": "hLfd/Bh0tD",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "display": {
+            "description": "Representation defined by the system",
+            "x-signature": "AhgXLN9og1",
+            "type": "string"
+          },
+          "userSelected": {
+            "description": "If this coding was chosen directly by the user",
+            "x-signature": "bFxVo9fV2x",
+            "type": "boolean"
+          }
+        }
+     }
+    },
+    "examples":
+      {
+       "get-provider-example":
+        {
+          "value": {
+              "resourceType": "Provider",
+              "id": "1111",
+              "identifier": [
+                {
+                  "use": "official",
+                  "system": "IntegrationID",
+                  "value": "PRV-1111"
+                },
+                {
+                  "use": "secondary",
+                  "system": "http://hl7.org.au/id/abn",
+                  "value": "19100123456"
+                },
+                {
+                  "use": "secondary",
+                  "system": "http://hl7.org.au/id/acn",
+                  "value": "100712345"
+                }
+              ],
+              "name": [
+                {
+                  "organisationName": "Hello World Aged Care Provider",
+                  "organisationNameTypeCode": "MTR",
+                  "organisationNameStartDate": "2005-05-31",
+                  "organisationNameEndDate": "2025"
+                },
+                {
+                  "organisationName": "HELLO WORLD AGED CARE PROVIDER PTY LTD",
+                  "organisationNameTypeCode": "MN"
+                }
+              ],
+              "organisationType": "Private Incorporated Body",
+              "organisationPurpose": "For profit"
+          }
+        },
+      "get-providers-example":
+        {
+           "value": 
+            [{
+              "resourceType": "Provider",
+              "id": "1111",
+              "identifier": [
+                {
+                  "use": "official",
+                  "system": "IntegrationID",
+                  "value": "PRV-1111"
+                },
+                {
+                  "use": "secondary",
+                  "system": "http://hl7.org.au/id/abn",
+                  "value": "19100123456"
+                },
+                {
+                  "use": "secondary",
+                  "system": "http://hl7.org.au/id/acn",
+                  "value": "100712345"
+                }
+              ],
+              "name": [
+                {
+                  "organisationName": "Hello World Aged Care Provider",
+                  "organisationNameTypeCode": "MTR",
+                  "organisationNameStartDate": "2005-05-31",
+                  "organisationNameEndDate": "2025"
+                },
+                {
+                  "organisationName": "HELLO WORLD AGED CARE PROVIDER PTY LTD",
+                  "organisationNameTypeCode": "MN"
+                }
+              ],
+              "organisationType": "Private Incorporated Body",
+              "organisationPurpose": "For profit"
+            }]
+        },
+      "get-healthcare-service":
+        {
+          "value": 
+            [
+              {
+                "resourceType": "HealthcareService",
+                "id": "1234",
+                "identifier": [
+                  {
+                    "use": "official",
+                    "system": "IntegrationID",
+                    "value": "SRV-1234"
+                  },
+                  {
+                    "use": "usual",
+                    "system": "http://hl7.org.au/fhir/StructureDefinition/au-residentialagedcareserviceidentifier",
+                    "value": "0009"
+                  }
+                ],
+                "active": true,
+                "status": "Operational",
+                "providedBy": {
+                  "reference": "https://api.health.gov.au/providers/v1/Provider/PRV-1111",
+                  "type": "Provider"
+                },
+                "type": [
+                  {
+                    "coding": [
+                      {
+                        "system": "https://health.gov.au/api/CodeSystems/CareServiceType"
+                      }
+                    ],
+                    "text": "Home Care"
+                  }
+                ],
+                "name": "Hello World Aged Care Service",
+                "specialty": [
+                  {
+                    "coding": [
+                      {
+                        "system": "https://health.gov.au/api/CodeSystems/ApprovalCareType"
+                      }
+                    ],
+                    "text": "Home Care"
+                  }
+                ]
+              }
+            ]
+        },
+        "get-healthcare-services":
+          {
+            "value": [{
+                "resourceType": "HealthcareService",
+                "id": "1234",
+                "identifier": [
+                  {
+                    "use": "official",
+                    "system": "IntegrationID",
+                    "value": "SRV-1234"
+                  },
+                  {
+                    "use": "usual",
+                    "system": "http://hl7.org.au/fhir/StructureDefinition/au-residentialagedcareserviceidentifier",
+                    "value": "0009"
+                  }
+                ],
+                "active": true,
+                "status": "Operational",
+                "providedBy": {
+                  "reference": "https://api.health.gov.au/providers/v1/Provider/PRV-1111",
+                  "type": "Provider"
+                },
+                "type": [
+                  {
+                    "coding": [
+                      {
+                        "system": "https://health.gov.au/api/CodeSystems/CareServiceType"
+                      }
+                    ],
+                    "text": "Home Care"
+                  }
+                ],
+                "name": "Hello World Aged Care Service",
+                "specialty": [
+                  {
+                    "coding": [
+                      {
+                        "system": "https://health.gov.au/api/CodeSystems/ApprovalCareType"
+                      }
+                    ],
+                    "text": "Home Care"
+                  }
+                ]
+              }
+             
+        ]
+      }
+    },
+    "responses":
+    {
+      "400":
+      {
+        "$ref": "/responses/common-error-responses.json#/400-bad-request"
+      },
+       "401":
+      {
+        "$ref": "/responses/common-error-responses.json#/401-unauthorised"
+      },
+      "403":
+      {
+        "$ref": "/responses/common-error-responses.json#/403-forbidden"
+      },
+      "404":
+      {
+        "$ref": "/responses/common-error-responses.json#/404-not-found"
+      },
+      "405":
+      {
+        "$ref": "/responses/common-error-responses.json#/405-not-supported"
+      },
+      "406":
+      {
+        "$ref": "/responses/common-error-responses.json#/406-not-acceptable"
+      },
+      "409":
+      {
+        "$ref": "/responses/common-error-responses.json#/409-conflict"
+      },
+      "415":
+      {
+        "$ref": "/responses/common-error-responses.json#/415-media-not-supported"
+      },
+      "429":
+      {
+        "$ref": "/responses/common-error-responses.json#/429-too-many-request"
+      },
+      "500":
+      {
+        "$ref": "/responses/common-error-responses.json#/500-server-error"
+      },
+       "501":
+      {
+        "$ref": "/responses/common-error-responses.json#/501-not-implemented"
+      },
+       "502":
+      {
+        "$ref": "/responses/common-error-responses.json#/502-bad-gateway"
+      },
+       "503":
+      {
+        "$ref": "/responses/common-error-responses.json#/503-service-unavailable"
+      },
+       "504":
+      {
+        "$ref": "/responses/common-error-responses.json#/504-timeout"
+      }
+    }
+  }
+}

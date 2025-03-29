@@ -1,0 +1,24 @@
+{
+  "providerId": {
+    "name": "id",
+    "description": "Provider Id",
+    "required": true,
+    "in": "path",
+    "schema": {
+      "description": "Provider Id",
+      "type": "string",
+      "pattern": "^PRV-\\d+$"
+    }
+  },
+  "serviceId": {
+    "name": "id",
+    "description": "Service Id",
+    "required": true,
+    "in": "path",
+    "schema": {
+      "description": "Service Id",
+      "type": "string",
+      "pattern": "^HCS-\\d+$"
+    }
+  }
+}

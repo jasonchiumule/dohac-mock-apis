@@ -1,0 +1,126 @@
+{
+  "400-bad-request": {
+    "description": "Bad Request",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/error-response-datatype"
+        },        
+        "examples": {
+          "400-bad-request-example": {
+            "value": {
+              "_meta": {
+                "transaction_metadata": {
+                  "transaction_id": "86032cbe-a804-4c3b-86ce-ec3041e3effc",
+                  "correlation_id": "43032cbe-a822-4c3b-43ce-ec3043e3effc",
+                  "timestamp": "2022-05-29T13:32:10.64-07:00"
+                }
+              },
+              "errors": [
+                {
+                  "code": "400",
+                  "message": "HTTP:BAD REQUEST",
+                  "severity": "ERROR",
+                  "detail": "Invalid value(s) in request input (HTTP 400)."
+                }
+              ]
+            }            
+        }
+      }
+    }
+    }
+  },
+  "401-unauthorised": {
+    "description": "Unauthorised",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/error-response-datatype"
+        },        
+        "examples": {
+          "400-unauthorised-example": {
+            "value": {
+              "_meta": {
+                "transaction_metadata": {
+                  "transaction_id": "86032cbe-a804-4c3b-86ce-ec3041e3effc",
+                  "correlation_id": "43032cbe-a822-4c3b-43ce-ec3043e3effc",
+                  "timestamp": "2022-05-29T13:32:10.64-07:00"
+                }
+              },
+              "errors": [
+                {
+                  "code": "401",
+                  "message": "HTTP:UNAUTHORISED",
+                  "severity": "ERROR",
+                  "detail": "Unauthorised. Incoming request is not authorized"
+                }
+              ]
+            }            
+        }
+      }
+    }
+    }
+  },  
+  "429-too-many-request": {
+    "description": "Too Many Requests",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/error-response-datatype"
+        },
+         "examples": {
+          "429-too-many-request-example": {
+            "value": {
+              "_meta": {
+                "transaction_metadata": {
+                  "transaction_id": "86032cbe-a804-4c3b-86ce-ec3041e3effc",
+                  "correlation_id": "43032cbe-a822-4c3b-43ce-ec3043e3effc",
+                  "timestamp": "2022-05-29T13:32:10.64-07:00"
+                }
+              },
+              "errors": [
+                {
+                  "code": "429",
+                  "message": "HTTP:TOO MANY REQUESTS",
+                  "severity": "ERROR",
+                  "detail": "Too many requests. Try again later."
+                }
+              ]
+            }            
+        }
+      }
+      }
+    }
+  },
+  "500-server-error": {
+    "description": "Internal Server Error",
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/error-response-datatype"
+        },
+        "examples": {
+          "500-server-error-example": {
+            "value": {
+              "_meta": {
+                "transaction_metadata": {
+                  "transaction_id": "86032cbe-a804-4c3b-86ce-ec3041e3effc",
+                  "correlation_id": "43032cbe-a822-4c3b-43ce-ec3043e3effc",
+                  "timestamp": "2022-05-29T13:32:10.64-07:00"
+                }
+              },
+              "errors": [
+                {
+                  "code": "500",
+                  "message": "HTTP:INTERNAL SERVER ERROR",
+                  "severity": "ERROR",
+                  "detail": "The Service you are trying to access is not available at the moment, please try after sometime"
+                }
+              ]
+            }            
+        }
+      }
+      }
+    }
+  }
+}

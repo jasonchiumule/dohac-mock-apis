@@ -1,0 +1,653 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.34",
+    "title": "Authentication Experience API",
+    "description": "This is an Experience API for External Service Providers to generate JWT tokens, initially for B2G ."
+  },
+
+ "security": [
+   {
+  	 "client-id-auth": [],
+     "client-secret-auth": []
+  }
+ ],
+  
+  "paths": {
+    
+    "/oauth2/access-tokens": {
+      "post": {
+        "description": "This API is used to create OAuth2 Access Tokens records",        
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/post-access-tokens-request-datatype"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/post-access-tokens-response-datatype"
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/400"},
+          "401": { "$ref": "#/components/responses/401"},
+          "429": { "$ref": "#/components/responses/429"},
+          "500": { "$ref": "#/components/responses/500"}
+        }
+      }
+    },
+    "/oauth2/registration": {
+      "post": {
+        "description": "register a client",        
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/post-register-token-request-datatype"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/post-register-token-response-datatype"
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/400"},
+          "401": { "$ref": "#/components/responses/401"},
+          "429": { "$ref": "#/components/responses/429"},
+          "500": { "$ref": "#/components/responses/500"}
+        }
+      }
+    },
+    "/oauth2/registration/{id}":{
+     "parameters": [
+          { "$ref": "#/components/parameters/id"}
+      ],
+      "patch": {
+        "description": "Update a client using Client Id",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/patch-register-token-request-datatype"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/patch-register-token-response-datatype"
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/400"},
+          "401": { "$ref": "#/components/responses/401"},
+          "429": { "$ref": "#/components/responses/429"},
+          "500": { "$ref": "#/components/responses/500"}
+        }
+      },
+      "delete": {
+       "description": "Delete a client using Client Id",      
+        "responses": {
+          "204": {
+            "description": "DELETED"            
+          },
+          "400": { "$ref": "#/components/responses/400"},
+          "401": { "$ref": "#/components/responses/401"},
+          "429": { "$ref": "#/components/responses/429"},
+          "500": { "$ref": "#/components/responses/500"}          
+        }
+      }
+    }
+  },
+  "components": {
+
+  "securitySchemes": {  
+    "client-id-auth": {
+      "type": "apiKey",
+      "name": "client_id",
+      "in": "header"      
+    },
+    "client-secret-auth": {
+      "type": "apiKey",
+      "name": "client_secret",
+      "in": "header"      
+    }    
+  },
+
+  "parameters": {  
+    "id": {
+        "$ref": "/parameters/uri-parameters.json#/id"
+    }
+  }, 
+
+  "responses":
+    {
+      "400":
+      {
+        "$ref": "/responses/common-error-responses.json#/400-bad-request"
+      },
+      "401":
+      {
+        "$ref": "/responses/common-error-responses.json#/401-unauthorised"
+      },      
+      "429":
+      {
+        "$ref": "/responses/common-error-responses.json#/429-too-many-request"
+      },
+      "500":
+      {
+        "$ref": "/responses/common-error-responses.json#/500-server-error"
+      }
+    },
+
+    "schemas": {
+      "post-access-tokens-request-datatype": {
+        "description": "post-token-datatype",
+        "x-amf-examples": {
+          "request-with-secret": {
+            "grant_type": "client_credentials",
+            "client_id": "c88484a9-6cb3-4ad0-b9bd-5563567175ee",
+            "client_secret": "269d98e4922fb3895XXXXXXXXXXX",
+            "scope": "dhac:b2g:all:all ACO:ABN:123"
+          },
+          "request-with-jwt": {
+            "grant_type": "client_credentials",
+            "client_id": "c64484a9-6cb3-4ad0-b9bd-5563567175de",
+            "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+            "client_assertion": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjNjQ0ODRhOS02Y2IzLTRhZDAtYjliZC01NTYzNTY3MTc1ZGUiLCJqdGkiOiI2NjA1ODA3OC1mNDkxLTRiY2QtOWQxZS1hNzdlZjE1YjNiODMiLCJpYXQiOjE3Mzk0OTQ0MzYsImV4cCI6MTczOTQ5NTAzNiwiYXVkIjoiaHR0cHM6Ly9zdnQtaWFtLmhlYWx0aC5nb3YuYXU6NDQzL2FtL29hdXRoMi9yZWFsbXMvcm9vdC9yZWFsbXMvZG9oYWMtYXBpL2FjY2Vzc190b2tlbiIsInN1YiI6ImM2NDQ4NGE5LTZjYjMtNGFkMC1iOWJkLTU1NjM1NjcxNzVkZSJ9.DGRILi-Q8bI9oJL4rbusWU9O1u7rAlfR-pkqjiJFoOJKzBcuPA6bBwzG9ERFLppEFN9frEnqFqa6xNmBSH3AalodacQs9g6l-i2t7KB6xsGxwMGmwzGbPC_n66NY8KxbBDVm9bgkwEVGnUYVO73A-np_2fc6UVKF9_QVgVKmSE1ruAmF9iCor_mgbiNafqCQ1lANxoYSb_V8IQVlNKZ_QqUvfR96vC5ZPWtnuAPPY36P7OyHueEp_SBWFl5VlXYMSaeguw-l9_7vGO6kCiRA2T09N7l_mVK4T-XyznzFTfhQSjzqHKC6wYCrMpXlluU2G2dsd4r4kJZRk6or_R_mxA",
+            "scope": "openid ACO:ABN ACO:ABN:93605597126 Foundational:Organization/HealthcareService:Providers:Read Foundational:Organization/HealthcareService:Quality-Indicators:Write Foundational:Organization/HealthcareService:Quality-Indicators:Read Foundational:Organization:Providers:Read"
+          }
+        },
+        "type": "object",
+        "required": [
+          "client_id",
+          "grant_type"
+        ],
+        "properties": {
+          "client_assertion_type": {
+            "description": "Specifies the type of assertion when the client is authenticating to the authorisation server using JWT Bearer | Permissible Value:  | null | urn:ietf:params:oauth:grant-type:jwt-bearer",
+            "x-signature": "DQLsakZAqN",
+            "type": "string",
+            "pattern": "^[^\\s]+( [^\\s]+)*$"
+          },
+          "scope": {
+            "description": "Specify the scopes linked to the permissions requested by the client from the resource owner. If not specified, the default scopes specified in the client or the authorization server are requested.  | Note that some grant flows, such as the Authorization Code grant, do not call the token endpoint with the scope. The scope is already defined in the authorization code. For details, see the specific grant flow documentation in OAuth 2.0 Grant Flows.  | For more information, see About Scopes and About Claims.  | Required: No.",
+            "x-signature": "Is1eyf40Ht",
+            "type": "string"
+          },
+          "client_secret": {
+            "description": "Specifies the secret of the client making the request. Do not use in conjunction with the cnf_key parameter.",
+            "x-signature": "P3/AdNlcxk",
+            "type": "string"
+          },
+          "client_id": {
+            "description": "Specifies the client ID unique to the application making the request.",
+            "x-signature": "dlNHsvrDf/",
+            "type": "string",
+            "minLength": 1
+          },
+          "client_assertion": {
+            "description": "Specifies the signed JWT that the client uses as a credential when using the JWT bearer client authentication method.  | For more information, see OAuth 2.0 Client Authentication.  | Required: Yes, when using the JWT bearer client authentication method.",
+            "x-signature": "Q2JLEX78M0",
+            "type": "string"
+          },
+          "grant_type": {
+            "description": "Specifies the type of grant to send to the authorization server to acquire an access token. The following types are supported: client_credentials, for the Client Credentials grant flow. refresh_token, to refresh an access token. For more information, see Refresh Tokens. urn:ietf:params:oauth:grant-type:jwt-bearer, for the JWT Profile for OAuth 2.0 Authorization grant. For more information, see 'JWT Profile for OAuth 2.0 Authorization Grant'.",
+            "x-signature": "gLptcx0K0I",
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "post-access-tokens-response-datatype": {
+        "description": "get-token-datatype",
+        "example": {
+            "access_token": "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9",
+            "scope": "openid ACO:ABN:16009048784 Foundational:Organization:Providers:Read",
+            "token_type": "JWT",
+            "expires_in": 3599          
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "token_type"
+        ],
+        "properties": {         
+          "access_token": {
+            "description": "The access token issued by the authorization server.",
+            "x-signature": "VnVMspPLl7",
+            "type": "string"
+          },
+          "token_type": {
+            "description": "Specifies the type of token. Value is case insensitive. Possible values are: 'bearer'",
+            "x-signature": "iwFrEQAJyC",
+            "type": "string"
+          },
+          "scope": {
+            "description": "Specifies a space-separated list of the scopes associated with the token. OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.",
+            "x-signature": "Is1eyf40Ht",
+            "type": "string"
+          },
+          "expires_in": {
+            "description": "Specifies the time, in seconds, that the token is valid for. This value is set at token creation time, and it depends on the configuration of the OAuth2 Provider Service. During the introspection call, AM calculates the amount of seconds the token is still valid for and returns it in the expires_in object. Therefore, repeated calls to the endpoints return different values for the object. However, the actual value of the expires_in object in the token does not change. Inspecting the token without using AM will show the value set at token creation time.",
+            "x-signature": "XvDBM3VcFr",
+            "type": "integer"
+          },
+          "id_token": {
+            "description": "Specifies the ID token. ID tokens can serve as; 1) Session cookies and as; You can enable trusted client applications to use ID tokens as session cookies for calls to REST endpoints | 2) Policy subjects: An ID token can serve as a subject condition for policies validating the tokens claims",
+            "x-signature": "kOAlLe9Xm8",
+            "type": "string"
+          }
+         
+        }
+      },
+      "error-response-datatype": {
+        "x-amf-examples": {
+          "example_0": {
+            "value": {
+              "_meta": {
+                "transaction_metadata": {
+                  "transaction_id": "86032cbe-a804-4c3b-86ce-ec3041e3effc",
+                  "correlation_id": "43032cbe-a822-4c3b-43ce-ec3043e3effc",
+                  "timestamp": "2022-05-29T13:32:10.64-07:00"
+                }
+              },
+              "errors": [
+                {
+                  "code": "12345",
+                  "message": "HTTP:BAD REQUEST",
+                  "severity": "ERROR",
+                  "detail": "Invalid value(s) in request input (HTTP 400)."
+                },
+                {
+                  "code": "001",
+                  "message": "Mandatory value missing - Reference ID",
+                  "severity": "ERROR",
+                  "detail": "A mandatory field was missing in the request message"
+                }
+              ]
+            }
+          },
+          "example_1": {
+            "_meta": {
+              "transaction_metadata": {
+                "transaction_id": "86032cbe-a804-4c3b-86ce-ec3041e3effc",
+                "correlation_id": "43032cbe-a822-4c3b-43ce-ec3043e3effc",
+                "timestamp": "2022-05-29T13:32:10.64-07:00"
+              }
+            },
+            "errors": [
+              {
+                "code": "500",
+                "message": "HTTP:INTERNAL SERVER ERROR",
+                "severity": "ERROR",
+                "detail": "The Service you are trying to access is not available at the moment, please try after sometime"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "_meta",
+          "errors"
+        ],
+        "properties": {
+          "_meta": {
+            "$ref": "#/components/schemas/_meta"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/type"
+            }
+          }
+        }
+      },
+      "post-register-token-request-datatype": {
+        "description": "post-token-datatype",
+        "example": {        
+        "redirect_uris": ["https://svt-iam.health.gov.au/platform"],  
+        "client_uri": "https://svt-iam.health.gov.au/enduser", 
+        "client_name": "SVT Client",
+        "software_id": "SW-000003",
+        "software_version_id": "06d24b54-cbf8-4fe4-b7c1-c959aa6c3256",                
+        "jwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NDA2NDYzNDMsImV4cCI6MTc0MDY0Njk0MywianRpIjoieHZfM2Q3R3N1dWtQckVxT3JYVU1SIiwiaXNzIjoiaHR0cHM6Ly9zdnQtaWFtLmhlYWx0aC5nb3YuYXU6NDQzL2FtL29hdXRoMi9yZWFsbXMvcm9vdC9yZWFsbXMvZG9oYWMtYXBpIiwiYWNvX2FibiI6IjkzNjA1NTk3MTI2IiwieDUwOSI6Ii0tLS0tQkVHSU4gQ0VSVElGSUNBVEUtLS0tLSBNSUlGZ2pDQ0JHcWdBd0lCQWdJVVUxb1YvVDBlM2tPeHF4WFUxMTNKaS9XTm52c3dEUVlKS29aSWh2Y05BUUVMIEJRQXdnWWd4Q3pBSkJnTlZCQVlUQWtGVk1TTXdJUVlEVlFRS0RCcEJkWE4wY21Gc2FXRnVJRlJoZUdGMGFXOXUgSUU5bVptbGpaVEVnTUI0R0ExVUVDd3dYUTJWeWRHbG1hV05oZEdsdmJpQkJkWFJvYjNKcGRIa3hNakF3QmdOViBCQU1NS1VGVVR5QlRkV0lnUTJWeWRHbG1hV05oZEdsdmJpQkJkWFJvYjNKcGRIa2dVSEpsY0hKdlpEQXlNQjRYIERUSXpNRGN4TnpJeU5EWXlPVm9YRFRJMU1EY3hOakl5TkRZeU9Gb3dTREVMTUFrR0ExVUVCaE1DUVZVeEZEQVMgQmdOVkJBb01Demt6TmpBMU5UazNNVEkyTVJVd0V3WURWUVFEREF4S2IzTnBaVXBsYm10cGJuTXhEREFLQmdOViBCQzRUQTBGQ1VqQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUxLdWRPRjhNVG0zIHc1TXJJS0xVWGp4am5vRmpuWXdkNGo2QW4zelVzWjJjN0dYOWxHTXdwNGw5V0k5eEhycEFjUHRCQmlTY2pUK24gOVBXOENMMkx2OTBkNGl3Mnd2czBmaklEbkxwRFM3STdicHYrVkFvVTBjNW5vTXhubU1xc0kvSmdrdUF1d0NDaiBxb093WGJaMkpVZm9YUnE2R0hOYldEemF3UEQxQms1RWxDNkttMGhtQjFSWmprdy9TQ3RIdlNDVzJ1Skc1ZFhhIHFXRy92dDA4eklSWksrR2tGNjVjRUFGeHE2MlpMM1U0VDR6UW5KTmZVSXRxdzFNY0J6QUdUM2Y0eXZrSU9WaXkgQTBtbDFwOVpHaExPK1NEZkJmVGdOY3BNWTJlTzBOWGQ4alZTeHRUNjB0OXFFbTN6QmJRWnBFMmhFeWl0dmNxLyA0MzVPUy9kekszOENBd0VBQWFPQ0FpRXdnZ0lkTUF3R0ExVWRFd0VCL3dRQ01BQXdId1lEVlIwakJCZ3dGb0FVIEpFWTFyMWp0dkpVY09xMzFZdFZLRE5xR2dITXdnZ0ZpQmdOVkhTQUVnZ0ZaTUlJQlZUQ0NBVkVHQ1Nva0FjWXAgWlFFSUFUQ0NBVUl3Z2dFK0JnZ3JCZ0VGQlFjQ0FqQ0NBVEFlZ2dFc0FGVUFjd0JsQUNBQWRBQm9BR2tBY3dBZyBBR01BWlFCeUFIUUFhUUJtQUdrQVl3QmhBSFFBWlFBZ0FHOEFiZ0JzQUhrQUlBQm1BRzhBY2dBZ0FIUUFhQUJsIEFDQUFjQUIxQUhJQWNBQnZBSE1BWlFBZ0FIQUFaUUJ5QUcwQWFRQjBBSFFBWlFCa0FDQUFhUUJ1QUNBQWRBQm8gQUdVQUlBQmhBSEFBY0FCc0FHa0FZd0JoQUdJQWJBQmxBQ0FBUXdCbEFISUFkQUJwQUdZQWFRQmpBR0VBZEFCbCBBQ0FBVUFCdkFHd0FhUUJqQUhrQUxnQWdBRXdBYVFCdEFHa0FkQUJsQUdRQUlBQnNBR2tBWVFCaUFHa0FiQUJwIEFIUUFlUUFnQUdFQWNBQndBR3dBYVFCbEFITUFJQUF0QUNBQWNnQmxBR1lBWlFCeUFDQUFkQUJ2QUNBQWRBQm8gQUdVQUlBQkRBR1VBY2dCMEFHa0FaZ0JwQUdNQVlRQjBBR1VBSUFCUUFHOEFiQUJwQUdNQWVRQXVNQjBHQTFVZCBKUVFXTUJRR0NDc0dBUVVGQndNQ0JnZ3JCZ0VGQlFjREJEQTRCZ05WSFI4RU1UQXZNQzJnSzZBcGhpZG9kSFJ3IE9pOHZjR3RwTG1GMGJ5NW5iM1l1WVhVdlkzSnNjeTloZEc5emRXSmpZUzVqY213d0hRWURWUjBPQkJZRUZNdHMgbVdoNEswYkdXOTlwVjJOSmJnWEQ1YTNKTUE0R0ExVWREd0VCL3dRRUF3SUU4REFOQmdrcWhraUc5dzBCQVFzRiBBQU9DQVFFQXJNM3RndENwdHQ1bzRxOEcxMDBwNzBwdnRzaFlUUzBWVFFxRGVhaGN6SHJWYWNQSFAzZUhNdHdLIDVCZTdLOUU4TVdBbXdDYUVOandqclJQeERkVDViRCtONWMwbjdZRHhXMndub0RCWEMxU1dGV0IyV28xNlBRKzIgYlZWYzdJbm9QKzArb1ZNNGNtWkw2UEx3aFRlLzdHdzJPc0JwdVNlNlkvL1lRR3RMNzN2bVQxU1BCY1lGaFo3QyBQYjgrWUc2Ti9Ec3dGSWN6citZdVdyM05vWnhpb01CM1A5cWVYN01QMXVYTXhGNlhRYmpLOGRaWS84cGc5RStBIGpVUVIwcngxMFg5N05YSnNVRWlCeVVFd2RZaHllRWFHSlBlY2llTXMwcU1rdFluWjJveXU2ci9XM1RzTkRoeEkgWWRkNkRCVHdvNm5aSmZabExjV0pMaDhITkppK2JnPT0gLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLSJ9.aLFzQ-kShV5PD-iQe7BKIfb3aW96iVkaBFT7Gq1o8jDsBxwhEWl1FJvTa2KL3jLTxZG77ww_BXXsUAMttgjaI0km4whbK99-c0FaCxkx1dQPYcGl29iicZ3rSEF8pD6yEPQLR8loOyRB1cToiWIIX9BODpo4Z0m8bIPH8kaD-weZPP-_M5FZskfQLMny5IcwBThhfXrKFenBI5DM6QXvDp4cTGmKSg2XtiHmZSf2VFyIHeykU-03nqiA-1kULtYQp123Z78mzR9DOFkIm2yWZNDaEVZM8PBMcmfxPkBMaxUkccCC1YsOhm5-_tjsYKpT912GyA4nTi6wEQGBIgPz2A",
+  "x_509": "-----BEGIN CERTIFICATE----- MIIFgTCCBGmgAwIBAgIUQ7qv2uwXumZWD+uZLnTbytysg6kwDQYJKoZIhvcNAQEL BQAwgYgxCzAJBgNVBAYTAkFVMSMwIQYDVQQKDBpBdXN0cmFsaWFuIFRheGF0aW9u IE9mZmljZTEgMB4GA1UECwwXQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxMjAwBgNV BAMMKUFUTyBTdWIgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgUHJlcHJvZDAyMB4X DTIzMDcxNzIyNDY1MloXDTI1MDcxNjIyNDY1MVowRzELMAkGA1UEBhMCQVUxFDAS BgNVBAoMCzQ4MDAwMDI2MjE5MRQwEgYDVQQDDAtLZW5ueUhpbHRvbjEMMAoGA1UE LhMDQUJSMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw0BuOZd445Tz 6qw1P53AgLu4V4SAoG0JKlbakkPvYHgEiboNvRslxzGVUJP5YQcsXsu5d4J0H0L1 cQuc3dctMRQxpx/lFGcZbJOTUkhcWAaSx/bDqKWJ8D9ulCzgzH5jVhczEDzIWr+o tITO0W5E86gxhRfvp+8HlyaUOJL8VL2QhFzprt7XRrabuV+Uo0WLAJhbKwJv2RE9 qfXafiUopnuhb1pyhuQ36KC5usxdQ0mt5n9G8E3EryAdnJqN4XULcrokp5CwW4Pd EIZfw3KmnqpJVfBjo7wzzWLBfxFWcqY7ZHV8AEJvPvnUovpVlXUKf1tkN3prLn7v LN8BRbx1RQIDAQABo4ICITCCAh0wDAYDVR0TAQH/BAIwADAfBgNVHSMEGDAWgBQk RjWvWO28lRw6rfVi1UoM2oaAczCCAWIGA1UdIASCAVkwggFVMIIBUQYJKiQBxill AQgBMIIBQjCCAT4GCCsGAQUFBwICMIIBMB6CASwAVQBzAGUAIAB0AGgAaQBzACAA YwBlAHIAdABpAGYAaQBjAGEAdABlACAAbwBuAGwAeQAgAGYAbwByACAAdABoAGUA IABwAHUAcgBwAG8AcwBlACAAcABlAHIAbQBpAHQAdABlAGQAIABpAG4AIAB0AGgA ZQAgAGEAcABwAGwAaQBjAGEAYgBsAGUAIABDAGUAcgB0AGkAZgBpAGMAYQB0AGUA IABQAG8AbABpAGMAeQAuACAATABpAG0AaQB0AGUAZAAgAGwAaQBhAGIAaQBsAGkA dAB5ACAAYQBwAHAAbABpAGUAcwAgAC0AIAByAGUAZgBlAHIAIAB0AG8AIAB0AGgA ZQAgAEMAZQByAHQAaQBmAGkAYwBhAHQAZQAgAFAAbwBsAGkAYwB5AC4wHQYDVR0l BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMDgGA1UdHwQxMC8wLaAroCmGJ2h0dHA6 Ly9wa2kuYXRvLmdvdi5hdS9jcmxzL2F0b3N1YmNhLmNybDAdBgNVHQ4EFgQU1M00 KsTNiZXirC02CMKlup2Ob70wDgYDVR0PAQH/BAQDAgTwMA0GCSqGSIb3DQEBCwUA A4IBAQDc5RAWWjvbTq++RYOFK7pEIpVnKJ21jGiynTW92KHf8iMEzxa5pRneUhE+ OJ333VrYaA1K6iP9nuSmfGtMlU5tU5pt7C91WGVVD2LPyfTf3yRjRESv98frb1Dz djYcjCv7Xk3hTr/N74rRyOgtt8G0zWYh17ufP5sV81PmlwZ+E157Zsnh4Nvf/5xa ZyRo0i9QoPViuMrMv2EKyTat0NIZzliTw9wvy9oaTfrnTsJkoJGKKqeuZXuRgLfZ kc2FeiqgW/QuEBHkpz2VVSObpoAJrj9xHxtI3zVt4vPXRTDOMppLI/PlneU7F3tR CCxf77AqlnZr/tfgepd2dGGslgXc -----END CERTIFICATE-----"        
+      },
+        "type": "object",
+        "required": [
+          "redirect_uris", "client_name", "jwt", "x_509", "software_version_id", "software_id"
+        ],
+        "properties": {
+          "client_name": {
+            "description": "Human-readable string name of the software product to be presented to the end-user during authorization | Derived field, aggregated from the legal name as per the M2M certificate + timestamp (to ensure uniqueness)",
+            "x-signature": "lZqGbJhZzd",
+            "type": "string",
+            "minLength": 1
+          },
+          "software_version_id": {
+            "description": "",
+            "x-signature": "DZJpifA/dY",
+            "type": "string",
+            "minLength": 1
+          },
+          "jwt": {
+            "description": "The JSON Web Token signed by the private key of the M2M certificate using RS256 algorithm",
+            "x-signature": "f2xLgwwI4D",
+            "type": "string",
+            "minLength": 1
+          },
+          "x_509": {
+            "description": "OAuth2.0 Public certificate used to decode the client assertion JWT (on the client credentials-JWT Bearer call)",
+            "x-signature": "Iaw9WNVbak",
+            "type": "string",
+            "minLength": 1
+          },          
+          "software_id": {
+            "description": "String representing a unique identifier assigned by the Software Register and used by registration endpoints to identify the software product to be dynamically registered.  | The software_id will remain the same across multiple updates or versions of the same piece of software. The software_id should be used as the primary external identifier for the client to prevent duplicate client registrations",
+            "x-signature": "jJd+NFhT30",
+            "type": "string",
+            "minLength": 1
+          },
+          "redirect_uris": {
+            "description": "Array of redirection URI strings for use in redirect-based flows",
+            "x-signature": "l9f06PZeEq",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/uri-type"
+            }
+          }
+        }
+      },
+      "post-register-token-response-datatype": {
+        "description": "get-token-datatype",
+        "example": {
+          "client_name": "SVT Client",
+          "client_id": "c64484a9-6cb3-4ad0-b9bd-5563567175de",
+          "client_secret": "xxxxxxxxxxxxxx",
+          "client_uri": "https://svt-iam.health.gov.au:443/am/oauth2/realms/root/realms/dohac-api/register?client_id=c64484a9-6cb3-4ad0-b9bd-5563567175de",
+          "redirect_uris": [
+              "https://svt-iam.health.gov.au/platform"
+          ]
+      },
+        "type": "object",       
+        "properties": {          
+          "data": {
+            "$ref": "#/components/schemas/oauth2-register-response-type"
+          }
+        }
+      },
+      "patch-register-token-request-datatype": {
+        "description": "patch-token-datatype",
+        "example": { 
+              
+          "client_name": "SVT Client Updated",                        
+          "software_version_id": "43431d63-e316-453b-b4b6-18da7b71a66c",
+          "software_id": "SW-000003",
+          "jwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NDA2NDYzNDMsImV4cCI6MTc0MDY0Njk0MywianRpIjoieHZfM2Q3R3N1dWtQckVxT3JYVU1SIiwiaXNzIjoiaHR0cHM6Ly9zdnQtaWFtLmhlYWx0aC5nb3YuYXU6NDQzL2FtL29hdXRoMi9yZWFsbXMvcm9vdC9yZWFsbXMvZG9oYWMtYXBpIiwiYWNvX2FibiI6IjkzNjA1NTk3MTI2IiwieDUwOSI6Ii0tLS0tQkVHSU4gQ0VSVElGSUNBVEUtLS0tLSBNSUlGZ2pDQ0JHcWdBd0lCQWdJVVUxb1YvVDBlM2tPeHF4WFUxMTNKaS9XTm52c3dEUVlKS29aSWh2Y05BUUVMIEJRQXdnWWd4Q3pBSkJnTlZCQVlUQWtGVk1TTXdJUVlEVlFRS0RCcEJkWE4wY21Gc2FXRnVJRlJoZUdGMGFXOXUgSUU5bVptbGpaVEVnTUI0R0ExVUVDd3dYUTJWeWRHbG1hV05oZEdsdmJpQkJkWFJvYjNKcGRIa3hNakF3QmdOViBCQU1NS1VGVVR5QlRkV0lnUTJWeWRHbG1hV05oZEdsdmJpQkJkWFJvYjNKcGRIa2dVSEpsY0hKdlpEQXlNQjRYIERUSXpNRGN4TnpJeU5EWXlPVm9YRFRJMU1EY3hOakl5TkRZeU9Gb3dTREVMTUFrR0ExVUVCaE1DUVZVeEZEQVMgQmdOVkJBb01Demt6TmpBMU5UazNNVEkyTVJVd0V3WURWUVFEREF4S2IzTnBaVXBsYm10cGJuTXhEREFLQmdOViBCQzRUQTBGQ1VqQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUxLdWRPRjhNVG0zIHc1TXJJS0xVWGp4am5vRmpuWXdkNGo2QW4zelVzWjJjN0dYOWxHTXdwNGw5V0k5eEhycEFjUHRCQmlTY2pUK24gOVBXOENMMkx2OTBkNGl3Mnd2czBmaklEbkxwRFM3STdicHYrVkFvVTBjNW5vTXhubU1xc0kvSmdrdUF1d0NDaiBxb093WGJaMkpVZm9YUnE2R0hOYldEemF3UEQxQms1RWxDNkttMGhtQjFSWmprdy9TQ3RIdlNDVzJ1Skc1ZFhhIHFXRy92dDA4eklSWksrR2tGNjVjRUFGeHE2MlpMM1U0VDR6UW5KTmZVSXRxdzFNY0J6QUdUM2Y0eXZrSU9WaXkgQTBtbDFwOVpHaExPK1NEZkJmVGdOY3BNWTJlTzBOWGQ4alZTeHRUNjB0OXFFbTN6QmJRWnBFMmhFeWl0dmNxLyA0MzVPUy9kekszOENBd0VBQWFPQ0FpRXdnZ0lkTUF3R0ExVWRFd0VCL3dRQ01BQXdId1lEVlIwakJCZ3dGb0FVIEpFWTFyMWp0dkpVY09xMzFZdFZLRE5xR2dITXdnZ0ZpQmdOVkhTQUVnZ0ZaTUlJQlZUQ0NBVkVHQ1Nva0FjWXAgWlFFSUFUQ0NBVUl3Z2dFK0JnZ3JCZ0VGQlFjQ0FqQ0NBVEFlZ2dFc0FGVUFjd0JsQUNBQWRBQm9BR2tBY3dBZyBBR01BWlFCeUFIUUFhUUJtQUdrQVl3QmhBSFFBWlFBZ0FHOEFiZ0JzQUhrQUlBQm1BRzhBY2dBZ0FIUUFhQUJsIEFDQUFjQUIxQUhJQWNBQnZBSE1BWlFBZ0FIQUFaUUJ5QUcwQWFRQjBBSFFBWlFCa0FDQUFhUUJ1QUNBQWRBQm8gQUdVQUlBQmhBSEFBY0FCc0FHa0FZd0JoQUdJQWJBQmxBQ0FBUXdCbEFISUFkQUJwQUdZQWFRQmpBR0VBZEFCbCBBQ0FBVUFCdkFHd0FhUUJqQUhrQUxnQWdBRXdBYVFCdEFHa0FkQUJsQUdRQUlBQnNBR2tBWVFCaUFHa0FiQUJwIEFIUUFlUUFnQUdFQWNBQndBR3dBYVFCbEFITUFJQUF0QUNBQWNnQmxBR1lBWlFCeUFDQUFkQUJ2QUNBQWRBQm8gQUdVQUlBQkRBR1VBY2dCMEFHa0FaZ0JwQUdNQVlRQjBBR1VBSUFCUUFHOEFiQUJwQUdNQWVRQXVNQjBHQTFVZCBKUVFXTUJRR0NDc0dBUVVGQndNQ0JnZ3JCZ0VGQlFjREJEQTRCZ05WSFI4RU1UQXZNQzJnSzZBcGhpZG9kSFJ3IE9pOHZjR3RwTG1GMGJ5NW5iM1l1WVhVdlkzSnNjeTloZEc5emRXSmpZUzVqY213d0hRWURWUjBPQkJZRUZNdHMgbVdoNEswYkdXOTlwVjJOSmJnWEQ1YTNKTUE0R0ExVWREd0VCL3dRRUF3SUU4REFOQmdrcWhraUc5dzBCQVFzRiBBQU9DQVFFQXJNM3RndENwdHQ1bzRxOEcxMDBwNzBwdnRzaFlUUzBWVFFxRGVhaGN6SHJWYWNQSFAzZUhNdHdLIDVCZTdLOUU4TVdBbXdDYUVOandqclJQeERkVDViRCtONWMwbjdZRHhXMndub0RCWEMxU1dGV0IyV28xNlBRKzIgYlZWYzdJbm9QKzArb1ZNNGNtWkw2UEx3aFRlLzdHdzJPc0JwdVNlNlkvL1lRR3RMNzN2bVQxU1BCY1lGaFo3QyBQYjgrWUc2Ti9Ec3dGSWN6citZdVdyM05vWnhpb01CM1A5cWVYN01QMXVYTXhGNlhRYmpLOGRaWS84cGc5RStBIGpVUVIwcngxMFg5N05YSnNVRWlCeVVFd2RZaHllRWFHSlBlY2llTXMwcU1rdFluWjJveXU2ci9XM1RzTkRoeEkgWWRkNkRCVHdvNm5aSmZabExjV0pMaDhITkppK2JnPT0gLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLSJ9.aLFzQ-kShV5PD-iQe7BKIfb3aW96iVkaBFT7Gq1o8jDsBxwhEWl1FJvTa2KL3jLTxZG77ww_BXXsUAMttgjaI0km4whbK99-c0FaCxkx1dQPYcGl29iicZ3rSEF8pD6yEPQLR8loOyRB1cToiWIIX9BODpo4Z0m8bIPH8kaD-weZPP-_M5FZskfQLMny5IcwBThhfXrKFenBI5DM6QXvDp4cTGmKSg2XtiHmZSf2VFyIHeykU-03nqiA-1kULtYQp123Z78mzR9DOFkIm2yWZNDaEVZM8PBMcmfxPkBMaxUkccCC1YsOhm5-_tjsYKpT912GyA4nTi6wEQGBIgPz2A",
+          "x_509": "-----BEGIN CERTIFICATE----- MIIFgTCCBGmgAwIBAgIUQ7qv2uwXumZWD+uZLnTbytysg6kwDQYJKoZIhvcNAQEL BQAwgYgxCzAJBgNVBAYTAkFVMSMwIQYDVQQKDBpBdXN0cmFsaWFuIFRheGF0aW9u IE9mZmljZTEgMB4GA1UECwwXQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxMjAwBgNV BAMMKUFUTyBTdWIgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgUHJlcHJvZDAyMB4X DTIzMDcxNzIyNDY1MloXDTI1MDcxNjIyNDY1MVowRzELMAkGA1UEBhMCQVUxFDAS BgNVBAoMCzQ4MDAwMDI2MjE5MRQwEgYDVQQDDAtLZW5ueUhpbHRvbjEMMAoGA1UE LhMDQUJSMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw0BuOZd445Tz 6qw1P53AgLu4V4SAoG0JKlbakkPvYHgEiboNvRslxzGVUJP5YQcsXsu5d4J0H0L1 cQuc3dctMRQxpx/lFGcZbJOTUkhcWAaSx/bDqKWJ8D9ulCzgzH5jVhczEDzIWr+o tITO0W5E86gxhRfvp+8HlyaUOJL8VL2QhFzprt7XRrabuV+Uo0WLAJhbKwJv2RE9 qfXafiUopnuhb1pyhuQ36KC5usxdQ0mt5n9G8E3EryAdnJqN4XULcrokp5CwW4Pd EIZfw3KmnqpJVfBjo7wzzWLBfxFWcqY7ZHV8AEJvPvnUovpVlXUKf1tkN3prLn7v LN8BRbx1RQIDAQABo4ICITCCAh0wDAYDVR0TAQH/BAIwADAfBgNVHSMEGDAWgBQk RjWvWO28lRw6rfVi1UoM2oaAczCCAWIGA1UdIASCAVkwggFVMIIBUQYJKiQBxill AQgBMIIBQjCCAT4GCCsGAQUFBwICMIIBMB6CASwAVQBzAGUAIAB0AGgAaQBzACAA YwBlAHIAdABpAGYAaQBjAGEAdABlACAAbwBuAGwAeQAgAGYAbwByACAAdABoAGUA IABwAHUAcgBwAG8AcwBlACAAcABlAHIAbQBpAHQAdABlAGQAIABpAG4AIAB0AGgA ZQAgAGEAcABwAGwAaQBjAGEAYgBsAGUAIABDAGUAcgB0AGkAZgBpAGMAYQB0AGUA IABQAG8AbABpAGMAeQAuACAATABpAG0AaQB0AGUAZAAgAGwAaQBhAGIAaQBsAGkA dAB5ACAAYQBwAHAAbABpAGUAcwAgAC0AIAByAGUAZgBlAHIAIAB0AG8AIAB0AGgA ZQAgAEMAZQByAHQAaQBmAGkAYwBhAHQAZQAgAFAAbwBsAGkAYwB5AC4wHQYDVR0l BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMDgGA1UdHwQxMC8wLaAroCmGJ2h0dHA6 Ly9wa2kuYXRvLmdvdi5hdS9jcmxzL2F0b3N1YmNhLmNybDAdBgNVHQ4EFgQU1M00 KsTNiZXirC02CMKlup2Ob70wDgYDVR0PAQH/BAQDAgTwMA0GCSqGSIb3DQEBCwUA A4IBAQDc5RAWWjvbTq++RYOFK7pEIpVnKJ21jGiynTW92KHf8iMEzxa5pRneUhE+ OJ333VrYaA1K6iP9nuSmfGtMlU5tU5pt7C91WGVVD2LPyfTf3yRjRESv98frb1Dz djYcjCv7Xk3hTr/N74rRyOgtt8G0zWYh17ufP5sV81PmlwZ+E157Zsnh4Nvf/5xa ZyRo0i9QoPViuMrMv2EKyTat0NIZzliTw9wvy9oaTfrnTsJkoJGKKqeuZXuRgLfZ kc2FeiqgW/QuEBHkpz2VVSObpoAJrj9xHxtI3zVt4vPXRTDOMppLI/PlneU7F3tR CCxf77AqlnZr/tfgepd2dGGslgXc -----END CERTIFICATE-----"
+                   
+        },
+        "type": "object",
+        "required": [
+          "software_version_id", "software_id"
+        ],
+        "properties": {
+          "software_version_id": {
+            "description": "",
+            "x-signature": "DZJpifA/dY",
+            "type": "string",
+            "minLength": 1
+          },
+          "jwt": {
+            "description": "The JSON Web Token signed by the private key of the M2M certificate using RS256 algorithm",
+            "x-signature": "f2xLgwwI4D",
+            "type": "string",
+            "minLength": 1
+          },
+          "x_509": {
+            "description": "OAuth2.0 Public certificate used to decode the client assertion JWT (on the client credentials-JWT Bearer call)",
+            "x-signature": "Iaw9WNVbak",
+            "type": "string",
+            "minLength": 1
+          },                    
+          "software_id": {
+            "description": "String representing a unique identifier assigned by the Software Register and used by registration endpoints to identify the software product to be dynamically registered.  | The software_id will remain the same across multiple updates or versions of the same piece of software. The software_id should be used as the primary external identifier for the client to prevent duplicate client registrations",
+            "x-signature": "jJd+NFhT30",
+            "type": "string",
+            "minLength": 1
+          },
+          "redirect_uris": {
+            "description": "Array of redirection URI strings for use in redirect-based flows",
+            "x-signature": "l9f06PZeEq",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/uri-type"
+            }
+          }
+        }
+      },
+      "patch-register-token-response-datatype": {
+        "description": "get-token-datatype",
+        "example": {
+    "client_name": "SVT Client Updated",
+    "client_id": "c64484a9-6cb3-4ad0-b9bd-5563567175de",
+    "client_secret": "xxxxxxxxxxxxxxxxxxxxxx",
+    "client_uri": "https://svt-iam.health.gov.au:443/am/oauth2/realms/root/realms/dohac-api/register?client_id=c64484a9-6cb3-4ad0-b9bd-5563567175de",
+    "redirect_uris": [
+        "https://svt-iam.health.gov.au/platform"
+    ]
+},
+        "type": "object",        
+        "properties": {          
+          "data": {
+            "$ref": "#/components/schemas/oauth2-patch-response-type"
+          }
+        }
+      },
+      "_meta": {
+        "type": "object",
+        "required": [
+          "transaction_metadata"
+        ],
+        "properties": {
+          "transaction_metadata": {
+            "type": "object",
+            "required": [
+              "correlation_id",
+              "timestamp"
+            ],
+            "properties": {
+              "transaction_id": {
+                "description": "Unique ID for the transaction initiated by the external caller",
+                "example": "86032cbe-a804-4c3b-86ce-ec3041e3effc",
+                "type": "string"
+              },
+              "correlation_id": {
+                "description": "Unique ID internally generated by MuleSoft tracking purpose",
+                "example": "43032cbe-a822-4c3b-43ce-ec3043e3effc",
+                "type": "string"
+              },
+              "timestamp": {
+                "description": "Date and Time of the processing",
+                "example": "2022-05-29T13:32:10.64-07:00",
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "access-token-response-type": {
+        "type": "object",
+        "required": [
+          "access_token",
+          "token_type"
+        ],
+        "properties": {
+          "access_token": {
+            "description": "The access token issued by the authorization server.",
+            "x-signature": "VnVMspPLl7",
+            "type": "string"
+          },
+          "token_type": {
+            "description": "Specifies the type of token. Value is case insensitive. Possible values are: 'bearer'",
+            "x-signature": "iwFrEQAJyC",
+            "type": "string"
+          },
+          "scope": {
+            "description": "Specifies a space-separated list of the scopes associated with the token. OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.",
+            "x-signature": "Is1eyf40Ht",
+            "type": "string"
+          },
+          "expires_in": {
+            "description": "Specifies the time, in seconds, that the token is valid for. This value is set at token creation time, and it depends on the configuration of the OAuth2 Provider Service. During the introspection call, AM calculates the amount of seconds the token is still valid for and returns it in the expires_in object. Therefore, repeated calls to the endpoints return different values for the object. However, the actual value of the expires_in object in the token does not change. Inspecting the token without using AM will show the value set at token creation time.",
+            "x-signature": "XvDBM3VcFr",
+            "type": "integer"
+          },
+          "id_token": {
+            "description": "Specifies the ID token. ID tokens can serve as; 1) Session cookies and as; You can enable trusted client applications to use ID tokens as session cookies for calls to REST endpoints | 2) Policy subjects: An ID token can serve as a subject condition for policies validating the tokens claims",
+            "x-signature": "kOAlLe9Xm8",
+            "type": "string"
+          }
+        }
+      },
+      "type": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "description": "An application-specific error code",
+            "type": "string"
+          },
+          "message": {
+            "description": "A short description of error",
+            "type": "string"
+          },
+          "severity": {
+            "description": "The severity of the Error",
+            "enum": [
+              "ERROR",
+              "WARNING"
+            ],
+            "type": "string"
+          },
+          "detail": {
+            "description": "A human-readable explanation, specific to this occurrence of the problem",
+            "type": "string"
+          }
+        }
+      },
+      "uri-type": {
+        "description": "A Uniform Resource Identifier Reference (RFC 3986 ). Note: URIs are case sensitive. For UUID (urn:uuid:53fefa32-fcbb-4ff8-8a92-55ee120877b7) use all lowercase | URIs can be absolute or relative, and may have an optional fragment identifier | This data type can be bound to a ValueSet",
+        "x-signature": "bLhNRIpzcG",
+        "type": "string",
+        "pattern": "^\\S*$"
+      },
+      "oauth2-register-response-type": {
+        "type": "object",
+        "required": [
+          "client_id",
+          "client_name"
+        ],
+        "properties": {
+          "client_id": {
+            "description": "",
+            "x-signature": "dlNHsvrDf/",
+            "type": "string"
+          },
+          "client_name": {
+            "description": "Human-readable string name of the software product to be presented to the end-user during authorization | Derived field, aggregated from the legal name as per the M2M certificate + timestamp (to ensure uniqueness)",
+            "x-signature": "anpCmS0myM",
+            "type": "string"
+          },
+          "client_secret": {
+            "description": "",
+            "x-signature": "P3/AdNlcxk",
+            "type": "string"
+          },
+          "client_uri": {
+            "description": "URL string of a web page providing information about the client",
+            "x-signature": "Xqf1za7T+D",
+            "type": "string",
+            "pattern": "^\\S*$"
+          },
+          "redirect_uris": {
+            "description": "Array of redirection URI strings for use in redirect-based flows",
+            "x-signature": "E7oruChN3H",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/uri-type"
+            }
+          }
+        }
+      },
+      "oauth2-patch-response-type": {
+        "type": "object",
+        "required": [
+          "client_id",
+          "client_name"
+        ],
+        "properties": {
+          "client_id": {
+            "description": "",
+            "x-signature": "dlNHsvrDf/",
+            "type": "string"
+          },
+          "client_name": {
+            "description": "Human-readable string name of the software product to be presented to the end-user during authorization | Derived field, aggregated from the legal name as per the M2M certificate + timestamp (to ensure uniqueness)",
+            "x-signature": "anpCmS0myM",
+            "type": "string"
+          },
+          "client_secret": {
+            "description": "",
+            "x-signature": "P3/AdNlcxk",
+            "type": "string"
+          },
+          "client_uri": {
+            "description": "URL string of a web page providing information about the client",
+            "x-signature": "Xqf1za7T+D",
+            "type": "string",
+            "pattern": "^\\S*$"
+          },
+          "redirect_uris": {
+            "description": "Array of redirection URI strings for use in redirect-based flows",
+            "x-signature": "E7oruChN3H",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/uri-type"
+            }
+          }
+        }
+      }
+    }
+
+  }
+}

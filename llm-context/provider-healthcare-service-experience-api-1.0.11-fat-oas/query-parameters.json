@@ -1,0 +1,24 @@
+{
+  "organizationId": {
+    "name": "organization",
+    "description": "Organization Id",
+    "required": false,
+    "in": "query",
+    "schema": {
+      "description": "Organization Id",
+      "type": "string",
+      "pattern": "^PRV-\\d+$"
+    }
+  },
+  "requiredOrganizationId": {
+    "name": "organization",
+    "description": "Organization Id",
+    "required": true,
+    "in": "query",
+    "schema": {
+      "description": "Organization Id",
+      "type": "string",
+      "pattern": "^PRV-\\d+$"
+    }
+  }
+}
