@@ -1,3 +1,12 @@
+# 0.1.2 - Update: Simplify frontend, before/after states
+- removed lots of charts.
+- Created a solution for demonstrating before/after API integration value:
+- Used session storage to persist demo state during a session
+- Implemented conditional UI rendering based on connection status
+- Created focused value widgets to highlight specific benefits of each API
+- Designed a system for easily switching between different backend implementations
+- Simplified the dashboards to focus on key value metrics rather than comprehensive functionality
+
 # 0.1.1 - Update: Dockerfile and fake loading
 - fake loading removed in frontend
 - dockerfile now updated to work on fly.io
