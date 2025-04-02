@@ -1,3 +1,7 @@
+# 0.1.4 - Update: fixed reactive updating
+- now connect and reset buttons actually update the frontend reactively
+- there could be components to clean up later
+
 # 0.1.3 - Update: lazy loading and code splitting
 - update vite.config.ts for react code splitting
 - using lazy and suspense from react to dynamically import and allow for vite to auto code split

@@ -1,43 +1,36 @@
-import { useState } from "react";
+// import { useContext } from "react"; // Import useContext
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BACKENDS } from "@/config";
-import {
-  connectAllApis,
-  connectApi,
-  formatTimeSaved,
-  getDemoState,
-  resetDemoState
-} from "@/utils/demo";
+import { useDemoContext } from "@/context/DemoContext"; // Import the custom hook
+// import {
+//   // Removed getDemoState, resetDemoState, connectApi, connectAllApis
+//   formatTimeSaved,
+// } from "@/utils/demo";
 
 export function DemoControls() {
-  const [demoState, setDemoState] = useState(getDemoState());
+  // Get state and functions from context
+  const { demoState, connectApi, connectAllApis, resetDemo, changeBackend } = useDemoContext();
 
-  // Handle backend change
+  // Handle backend change - directly call context function
   const handleBackendChange = (value: string) => {
-    const newState = { ...demoState, backend: value };
-    setDemoState(newState);
-
-    // In a real implementation, this would update the API client configuration
+    changeBackend(value);
     console.log(`Switched to backend: ${BACKENDS[value].name}`);
   };
 
-  // Handle connect actions
+  // Handle connect actions - directly call context functions
   const handleConnect = (api?: "auth" | "provider" | "quality" | "nurses") => {
     if (api) {
-      const newState = connectApi(api);
-      setDemoState(newState);
+      connectApi(api);
     } else {
-      const newState = connectAllApis();
-      setDemoState(newState);
+      connectAllApis();
     }
   };
 
-  // Handle reset
+  // Handle reset - directly call context function
   const handleReset = () => {
-    const newState = resetDemoState();
-    setDemoState(newState);
+    resetDemo();
   };
 
   return (
@@ -53,6 +46,7 @@ export function DemoControls() {
           <div>
             <div className="mb-4">
               <label className="text-sm font-medium mb-1 block">Backend Selection</label>
+              {/* Use demoState from context */}
               <Select value={demoState.backend} onValueChange={handleBackendChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a backend" />
@@ -75,6 +69,7 @@ export function DemoControls() {
                 onClick={() => handleConnect()}
               >
                 <span>
+                  {/* Use demoState from context */}
                   {demoState.connected ? "Refresh All Data" : "Connect All APIs"}
                 </span>
               </Button>
@@ -83,7 +78,7 @@ export function DemoControls() {
                 className="w-full font-medium border-red-500 text-red-600 hover:bg-red-50"
                 variant="outline"
                 size="lg"
-                onClick={handleReset}
+                onClick={handleReset} // Use handleReset which calls context function
               >
                 <span>Reset to Before State</span>
               </Button>
@@ -97,7 +92,7 @@ export function DemoControls() {
               <Button
                 className="w-full mb-2"
                 variant="outline"
-                onClick={() => handleConnect("provider")}
+                onClick={() => handleConnect("provider")} // Use handleConnect
               >
                 Provider API
               </Button>
@@ -105,7 +100,7 @@ export function DemoControls() {
               <Button
                 className="w-full mb-2"
                 variant="outline"
-                onClick={() => handleConnect("quality")}
+                onClick={() => handleConnect("quality")} // Use handleConnect
               >
                 Quality Indicators API
               </Button>
@@ -113,7 +108,7 @@ export function DemoControls() {
               <Button
                 className="w-full"
                 variant="outline"
-                onClick={() => handleConnect("nurses")}
+                onClick={() => handleConnect("nurses")} // Use handleConnect
               >
                 Registered Nurses API
               </Button>
@@ -121,28 +116,6 @@ export function DemoControls() {
           </div>
         </div>
 
-        {demoState.connected && (
-          <div className="mt-4 pt-4 border-t">
-            <div className="text-sm font-medium mb-2">Value Demonstrated</div>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div>Time Saved:</div>
-              <div className="font-bold">{formatTimeSaved(demoState.timeSaved.total)} per month</div>
-
-              <div>Quality Reporting:</div>
-              <div>{formatTimeSaved(demoState.timeSaved.qualityReporting)} per month</div>
-
-              <div>Nurse Compliance:</div>
-              <div>{formatTimeSaved(demoState.timeSaved.nurseCompliance)} per month</div>
-
-              <div>Provider Management:</div>
-              <div>{formatTimeSaved(demoState.timeSaved.providerManagement)} per month</div>
-
-              <div className="col-span-2 mt-2 text-green-600">
-                Estimated Annual Value: ${(demoState.timeSaved.total * 12 * 45).toLocaleString()}
-              </div>
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

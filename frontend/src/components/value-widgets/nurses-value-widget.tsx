@@ -1,14 +1,16 @@
-import { useState } from "react";
+// Removed useState
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { getDemoState } from "@/utils/demo";
+// Removed getDemoState
+import { useDemoContext } from "@/context/DemoContext"; // Import the custom hook
 
 export function NursesValueWidget() {
-  const [demoState] = useState(getDemoState);
+  // Get demoState from context
+  const { demoState } = useDemoContext();
   const isConnected = demoState.connected;
-  
+
   return (
     <Card className="h-full">
       <CardHeader className="pb-2">
@@ -16,8 +18,8 @@ export function NursesValueWidget() {
           <div>
             <CardTitle className="text-lg">Registered Nurse Staffing</CardTitle>
             <CardDescription>
-              {isConnected 
-                ? "Real-time compliance monitoring for nurse staffing" 
+              {isConnected
+                ? "Real-time compliance monitoring for nurse staffing"
                 : "Manual tracking of registered nurse coverage"}
             </CardDescription>
           </div>
@@ -28,14 +30,14 @@ export function NursesValueWidget() {
       </CardHeader>
       <CardContent>
         {!isConnected ? (
-          // Before state
+          // Before state (content remains the same)
           <div className="space-y-4">
             <div className="border rounded-md p-3 bg-gray-50">
               <h3 className="text-sm font-medium mb-2">Staffing Compliance Unknown</h3>
               <p className="text-sm text-gray-500 mb-3">
                 No automated way to track if registered nurse requirements are being met
               </p>
-              
+
               <div className="space-y-3">
                 <div>
                   <label className="block text-sm mb-1">Enter RN attendance data:</label>
@@ -48,29 +50,29 @@ export function NursesValueWidget() {
                       </select>
                     </div>
                     <div>
-                      <input 
-                        type="text" 
-                        placeholder="# of RNs" 
-                        className="w-full p-1 border rounded text-sm" 
+                      <input
+                        type="text"
+                        placeholder="# of RNs"
+                        className="w-full p-1 border rounded text-sm"
                       />
                     </div>
                     <div>
-                      <input 
-                        type="text" 
-                        placeholder="# of residents" 
-                        className="w-full p-1 border rounded text-sm" 
+                      <input
+                        type="text"
+                        placeholder="# of residents"
+                        className="w-full p-1 border rounded text-sm"
                       />
                     </div>
                   </div>
                   <Button size="sm">Log Attendance</Button>
                 </div>
-                
+
                 <div className="text-sm text-amber-600 mt-2">
                   Warning: No way to verify if minimum RN requirements are being met
                 </div>
               </div>
             </div>
-            
+
             <div className="text-sm text-gray-500">
               <p>Current process challenges:</p>
               <ul className="list-disc list-inside space-y-1 mt-1">
@@ -82,11 +84,11 @@ export function NursesValueWidget() {
             </div>
           </div>
         ) : (
-          // After state
+          // After state (content remains the same)
           <div className="space-y-4">
             <div className="border rounded-md p-3 bg-blue-50 border-blue-200">
               <h3 className="text-sm font-medium mb-2 text-blue-800">Real-time Compliance Monitoring</h3>
-              
+
               <div className="space-y-3">
                 <div>
                   <div className="flex justify-between mb-1">
@@ -97,7 +99,7 @@ export function NursesValueWidget() {
                   </div>
                   <Progress value={85} className="h-2" />
                 </div>
-                
+
                 <table className="w-full text-sm text-left">
                   <thead className="text-xs text-blue-800">
                     <tr>
@@ -126,7 +128,7 @@ export function NursesValueWidget() {
                 </table>
               </div>
             </div>
-            
+
             <div className="p-2 bg-green-50 rounded-md border border-green-200">
               <div className="text-sm font-medium text-green-800">Value Created</div>
               <div className="text-sm text-green-700 mt-1">

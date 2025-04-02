@@ -1,11 +1,13 @@
-import { useState } from "react";
+// Removed useState
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getDemoState } from "@/utils/demo";
+// Removed getDemoState
+import { useDemoContext } from "@/context/DemoContext"; // Import the custom hook
 
 export function QualityValueWidget() {
-  const [demoState] = useState(getDemoState);
+  // Get demoState from context
+  const { demoState } = useDemoContext();
   const isConnected = demoState.connected;
 
   return (
@@ -27,7 +29,7 @@ export function QualityValueWidget() {
       </CardHeader>
       <CardContent>
         {!isConnected ? (
-          // Before state
+          // Before state (content remains the same)
           <div className="space-y-4">
             <div className="border rounded-md p-3 bg-gray-50">
               <h3 className="text-sm font-medium mb-2">Q1 2024 Submission Required</h3>
@@ -97,7 +99,7 @@ export function QualityValueWidget() {
             </div>
           </div>
         ) : (
-          // After state
+          // After state (content remains the same)
           <div className="space-y-4">
             <div className="border rounded-md p-3 bg-blue-50 border-blue-200">
               <h3 className="text-sm font-medium mb-2 text-blue-800">Q1 2024 Submission Ready</h3>
