@@ -1,7 +1,22 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense } from 'react'; // Import lazy and Suspense
 import { Nav } from '@/components/layout/nav';
-import ComplianceDashboard from '@/pages/compliance';
-import QualityOptimization from '@/pages/quality';
+// import ComplianceDashboard from '@/pages/compliance'; // Remove static import
+// import QualityOptimization from '@/pages/quality'; // Remove static import
+
+// --- Lazy Load Page Components ---
+const ComplianceDashboard = lazy(() => import('@/pages/compliance'));
+const QualityOptimization = lazy(() => import('@/pages/quality'));
+
+// --- Optional: Create a simple loading component ---
+function LoadingFallback() {
+  return (
+    <div className="p-6 text-center text-gray-500">
+      Loading page...
+      {/* You could put a spinner here */}
+    </div>
+  );
+}
 
 export default function App() {
   return (
@@ -9,11 +24,14 @@ export default function App() {
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Nav />
         <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<ComplianceDashboard />} />
-            <Route path="/quality" element={<QualityOptimization />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          {/* --- Wrap Routes with Suspense --- */}
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              <Route path="/" element={<ComplianceDashboard />} />
+              <Route path="/quality" element={<QualityOptimization />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
         </main>
         <footer className="py-4 px-6 bg-white border-t">
           <div className="text-center text-sm text-gray-500">

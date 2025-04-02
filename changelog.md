@@ -1,3 +1,7 @@
+# 0.1.3 - Update: lazy loading and code splitting
+- update vite.config.ts for react code splitting
+- using lazy and suspense from react to dynamically import and allow for vite to auto code split
+
 # 0.1.2 - Update: Simplify frontend, before/after states
 - removed lots of charts.
 - Created a solution for demonstrating before/after API integration value:
