@@ -8,7 +8,7 @@ NC=$(tput sgr0) # Reset color
 
 # Get script directory (project root)
 PROJECT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-FRONTEND_DIR="${PROJECT_ROOT}/frontend"
+FRONTEND_DIR="${PROJECT_ROOT}/frontend2"
 
 # Destination for the built frontend files
 DESTINATION="${PROJECT_ROOT}/cmd/server/spa"

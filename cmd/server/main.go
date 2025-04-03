@@ -17,9 +17,6 @@ import (
 	"github.com/jasonchiu/dohac-mock-apis/internal/api"
 )
 
-// Version is the application version
-var Version = "0.1.0"
-
 //go:embed all:spa
 var spaFiles embed.FS
 
@@ -40,10 +37,10 @@ func main() {
 
 	// Create API router
 	apiRouter := api.NewRouter()
-	
+
 	// Create a main router for the application
 	router := chi.NewRouter()
-	
+
 	// Mount the API router under /api
 	router.Mount("/api", apiRouter)
 

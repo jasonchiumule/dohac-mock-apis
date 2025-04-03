@@ -1,3 +1,8 @@
+# 0.2.0 - Add: frontend2 solidjs based
+- starting from scratch, having a button call some data working
+- testing code splitting and lazy loading
+- added zagjs docs (ui)
+
 # 0.1.6 - Update: trying to fix up react frontend
 - still not connecting to backend properly
 - going to try solidjs
