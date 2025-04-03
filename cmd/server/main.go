@@ -13,6 +13,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/jasonchiu/dohac-mock-apis/internal/api"
 )
 
@@ -37,8 +38,14 @@ func main() {
 		port = "8080"
 	}
 
-	// Create a single router for both API and SPA
-	router := api.NewRouter()
+	// Create API router
+	apiRouter := api.NewRouter()
+	
+	// Create a main router for the application
+	router := chi.NewRouter()
+	
+	// Mount the API router under /api
+	router.Mount("/api", apiRouter)
 
 	// Get the spa subdirectory from embedded files
 	spa, err := fs.Sub(spaFiles, "spa")
@@ -55,15 +62,8 @@ func main() {
 	router.Handle("/robots.txt", fileServer)
 	router.Handle("/vite.svg", fileServer)
 
-	// Add separate health check endpoint
-	router.Get("/api/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"status":"OK","version":"` + Version + `"}`))
-	})
-
-	// Serve index.html for all other routes that aren't API routes or static files
+	// Serve index.html for all other routes (SPA routing)
 	router.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
-		// Serve the index.html for SPA routing
 		w.Header().Set("Content-Type", "text/html")
 		indexFile, err := spa.Open("index.html")
 		if err != nil {

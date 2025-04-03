@@ -1,0 +1,22 @@
+meta {
+  name: local_auth-access-tokens
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/api/oauth2/access-tokens
+  body: formUrlEncoded
+  auth: none
+}
+
+headers {
+  Content-Type: application/x-www-form-urlencoded
+}
+
+body:form-urlencoded {
+  grant_type: client_credentials
+  client_id: c88484a9-6cb3-4ad0-b9bd-5563567175ee
+  client_secret: your-secret
+  scope: dhac:b2g:all:all ACO:ABN:123
+}

@@ -1,3 +1,7 @@
+# 0.1.5 - Update: docs/examples and fixed /api route
+- /api routes no longer redirected into frontend spa
+- docs/examples now has response object examples for all
+
 # 0.1.4 - Update: fixed reactive updating
 - now connect and reset buttons actually update the frontend reactively
 - there could be components to clean up later

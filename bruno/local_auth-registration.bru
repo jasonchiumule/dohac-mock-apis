@@ -1,0 +1,19 @@
+meta {
+  name: local_auth-registration
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/api/oauth2/registration
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {"client_name":"SunsetCare Management System","software_id":"sunsetcare-123","software_version":"1.0.0","redirect_uris":["https://sunsetcare.com.au/auth/callback"]}
+}

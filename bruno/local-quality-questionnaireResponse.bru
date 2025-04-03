@@ -1,0 +1,21 @@
+meta {
+  name: local-quality-questionnaireResponse
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:8080/api/QuestionnaireResponse
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer mock_c88484a9-6cb3-4ad0-b9bd-5563567175ee_20230720151152
+  Content-Type: application/json
+  transaction_id: trans-101112
+}
+
+body:json {
+  {"questionnaire":"QC-20230630","status":"completed","subject":{"reference":"HealthcareService/SVC-54321","display":"Sunset Residential Care"},"author":{"reference":"Organization/PRV-12345","display":"Sunset Aged Care"},"item":[{"linkId":"pressure-injuries","text":"Pressure Injuries","item":[{"linkId":"PI-01","text":"Number of residents who have developed a Stage 1 pressure injury during the quarter","answer":[{"valueInteger":2}]}]}]}
+}
