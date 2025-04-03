@@ -2,10 +2,10 @@
 export interface AuthClient {
   clientId: string;
   clientSecret: string;
-  redirectUri: string;
   name: string;
-  contacts: string[];
-  scopes: string[];
+  softwareId: string;
+  softwareVersion: string;
+  redirectUris: string[];
 }
 
 export interface AuthToken {
@@ -27,6 +27,7 @@ export interface HealthcareService {
   serviceId: string;
   name: string;
   type: string;
+  providerId?: string; // Reference to the provider
   address: Address;
   contact: Contact;
 }
@@ -65,6 +66,66 @@ export interface IndicatorData {
   value: number;
   nationalAverage: number;
   target: number;
+}
+
+// Quality Questionnaire API Types (from API)
+export interface Questionnaire {
+  resourceType: string;
+  id: string;
+  name: string;
+  title: string;
+  status: string;
+  subject: {
+    reference: string;
+  };
+  date: string;
+  publisher: string;
+  description: string;
+  item: QuestionnaireItemGroup[];
+}
+
+export interface QuestionnaireItemGroup {
+  linkId: string;
+  text: string;
+  type: string;
+  required: boolean;
+  item: QuestionnaireItem[];
+}
+
+export interface QuestionnaireItem {
+  linkId: string;
+  text: string;
+  type: string;
+  required: boolean;
+}
+
+export interface QuestionnaireResponse {
+  questionnaire: string;
+  status: string;
+  subject: {
+    reference: string;
+    display: string;
+  };
+  author: {
+    reference: string;
+    display: string;
+  };
+  item: QuestionnaireResponseItemGroup[];
+}
+
+export interface QuestionnaireResponseItemGroup {
+  linkId: string;
+  text: string;
+  item: QuestionnaireResponseItem[];
+}
+
+export interface QuestionnaireResponseItem {
+  linkId: string;
+  text: string;
+  answer: Array<{
+    valueInteger?: number;
+    valueString?: string;
+  }>;
 }
 
 // Registered Nurses API Types

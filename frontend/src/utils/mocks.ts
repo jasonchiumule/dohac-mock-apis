@@ -302,23 +302,23 @@ export const mockNurseSummaries: Record<string, NurseAttendanceSummary> = {
 
 // Generate service compliance data for dashboards
 export function generateServiceCompliance(): ServiceCompliance[] {
-  return mockProviders.flatMap(provider => 
+  return mockProviders.flatMap(provider =>
     provider.services.map(service => {
       const serviceId = service.serviceId;
       const qualityData = mockQualityIndicators[serviceId] ?? [];
       const latestQuality = qualityData.length > 0 ? qualityData[qualityData.length - 1] : null;
-      
+
       const nurseRecords = mockNurseAttendance[serviceId] ?? [];
-      
+
       // Calculate next reporting due date (3 months after last report)
       const lastReportDate = latestQuality?.submissionDate ?? '2023-10-01';
       const lastReportDateObj = new Date(lastReportDate);
       const nextDueDate = new Date(lastReportDateObj);
       nextDueDate.setMonth(nextDueDate.getMonth() + 3);
-      
+
       return {
         service,
-        qualityStatus: latestQuality 
+        qualityStatus: latestQuality
           ? calculateQualityCompliance(latestQuality)
           : { status: 'non-compliant', percentage: 0 },
         nurseStatus: calculateNurseCompliance(nurseRecords),
@@ -341,44 +341,44 @@ export const staffingImpact = generateStaffingImpact();
 // Generate statistics for dashboard summary cards
 export function generateStatistics() {
   const services = generateServiceCompliance();
-  
+
   const totalServices = services.length;
   const compliantServices = services.filter(s => s.qualityStatus.status === 'compliant').length;
   const atRiskServices = services.filter(s => s.qualityStatus.status === 'at-risk').length;
   const nonCompliantServices = services.filter(s => s.qualityStatus.status === 'non-compliant').length;
-  
+
   const compliantNurseServices = services.filter(s => s.nurseStatus.status === 'compliant').length;
-  
+
   const upcomingReports = services.filter(s => s.reportingStatus.daysRemaining <= 30).length;
   const overdueReports = services.filter(s => s.reportingStatus.daysRemaining <= 0).length;
-  
+
   // Calculate quality improvement percentage from first to last indicator set
   const serviceWithMostData = Object.entries(mockQualityIndicators)
-    .reduce((acc, [_, indicators]) => 
+    .reduce((acc, [, indicators]) =>
       indicators.length > acc.length ? indicators : acc, [] as QualityIndicator[]);
-  
+
   let qualityImprovement = 0;
   if (serviceWithMostData.length >= 2) {
     const first = serviceWithMostData[0];
     const last = serviceWithMostData[serviceWithMostData.length - 1];
-    
+
     // Calculate average non-compliance across all indicators
     const firstAvgNonCompliance = Object.values(first.indicators)
       .reduce((sum, ind) => sum + Math.max(0, ind.value - ind.target), 0) / 5;
-    
+
     const lastAvgNonCompliance = Object.values(last.indicators)
       .reduce((sum, ind) => sum + Math.max(0, ind.value - ind.target), 0) / 5;
-    
+
     // Improvement is reduction in non-compliance
     if (firstAvgNonCompliance > 0) {
       qualityImprovement = ((firstAvgNonCompliance - lastAvgNonCompliance) / firstAvgNonCompliance) * 100;
     }
   }
-  
+
   // Calculate time savings
   const automatedReportingTimeSaving = totalServices * 3 * 4; // 3 hours per service per quarter
   const automatedComplianceMonitoringTime = totalServices * 2 * 12; // 2 hours per service per month
-  
+
   return {
     serviceStats: {
       total: totalServices,

@@ -1,6 +1,6 @@
 /**
  * API Configuration
- * 
+ *
  * This file contains configuration for connecting to different backend implementations.
  * Change the ACTIVE_BACKEND value to switch between different backend environments.
  */
@@ -35,7 +35,7 @@ export const BACKENDS: Record<string, BackendConfig> = {
   // Go backend implementation
   golang: {
     name: "Go Backend",
-    baseUrl: "http://localhost:8080",
+    baseUrl: "http://localhost:8080/api",
     endpoints: {
       auth: {
         registerClient: "/oauth2/registration",
@@ -58,9 +58,9 @@ export const BACKENDS: Record<string, BackendConfig> = {
       },
     },
   },
-  // Java middleware backend implementation
+  // Mulesoft backend implementation
   java: {
-    name: "Java Middleware",
+    name: "Mulesoft Backend",
     baseUrl: "http://localhost:8081/api",
     endpoints: {
       auth: {

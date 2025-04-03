@@ -11,7 +11,7 @@ import { useDemoContext } from "@/context/DemoContext"; // Import the custom hoo
 
 export function DemoControls() {
   // Get state and functions from context
-  const { demoState, connectApi, connectAllApis, resetDemo, changeBackend } = useDemoContext();
+  const { demoState, isLoading, connectApi, connectAllApis, resetDemo, changeBackend } = useDemoContext();
 
   // Handle backend change - directly call context function
   const handleBackendChange = (value: string) => {
@@ -20,17 +20,24 @@ export function DemoControls() {
   };
 
   // Handle connect actions - directly call context functions
-  const handleConnect = (api?: "auth" | "provider" | "quality" | "nurses") => {
-    if (api) {
-      connectApi(api);
-    } else {
-      connectAllApis();
+  const handleConnect = async (api?: "auth" | "provider" | "quality" | "nurses") => {
+    try {
+      if (api) {
+        await connectApi(api);
+        console.log(`Connected to ${api} API`);
+      } else {
+        await connectAllApis();
+        console.log("Connected to all APIs");
+      }
+    } catch (error) {
+      console.error("Connection error:", error);
     }
   };
 
   // Handle reset - directly call context function
   const handleReset = () => {
     resetDemo();
+    console.log("Reset to before state");
   };
 
   return (
@@ -66,11 +73,11 @@ export function DemoControls() {
                 className="w-full font-medium"
                 variant="outline"
                 size="lg"
+                disabled={isLoading}
                 onClick={() => handleConnect()}
               >
                 <span>
-                  {/* Use demoState from context */}
-                  {demoState.connected ? "Refresh All Data" : "Connect All APIs"}
+                  {isLoading ? "Connecting..." : (demoState.connected ? "Refresh All Data" : "Connect All APIs")}
                 </span>
               </Button>
 
@@ -78,7 +85,8 @@ export function DemoControls() {
                 className="w-full font-medium border-red-500 text-red-600 hover:bg-red-50"
                 variant="outline"
                 size="lg"
-                onClick={handleReset} // Use handleReset which calls context function
+                disabled={isLoading}
+                onClick={handleReset}
               >
                 <span>Reset to Before State</span>
               </Button>
@@ -92,25 +100,28 @@ export function DemoControls() {
               <Button
                 className="w-full mb-2"
                 variant="outline"
-                onClick={() => handleConnect("provider")} // Use handleConnect
+                disabled={isLoading}
+                onClick={() => handleConnect("provider")}
               >
-                Provider API
+                {isLoading ? "Connecting..." : "Provider API"}
               </Button>
 
               <Button
                 className="w-full mb-2"
                 variant="outline"
-                onClick={() => handleConnect("quality")} // Use handleConnect
+                disabled={isLoading}
+                onClick={() => handleConnect("quality")}
               >
-                Quality Indicators API
+                {isLoading ? "Connecting..." : "Quality Indicators API"}
               </Button>
 
               <Button
                 className="w-full"
                 variant="outline"
-                onClick={() => handleConnect("nurses")} // Use handleConnect
+                disabled={isLoading}
+                onClick={() => handleConnect("nurses")}
               >
-                Registered Nurses API
+                {isLoading ? "Connecting..." : "Registered Nurses API"}
               </Button>
             </div>
           </div>

@@ -1,3 +1,7 @@
+# 0.1.6 - Update: trying to fix up react frontend
+- still not connecting to backend properly
+- going to try solidjs
+
 # 0.1.5 - Update: docs/examples and fixed /api route
 - /api routes no longer redirected into frontend spa
 - docs/examples now has response object examples for all
