@@ -1,3 +1,7 @@
+# 0.2.1 - Add: router to solid frontend2
+- added ~ alias for /src
+- added router for a /home and /dashboard
+
 # 0.2.0 - Add: frontend2 solidjs based
 - starting from scratch, having a button call some data working
 - testing code splitting and lazy loading

@@ -9,11 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@solidjs/router": "^0.15.3",
     "@zag-js/solid": "^1.7.0",
     "@zag-js/tooltip": "^1.7.0",
     "solid-js": "^1.9.5"
   },
   "devDependencies": {
+    "@types/node": "^22.14.0",
     "typescript": "~5.7.2",
     "vite": "^6.2.0",
     "vite-plugin-solid": "^2.11.2"

@@ -9,11 +9,11 @@ primary_region = 'syd'
 [build]
 
 [http_service]
-  internal_port = 8080
-  force_https = true
-  auto_stop_machines = 'suspend'
-  auto_start_machines = true
-  processes = ['app']
+internal_port = 8080
+force_https = true
+auto_stop_machines = 'stop'
+auto_start_machines = true
+processes = ['app']
 
 [[vm]]
-  size = 'shared-cpu-1x'
+size = 'shared-cpu-1x'

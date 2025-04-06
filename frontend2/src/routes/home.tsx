@@ -1,14 +1,14 @@
 import { createSignal, For, Show } from 'solid-js';
-import solidLogo from './assets/solid.svg';
+import solidLogo from '~/assets/solid.svg';
 import viteLogo from '/vite.svg';
-import './App.css';
+import '~/App.css';
 
 import { lazy } from "solid-js";
 
 // Import the API function and type
-import { fetchProviders, Provider } from './api';
+import { fetchProviders, Provider } from '~/lib/api';
 
-const Tooltip = lazy(() => import('./components/tooltip'));
+const Tooltip = lazy(() => import('~/lib/components/tooltip'));
 
 function App() {
   const [count, setCount] = createSignal(0);
