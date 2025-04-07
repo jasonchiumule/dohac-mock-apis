@@ -29,7 +29,8 @@ const sectionContainerClasses = "p-4 border border-gray-200 rounded-md bg-white 
 
 // --- Accordion Style Constants (Updated) ---
 // Style for the trigger button, mimicking the h2 style
-const accordionTriggerClasses = "w-full flex justify-between items-center text-left text-lg font-semibold text-gray-700 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75 border-b pb-2 pr-2";
+// const accordionTriggerClasses = "text-lg font-semibold text-gray-700 border-b pb-2 mb-4";
+const accordionTriggerClasses = "w-full flex justify-between items-center text-left text-lg  text-gray-700 border-gray-200 bg-white border-1 rounded-sm font-sans";
 // Style for the content area
 const accordionContentClasses = "pt-4 pb-4 text-sm text-gray-600 space-y-3";// Removed px (container handles), border-t, bg-white. Adjusted padding.
 

@@ -1,6 +1,6 @@
 import type { ParentComponent } from 'solid-js';
 import { A } from "@solidjs/router"; // Import A for navigation links
-import solidLogo from '~/assets/solid.svg';
+import Logo from '/favicon.svg';
 
 export const Layout: ParentComponent = (props) => {
   // Define classes for active/inactive links for cleaner code
@@ -21,7 +21,7 @@ export const Layout: ParentComponent = (props) => {
             {/* Logo / Site Title Section */}
             <div class="flex-shrink-0 flex items-center">
               <div class='flex items-center space-x-3'> {/* Adjusted spacing */}
-                <img class="h-8 w-auto" src={solidLogo} alt="Solid Logo" />
+                <img class="h-8 w-auto" src={Logo} alt="Cardiogram Logo" />
                 {/* --- Updated Styles: Darker, bolder text --- */}
                 <span class="font-semibold text-lg text-gray-800 hidden sm:inline">DoHAC API Accelerator</span>
                 {/* --- End Updated Styles --- */}

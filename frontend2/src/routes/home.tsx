@@ -1,125 +1,65 @@
-import { createSignal, Show } from 'solid-js';
-import { lazy } from "solid-js";
+import { A } from "@solidjs/router";
 
-// Import ALL the API functions we want to test
-import {
-  fetchProviders,
-  fetchHealthcareServices,
-  fetchQuestionnaires,
-  fetchRNAttendance,
-} from '~/lib/api';
-// No specific result types needed here if displaying raw JSON
-
-const Tooltip = lazy(() => import('~/lib/components/tooltip')); // Keep if used elsewhere
-
-function App() {
-  // --- State for API calls ---
-  const [loading, setLoading] = createSignal(false);
-  const [error, setError] = createSignal<string | null>(null);
-  const [apiResult, setApiResult] = createSignal<any | null>(null); // Stores result of the last call
-
-  // --- State for Input Parameters ---
-  const [organizationIdInput, setOrganizationIdInput] = createSignal("PRV-12345");
-  const [serviceIdInput, setServiceIdInput] = createSignal("SVC-54321");
-
-  // --- Generic API Fetch Handler ---
-  // Helper to reduce repetition in specific handlers
-  const handleApiCall = async (fetchFn: () => Promise<any>) => {
-    setLoading(true);
-    setError(null);
-    setApiResult(null);
-    try {
-      const data = await fetchFn();
-      setApiResult(data);
-    } catch (err: any) {
-      setError(err.message || "An unknown error occurred");
-      console.error("API Call Failed:", err); // Log the full error
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // --- Specific Button Handlers ---
-  const handleFetchProviders = () => handleApiCall(fetchProviders);
-
-  const handleFetchHealthcareServices = () => handleApiCall(
-    () => fetchHealthcareServices(organizationIdInput())
-  );
-
-  const handleFetchQuestionnaires = () => handleApiCall(fetchQuestionnaires);
-
-  const handleFetchRNAttendance = () => handleApiCall(
-    () => fetchRNAttendance(serviceIdInput()) // Defaulting summary=true as in api.ts
-  );
-
+export default function Home() {
+  // --- Style Constants ---
+  const sectionCardClasses = "p-6 bg-white rounded-lg border border-gray-200"; // Flat card style
+  const headingClasses = "text-2xl font-bold text-gray-800 mb-4";
+  const subHeadingClasses = "text-xl font-semibold text-gray-700 mb-3";
+  const paragraphClasses = "text-base text-gray-600 mb-4 leading-relaxed"; // Standard paragraph with better line spacing
+  const listClasses = "list-disc list-inside text-base text-gray-600 space-y-2 mb-4 pl-4"; // Styled list
+  const linkClasses = "text-blue-600 hover:text-blue-800 hover:underline font-medium"; // Link style
+  const highlightClasses = "font-semibold text-blue-700"; // Highlight key benefits
 
   return (
-    <>
-      <h1>DOHAC Mock API Testbed</h1>
+    <div class="space-y-8 max-w-4xl mx-auto"> {/* Constrain width for readability */}
+      <h1 class={headingClasses}>Welcome to the DoHAC B2G API Accelerator</h1>
 
-      {/* --- API Call Controls --- */}
-      <div class="api-controls" style={{ "display": "flex", "flex-wrap": "wrap", "gap": "10px", "margin-bottom": "20px" }}>
-        <button onClick={handleFetchProviders} disabled={loading()}>
-          Fetch Providers
-        </button>
+      <section class={sectionCardClasses}>
+        <p class={paragraphClasses}>
+          This accelerator provides a mock implementation of key Department of Health and Aged Care (DoHAC) Business-to-Government (B2G) APIs. It's designed for healthcare providers (like aged care facilities) and software vendors to build and test their integrations without needing to connect to live DoHAC systems.
+        </p>
+      </section>
 
-        <div style={{ "display": "flex", "gap": "5px", "align-items": "center" }}>
-          <label for="orgId">Org ID:</label>
-          <input
-            id="orgId"
-            type="text"
-            value={organizationIdInput()}
-            onInput={(e) => setOrganizationIdInput(e.currentTarget.value)}
-            disabled={loading()}
-            style={{ "width": "100px" }}
-          />
-          <button onClick={handleFetchHealthcareServices} disabled={loading()}>
-            Fetch Services
-          </button>
-        </div>
+      <section class={sectionCardClasses}>
+        <h2 class={subHeadingClasses}>The Challenge: Manual Compliance & Reporting</h2>
+        <p class={paragraphClasses}>
+          Healthcare and aged care providers face significant administrative overhead in meeting government reporting requirements. Tasks like submitting Quality Indicators (QI), tracking Registered Nurse (RN) attendance, and ensuring provider information is up-to-date often involve:
+        </p>
+        <ul class={listClasses}>
+          <li>Time-consuming manual data entry into multiple government portals.</li>
+          <li>High risk of transcription errors, leading to inaccurate data.</li>
+          <li>Delayed visibility into compliance status.</li>
+          <li>Diverting valuable staff time away from direct care delivery.</li>
+          <li>Increased operational costs and potential compliance penalties.</li>
+        </ul>
+      </section>
 
-        <button onClick={handleFetchQuestionnaires} disabled={loading()}>
-          Fetch Questionnaires
-        </button>
-
-        <div style={{ "display": "flex", "gap": "5px", "align-items": "center" }}>
-          <label for="serviceId">Service ID:</label>
-          <input
-            id="serviceId"
-            type="text"
-            value={serviceIdInput()}
-            onInput={(e) => setServiceIdInput(e.currentTarget.value)}
-            disabled={loading()}
-            style={{ "width": "100px" }}
-          />
-          <button onClick={handleFetchRNAttendance} disabled={loading()}>
-            Fetch RN Attendance
-          </button>
-        </div>
-      </div>
-
-      {/* --- Unified Display Area --- */}
-      <div class="api-result-display">
-        <h2>API Result</h2>
-        <Show when={loading()}>
-          <p>Loading...</p>
-        </Show>
-        <Show when={error()}>
-          <p style={{ color: 'red' }}>Error: {error()}</p>
-        </Show>
-        <Show when={apiResult() && !loading() && !error()}>
-          <pre style={{ "background-color": "#f4f4f4", "padding": "10px", "border": "1px solid #ccc", "overflow-x": "auto" }}>
-            <code>{JSON.stringify(apiResult(), null, 2)}</code>
-          </pre>
-        </Show>
-        <Show when={!apiResult() && !loading() && !error()}>
-          <p>Click a button above to fetch data.</p>
-        </Show>
-      </div>
-
-      <Tooltip />
-    </>
+      <section class={sectionCardClasses}>
+        <h2 class={subHeadingClasses}>The Solution: Streamlined Integration with DoHAC APIs</h2>
+        <p class={paragraphClasses}>
+          The DoHAC B2G APIs enable direct, secure, system-to-system data exchange, automating many compliance and reporting workflows. By integrating your software with these APIs (using this accelerator for testing), you can achieve significant benefits:
+        </p>
+        <ul class={listClasses}>
+          <li>
+            <span class={highlightClasses}>Save Time:</span> Drastically reduce the hours spent on manual data collection and submission. For example, submitting <span class="font-medium">Quality Indicators</span> or verifying <span class="font-medium">Provider Information</span> becomes a quick, automated process within your existing software.
+          </li>
+          <li>
+            <span class={highlightClasses}>Reduce Errors:</span> Eliminate manual data entry mistakes, ensuring the information submitted to DoHAC is accurate and consistent with your internal records.
+          </li>
+          <li>
+            <span class={highlightClasses}>Improve Compliance Monitoring:</span> Gain near real-time visibility into reporting status and key metrics, such as <span class="font-medium">Registered Nurse attendance</span>, allowing proactive management and reducing compliance risks.
+          </li>
+          <li>
+            <span class={highlightClasses}>Lower Costs:</span> Reduce administrative overhead and potentially avoid penalties associated with errors or late submissions.
+          </li>
+          <li>
+            <span class={highlightClasses}>Focus on Care:</span> Free up clinical and administrative staff to concentrate on providing high-quality care to residents and clients, rather than burdensome paperwork.
+          </li>
+        </ul>
+        <p class={paragraphClasses}>
+          This accelerator helps you realize these benefits faster by providing a ready-to-use mock environment. Explore the <A href="/dashboard" class={linkClasses}>Dashboard</A> to see value demonstrations or use the <A href="/api-test" class={linkClasses}>API Testbed</A> to interact directly with the mock endpoints.
+        </p>
+      </section>
+    </div>
   );
 }
-
-export default App;

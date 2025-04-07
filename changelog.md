@@ -1,3 +1,8 @@
+# 0.5.1 - Update: lazy import routes with suspense
+- code splitting the routes via lazy imports for quicker TTI
+- update home.tsx to describe the problem, solution and value
+- update favicon to cardiogram
+
 # 0.5.0 - Add: nurses section in dashboard
 - working state similar to quality indicator section
 - needs some modifying to make more sense
