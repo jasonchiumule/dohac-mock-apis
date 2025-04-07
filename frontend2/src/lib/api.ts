@@ -5,6 +5,8 @@ import type {
   Questionnaire,
   QuestionnaireResponse, // <-- Add this import
   RNAttendanceBundle,
+  Encounter, // <-- Import Encounter if needed for return type of PATCH
+  EncounterPatchPayload, // <-- Import the new patch payload type
   // No need to import Bundle, Encounter etc. directly if only using RNAttendanceBundle
 } from './schema';
 
@@ -164,27 +166,42 @@ export async function postQuestionnaireResponse(responsePayload: QuestionnaireRe
 }
 // --- End of NEW FUNCTION ---
 
-/*
-// --- Potential Future Function (Example) ---
-// Kept for reference if needed later
-export async function examplePostFunction(payload: any): Promise<any> {
-    const url = `${API_BASE_URL}/some-other-endpoint`;
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) {
-         // Consider checking for 201 Created as well
-        throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
-      }
-      // Depending on what the server returns on POST (e.g., the created object or just status)
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error in example post:", error);
-      throw error;
+// --- NEW FUNCTION for PATCH ---
+/**
+ * Updates (Patches) a specific Registered Nurse attendance record (Encounter).
+ * @param recordId - The ID of the Encounter record to update (e.g., "RN-12345")
+ * @param patchPayload - The payload containing the fields to update.
+ */
+export async function patchNurseAttendance(recordId: string, patchPayload: EncounterPatchPayload): Promise<Encounter> {
+  const url = `${API_BASE_URL}/RegisteredNurseAttendance/${encodeURIComponent(recordId)}`;
+  console.log(`Patching RN Attendance record ${recordId}:`, JSON.stringify(patchPayload, null, 2));
+  try {
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: getAuthHeaders(), // Content-Type is needed for PATCH
+      body: JSON.stringify(patchPayload),
+    });
+
+    // Check if the response is successful (typically 200 OK for PATCH)
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error("API Error Response Body:", errorBody);
+      throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}. ${errorBody}`);
     }
+
+    // Assuming PATCH returns the updated Encounter resource
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const data: Encounter = await response.json();
+      console.log(`Patched RN Attendance record ${recordId} Result:`, data);
+      return data; // Return the updated resource
+    } else {
+      console.warn(`Patched RN Attendance successfully (Status: ${response.status}), but response body was not JSON or was empty.`);
+      throw new Error("API did not return JSON as expected after successful PATCH.");
+    }
+  } catch (error) {
+    console.error(`Error patching RN attendance record ${recordId}:`, error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to patch RN attendance record: ${errorMessage}`); // Re-throw a more specific error
+  }
 }
-*/

@@ -1,3 +1,10 @@
+# 0.5.0 - Add: nurses section in dashboard
+- working state similar to quality indicator section
+- needs some modifying to make more sense
+- added some bru tests
+- added zagjs accordion
+- update examples README doc
+
 # 0.4.0 - Add: dashboard sections, quality and providers
 - showing value for each with before and after
 - added solidjs typescript docs

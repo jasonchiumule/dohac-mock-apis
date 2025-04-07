@@ -5,7 +5,8 @@
       "name": "frontend2",
       "dependencies": {
         "@solidjs/router": "^0.15.3",
-        "@zag-js/solid": "^1.7.0",
+        "@zag-js/accordion": "^1.8.2",
+        "@zag-js/solid": "^1.8.2",
         "@zag-js/tooltip": "^1.7.0",
         "solid-js": "^1.9.5",
       },
@@ -260,6 +261,8 @@
     "@vue/server-renderer": ["@vue/server-renderer@3.5.13", "", { "dependencies": { "@vue/compiler-ssr": "3.5.13", "@vue/shared": "3.5.13" }, "peerDependencies": { "vue": "3.5.13" } }, "sha512-wAi4IRJV/2SAW3htkTlB+dHeRmpTiVIK1OGLWV1yeStVSebSQQOwGwIq0D3ZIoBj2C2qpgz5+vX9iEBkTdk5YA=="],
 
     "@vue/shared": ["@vue/shared@3.5.13", "", {}, "sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ=="],
+
+    "@zag-js/accordion": ["@zag-js/accordion@1.8.2", "", { "dependencies": { "@zag-js/anatomy": "1.8.2", "@zag-js/core": "1.8.2", "@zag-js/dom-query": "1.8.2", "@zag-js/types": "1.8.2", "@zag-js/utils": "1.8.2" } }, "sha512-JszESCOvftl3dG6lEPjZp2p3+0VN0fwMnW+1jhWwMEe5MZ0y0IrcXww2dxet1ln+w5ViRdOTeDR07idbDKYAYg=="],
 
     "@zag-js/anatomy": ["@zag-js/anatomy@1.8.2", "", {}, "sha512-F88Q+Bo1KOFZPHLffOqiuemkgZJbtspQuyOJcWb0bL7Lc1pYC4DIpIj26bcXT8xICDNcwR877hI0Wko//ZgTVA=="],
 

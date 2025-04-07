@@ -566,16 +566,17 @@ curl -X POST http://localhost:8080/api/QuestionnaireResponse \
 
 #### 4. Registered Nurse Attendance Tracking
 
-SunsetCare must comply with the requirement to have registered nurses on duty 24/7. They can use the API to record and retrieve nurse attendance:
+SunsetCare must comply with the requirement to have registered nurses on duty 24/7. They can use the API to retrieve nurse attendance records:
 
 ```bash
+# First, retrieve a summary of attendance records for a service
 curl -X GET "http://localhost:8080/api/RegisteredNurseAttendance?service=SVC-54321&summary=true" \
   -H "Authorization: Bearer mock_c88484a9-6cb3-4ad0-b9bd-5563567175ee_20230720151152" \
   -H "transaction_id: trans-131415"
 ```
 
-Response
-```
+Response (summary using Encounter structure from original README):
+```json
 {
   "resourceType": "Bundle",
   "id": "bundle-rn-attendances",
@@ -593,128 +594,80 @@ Response
       "resource": {
         "resourceType": "Encounter",
         "id": "RN-12345",
-        "identifier": [
-          {
-            "system": "http://ns.health.gov.au/id/attendance/rn",
-            "value": "RN-12345"
-          }
-        ],
+        "identifier": [ { "system": "http://ns.health.gov.au/id/attendance/rn", "value": "RN-12345" } ],
         "status": "finished",
-        "subject": {
-          "reference": "HealthcareService/SVC-54321",
-          "display": "Sunset Residential Care"
-        },
-        "period": {
-          "start": "2023-07-01T07:00:00Z",
-          "end": "2023-07-01T15:00:00Z"
-        },
-        "performer": [
-          {
-            "reference": "Practitioner/RN-P12345",
-            "display": "Jane Smith"
-          }
-        ],
-        "reasonCode": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/encounter-reason",
-                "code": "routine",
-                "display": "Routine"
-              }
-            ],
-            "text": "Regular shift"
-          }
-        ]
+        "subject": { "reference": "HealthcareService/SVC-54321", "display": "Sunset Residential Care" },
+        "period": { "start": "2023-07-01T07:00:00Z", "end": "2023-07-01T15:00:00Z" },
+        "performer": [ { "reference": "Practitioner/RN-P12345", "display": "Jane Smith" } ],
+        "reasonCode": [ { "coding": [ { "system": "http://terminology.hl7.org/CodeSystem/encounter-reason", "code": "routine", "display": "Routine" } ], "text": "Regular shift" } ]
       }
     },
+    // ... other entries ...
+  ]
+}
+```
+This returns a summary of nurse attendance for the specified service.
+
+If details need to be updated for a specific record (e.g., adding a correction note), they can use a PATCH request targeting the specific attendance record ID:
+
+```bash
+# Update the attendance record with ID RN-12345, adding a note
+curl -X PATCH http://localhost:8080/api/RegisteredNurseAttendance/RN-12345 \
+  -H "Authorization: Bearer mock_c88484a9-6cb3-4ad0-b9bd-5563567175ee_20230720151152" \
+  -H "Content-Type: application/json" \
+  -H "transaction_id: trans-161718" \
+  -d '{
+    "note": [ { "text": "Updated via API at 2025-04-07T16:37:59+10:00" } ]
+  }'
+```
+
+Response (updated record):
+```json
+{
+  "resourceType": "Encounter",
+  "id": "RN-12345",
+  "identifier": [
     {
-      "fullUrl": "https://api.health.gov.au/RegisteredNurseAttendance/RN-23456",
-      "resource": {
-        "resourceType": "Encounter",
-        "id": "RN-23456",
-        "identifier": [
-          {
-            "system": "http://ns.health.gov.au/id/attendance/rn",
-            "value": "RN-23456"
-          }
-        ],
-        "status": "finished",
-        "subject": {
-          "reference": "HealthcareService/SVC-54321",
-          "display": "Sunset Residential Care"
-        },
-        "period": {
-          "start": "2023-07-01T15:00:00Z",
-          "end": "2023-07-01T23:00:00Z"
-        },
-        "performer": [
-          {
-            "reference": "Practitioner/RN-P67890",
-            "display": "John Doe"
-          }
-        ],
-        "reasonCode": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/encounter-reason",
-                "code": "routine",
-                "display": "Routine"
-              }
-            ],
-            "text": "Evening shift"
-          }
-        ]
-      }
-    },
+      "system": "http://ns.health.gov.au/id/attendance/rn",
+      "value": "RN-12345"
+    }
+  ],
+  "status": "finished",
+  "subject": {
+    "reference": "HealthcareService/SVC-54321",
+    "display": "Sunset Residential Care"
+  },
+  "period": {
+    "start": "2023-07-01T07:00:00Z",
+    "end": "2023-07-01T15:00:00Z"
+  },
+  "performer": [
     {
-      "fullUrl": "https://api.health.gov.au/RegisteredNurseAttendance/RN-34567",
-      "resource": {
-        "resourceType": "Encounter",
-        "id": "RN-34567",
-        "identifier": [
-          {
-            "system": "http://ns.health.gov.au/id/attendance/rn",
-            "value": "RN-34567"
-          }
-        ],
-        "status": "finished",
-        "subject": {
-          "reference": "HealthcareService/SVC-24680",
-          "display": "Golden Years Residential Care"
-        },
-        "period": {
-          "start": "2023-07-01T07:00:00Z",
-          "end": "2023-07-01T15:00:00Z"
-        },
-        "performer": [
-          {
-            "reference": "Practitioner/RN-P13579",
-            "display": "Emily Johnson"
-          }
-        ],
-        "reasonCode": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/encounter-reason",
-                "code": "routine",
-                "display": "Routine"
-              }
-            ],
-            "text": "Morning shift"
-          }
-        ]
-      }
+      "reference": "Practitioner/RN-P12345",
+      "display": "Jane Smith"
+    }
+  ],
+  "reasonCode": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/encounter-reason",
+          "code": "routine",
+          "display": "Routine"
+        }
+      ],
+      "text": "Regular shift"
+    }
+  ],
+  "note": [
+    {
+      "text": "Updated via API at 2025-04-07T16:37:59+10:00"
     }
   ]
 }
 ```
 
-This will return a summary of nurse attendance for the specified service, allowing SunsetCare to quickly identify any compliance issues.
-
-**Value:** SunsetCare's staffing coordinator can monitor compliance in real-time and address any gaps proactively, avoiding potential regulatory issues and ensuring quality care for residents.
+**Value:** SunsetCare's staffing coordinator can monitor compliance in real-time, correct any errors or add details to records via the API, and address any gaps proactively, avoiding potential regulatory issues and ensuring quality care for residents.
 
 ## Conclusion
 

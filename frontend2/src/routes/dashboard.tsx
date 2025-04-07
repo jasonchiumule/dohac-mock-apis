@@ -1,5 +1,6 @@
 import ProviderInfoSection from '~/lib/components/providersSection';
 import QualityIndicatorsSection from '~/lib/components/qualitySection';
+import NursesSection from '~/lib/components/nursesSection'; // <-- Import the new component
 
 export default function Dashboard() {
   return (
@@ -14,6 +15,10 @@ export default function Dashboard() {
       <br />
       {/* --- Quality Indicators Reporting Section --- */}
       <QualityIndicatorsSection />
+
+      <br /> {/* <-- Add spacing */}
+      {/* --- Registered Nurse Attendance Section --- */}
+      <NursesSection /> {/* <-- Add the new component instance */}
 
       {/* Add more sections here for other APIs if needed */}
 

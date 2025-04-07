@@ -1,5 +1,3 @@
-// dohac-mock-apis/frontend2/src/lib/schema.ts
-
 // --- Common FHIR-like & Utility Interfaces ---
 
 /** Represents an identifier with a system and value. */
@@ -232,18 +230,30 @@ export interface EncounterPeriod {
 
 /** Represents a performer in an Encounter. */
 export interface EncounterPerformer {
+  type?: Type[];
   period?: EncounterPeriod;
-  actor: Reference; // e.g., Practitioner/RN-P12345
+  actor: Reference; // e.g., Practitioner/RN-P12345 or RelatedPerson
 }
 
 /** Represents the reason for an Encounter. */
 export interface EncounterReason {
-  value?: Type[]; // Reason coding or text
+  coding?: Coding[]; // Example showed coding here
+  text?: string; // Example showed text here
+  // value?: Type[]; // FHIR standard uses value[x] - adjust if needed based on actual API
 }
+
+/** Represents a note attached to a resource (like Encounter). */
+export interface EncounterNote {
+  // authorReference?: Reference;
+  // authorString?: string;
+  // time?: string; // ISO 8601 DateTime
+  text: string;
+}
+
 
 /**
  * Represents an Encounter resource, used here for RN Attendance.
- * Based on the /api/RegisteredNurseAttendance response entries.
+ * Based on the /api/RegisteredNurseAttendance response entries and PATCH example.
  */
 export interface Encounter {
   resourceType: 'Encounter';
@@ -252,23 +262,26 @@ export interface Encounter {
   status: 'planned' | 'arrived' | 'triaged' | 'in-progress' | 'onleave' | 'finished' | 'cancelled' | 'entered-in-error' | 'unknown';
   class?: Coding;
   subject?: Reference; // e.g., HealthcareService/SVC-54321
-  performer?: EncounterPerformer[]; // Based on example
+  performer?: EncounterPerformer[];
   period?: EncounterPeriod;
-  reasonCode?: EncounterReason[]; // Based on example
+  reasonCode?: EncounterReason[];
+  note?: EncounterNote[]; // Add note field based on PATCH example response
   serviceProvider?: Reference;
 }
 
 // Specific Bundle type for RN Attendance response
 export type RNAttendanceBundle = Bundle<Encounter>;
 
-export interface Provider {
-  id: string;
-  resourceType: string;
-  name: string;
-  // Add other fields as needed based on the actual response structure
-  // identifier?: { system: string; value: string }[];
-  // active?: boolean;
-  // type?: { coding?: { system: string; code: string; display: string }[]; text?: string }[];
-  // telecom?: { system: string; value: string; use: string }[];
-  // address?: { use: string; type: string; line: string[]; city: string; state: string; postalCode: string; country: string }[];
+/** Payload for PATCHing an Encounter record (specifically adding/updating notes based on example) */
+export interface EncounterPatchPayload {
+  // Add other patchable fields as needed, marking them optional
+  note?: EncounterNote[];
 }
+
+
+// Simplified Provider type (might need adjustment based on actual usage)
+// export interface Provider {
+//   id: string;
+//   resourceType: string;
+//   name: string;
+// }
