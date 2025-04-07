@@ -60,7 +60,7 @@ func main() {
 	router.Handle("/assets/*", fileServer)
 	router.Handle("/favicon.ico", fileServer)
 	router.Handle("/robots.txt", fileServer)
-	router.Handle("/vite.svg", fileServer)
+	router.Handle("/favicon.svg", fileServer)
 
 	// Serve index.html for all other routes (SPA routing)
 	router.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {

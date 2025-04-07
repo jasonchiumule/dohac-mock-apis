@@ -1,32 +1,37 @@
 import type { ParentComponent } from 'solid-js';
 import { A } from "@solidjs/router"; // Import A for navigation links
-
-// Import the logo asset - Adjust path if needed based on your alias setup
-// Vite typically sets up '~' to point to 'src', so '~/assets/...' should work.
 import solidLogo from '~/assets/solid.svg';
 
 export const Layout: ParentComponent = (props) => {
   // Define classes for active/inactive links for cleaner code
-  const baseLinkClasses = "inline-flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out";
-  const inactiveLinkClasses = "text-gray-600 hover:bg-gray-200 hover:text-gray-900";
-  const activeLinkClasses = "bg-blue-100 text-blue-700"; // Style for the active route
+  // --- Updated Styles ---
+  const baseLinkClasses = "inline-flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500";
+  const inactiveLinkClasses = "text-gray-700 hover:bg-gray-100 hover:text-gray-900";
+  const activeLinkClasses = "bg-blue-600 text-white hover:bg-blue-700"; // Active link is primary blue
+  // --- End Updated Styles ---
 
   return (
-    <div class="min-h-screen bg-gray-50"> {/* Optional: Background for the whole page */}
-      <header class="bg-white shadow-sm border-b border-gray-200">
+    <div class="min-h-screen bg-gray-100"> {/* Lighter page background */}
+      {/* --- Updated Styles: Subtle border instead of shadow --- */}
+      <header class="bg-white border-b border-gray-200">
+        {/* --- End Updated Styles --- */}
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> {/* Responsive container */}
           <div class="flex justify-between items-center h-16"> {/* Flex container for logo and links */}
 
             {/* Logo / Site Title Section */}
             <div class="flex-shrink-0 flex items-center">
-              <A href="/" class="flex items-center space-x-2 text-blue-600 hover:text-blue-800">
+              <div class='flex items-center space-x-3'> {/* Adjusted spacing */}
                 <img class="h-8 w-auto" src={solidLogo} alt="Solid Logo" />
-                <span class="font-semibold text-lg hidden sm:inline">DoHAC API Accelerator</span> {/* Hide text on very small screens */}
-              </A>
+                {/* --- Updated Styles: Darker, bolder text --- */}
+                <span class="font-semibold text-lg text-gray-800 hidden sm:inline">DoHAC API Accelerator</span>
+                {/* --- End Updated Styles --- */}
+              </div>
             </div>
 
             {/* Navigation Links Section */}
-            <div class="flex items-center space-x-2 sm:space-x-4"> {/* Spacing between links */}
+            {/* --- Updated Styles: Increased spacing --- */}
+            <div class="flex items-center space-x-1 sm:space-x-2"> {/* Spacing between links */}
+              {/* --- End Updated Styles --- */}
               <A
                 href="/"
                 class={baseLinkClasses}
@@ -34,8 +39,17 @@ export const Layout: ParentComponent = (props) => {
                 activeClass={activeLinkClasses}
                 end={true} // Match only the exact "/" path
               >
-                <span class="i-carbon-home text-lg mr-1 sm:mr-2"></span>
+                <span class="i-carbon-home text-lg mr-1"></span> {/* Removed responsive margin change */}
                 Home
+              </A>
+              <A
+                href="/api-test"
+                class={baseLinkClasses}
+                inactiveClass={inactiveLinkClasses}
+                activeClass={activeLinkClasses}
+              >
+                <span class="i-carbon-api text-lg mr-1"></span>
+                API Test
               </A>
               <A
                 href="/dashboard"
@@ -43,7 +57,7 @@ export const Layout: ParentComponent = (props) => {
                 inactiveClass={inactiveLinkClasses}
                 activeClass={activeLinkClasses}
               >
-                <span class="i-carbon-dashboard text-lg mr-1 sm:mr-2"></span>
+                <span class="i-carbon-dashboard text-lg mr-1"></span>
                 Dashboard
               </A>
               {/* Add more links here if needed */}
@@ -53,7 +67,9 @@ export const Layout: ParentComponent = (props) => {
       </header>
 
       {/* Page Content Area */}
-      <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      {/* --- Updated Styles: Consistent padding and max-width --- */}
+      <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        {/* --- End Updated Styles --- */}
         {props.children}
       </main>
     </div>

@@ -6,6 +6,7 @@ import { Router, Route } from "@solidjs/router"; // Import A for navigation link
 // Import your routes
 import Home from "~/routes/home.tsx";
 import Dashboard from "~/routes/dashboard.tsx";
+import ApiTest from "~/routes/apiTest.tsx";
 
 // Import the logo asset
 // import solidLogo from '~/assets/solid.svg';
@@ -21,6 +22,7 @@ render(
   () => (
     <Router root={Layout}>
       <Route path="/" component={Home} />
+      <Route path="/api-test" component={ApiTest} />
       <Route path="/dashboard" component={Dashboard} />
     </Router>
   ), root

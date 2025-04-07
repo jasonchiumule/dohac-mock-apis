@@ -1,3 +1,8 @@
+# 0.4.0 - Add: dashboard sections, quality and providers
+- showing value for each with before and after
+- added solidjs typescript docs
+- update favicon.svg
+
 # 0.3.1 - Add: go-chi compress middleware
 - to serve static files in gzip or brotli if the client allows
 

@@ -1,26 +1,22 @@
+import ProviderInfoSection from '~/lib/components/providersSection';
+import QualityIndicatorsSection from '~/lib/components/qualitySection';
+
 export default function Dashboard() {
-
   return (
-    <>
-      <p class='text-3xl bg-green-500 p-10'>Dashboard</p>
-      <button class="text-blue-400 hover:text-blue-500 font-mono font-light py-2 px-4 border-2 border-rounded border-blue-200"
-      >
-        Button
-      </button>
+    // Add padding consistent with layout's main area
+    <div class="space-y-8">
+      {/* Consistent heading style */}
+      <h1 class="text-3xl font-bold text-gray-800 mb-6">API Value Demonstration Dashboard</h1>
 
-      <div class="i-lucide-beef text-lg" />
-      <div class="i-ph-anchor-simple-thin text-5xl" />
+      {/* --- Provider Information Management Section --- */}
+      <ProviderInfoSection />
 
-      <div class="i-mdi-alarm text-orange-400" />
+      <br />
+      {/* --- Quality Indicators Reporting Section --- */}
+      <QualityIndicatorsSection />
 
-      <div class="i-logos-vue text-3xl" />
-      <div class='i-logos-react text-base'></div>
-      <button class="i-carbon-sun dark:i-carbon-moon" />
+      {/* Add more sections here for other APIs if needed */}
 
-      <div class="i-twemoji-grinning-face-with-smiling-eyes hover:i-twemoji-face-with-tears-of-joy" />
-      <span class="i-carbon-logo-github text-lg"></span>
-      <span class="i-mdi-light-home"></span>
-    </>
-
-  )
+    </div>
+  );
 }
