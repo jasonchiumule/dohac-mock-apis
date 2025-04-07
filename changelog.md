@@ -1,3 +1,8 @@
+# 0.3.0 - Add: more buttons to interact with backend apis
+- breaking out schema.ts for types
+- api.ts for frontend api calls
+- split out layout.tsx
+
 # 0.2.2 - Add: unocss with wind3, icons and fonts
 - can use tailwind style classnames
 - icons from iconify, remember to use text-base or text- attribute

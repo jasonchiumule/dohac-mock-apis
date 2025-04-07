@@ -1,5 +1,7 @@
 # CLAUDE.md - Project Reference
 
+# Backend Golang Application
+
 ## Project Overview
 This repository contains a mock implementation of the Department of Health and Aged Care's B2G APIs for healthcare providers. The project serves as an accelerator for providers to quickly implement integrations with government reporting systems. It includes a React-based frontend that demonstrates the business value of API integration.
 
@@ -16,7 +18,7 @@ This repository contains a mock implementation of the Department of Health and A
 - `cmd/server/spa/` - Built frontend files served by the Go server
 - `internal/api/api.go` - Router configuration
 - `Makefile` - Build and run commands
-- `frontend` - React application (Bun, Vite, TypeScript, shadcn/ui) demonstrating API value
+- `frontend2` - Solidjs application (Bun, Vite, TypeScript, unocss, zagjs components) demonstrating API value
 
 ### Handlers
 - `internal/handlers/auth/auth.go` - Authentication endpoints
@@ -135,3 +137,11 @@ Potential areas for improvement:
 - Configuration file support
 - Enhanced logging and monitoring
 - Additional value demonstration scenarios in the frontend
+
+# Frontend Solidjs Single Page App
+- Bun, Vite, Solidjs, solidrouter
+- Unocss (see /frontend2/uno.config.ts for details)
+  - tailwindcss classes via wind3
+  - icons via iconify via @unocss/preset-icons
+  - web-fonts via @unocss/preset-web-fonts
+- components via zagjs
