@@ -1,3 +1,6 @@
+# 0.3.1 - Add: go-chi compress middleware
+- to serve static files in gzip or brotli if the client allows
+
 # 0.3.0 - Add: more buttons to interact with backend apis
 - breaking out schema.ts for types
 - api.ts for frontend api calls

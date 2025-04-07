@@ -14,6 +14,8 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+
 	"github.com/jasonchiu/dohac-mock-apis/internal/api"
 )
 
@@ -40,6 +42,7 @@ func main() {
 
 	// Create a main router for the application
 	router := chi.NewRouter()
+	router.Use(middleware.Compress(5))
 
 	// Mount the API router under /api
 	router.Mount("/api", apiRouter)
