@@ -1,3 +1,8 @@
+# 0.5.2 - Update: Dockerfile for frontend2
+- update to use the solidjs frontend2
+- deleted frontend (the react based one)
+- update fly.toml to suspend, since this is http1.1 it's all good to use
+
 # 0.5.1 - Update: lazy import routes with suspense
 - code splitting the routes via lazy imports for quicker TTI
 - update home.tsx to describe the problem, solution and value
