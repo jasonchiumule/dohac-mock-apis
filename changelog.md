@@ -1,3 +1,8 @@
+# 0.2.2 - Add: unocss with wind3, icons and fonts
+- can use tailwind style classnames
+- icons from iconify, remember to use text-base or text- attribute
+- font changed to Roboto (in uno.config.ts and index.html)
+
 # 0.2.1 - Add: router to solid frontend2
 - added ~ alias for /src
 - added router for a /home and /dashboard

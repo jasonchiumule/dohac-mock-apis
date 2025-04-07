@@ -1,7 +1,8 @@
 /* @refresh reload */
+import "virtual:uno.css"
 import { render } from 'solid-js/web'
 import { Router, Route } from "@solidjs/router";
-import '~/index.css'
+// import '~/index.css'
 // import App from './App.tsx'
 
 import Home from "~/routes/home.tsx";
