@@ -11,7 +11,7 @@ export default function Home() {
   const highlightClasses = "font-semibold text-blue-700"; // Highlight key benefits
 
   return (
-    <div class="space-y-8 max-w-4xl mx-auto"> {/* Constrain width for readability */}
+    <> {/* Constrain width for readability */}
       <h1 class={headingClasses}>Welcome to the DoHAC B2G API Accelerator</h1>
 
       <section class={sectionCardClasses}>
@@ -60,6 +60,6 @@ export default function Home() {
           This accelerator helps you realize these benefits faster by providing a ready-to-use mock environment. Explore the <A href="/dashboard" class={linkClasses}>Dashboard</A> to see value demonstrations or use the <A href="/api-test" class={linkClasses}>API Testbed</A> to interact directly with the mock endpoints.
         </p>
       </section>
-    </div>
+    </>
   );
 }

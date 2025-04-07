@@ -5,23 +5,25 @@ import NursesSection from '~/lib/components/nursesSection'; // <-- Import the ne
 export default function Dashboard() {
   return (
     // Add padding consistent with layout's main area
-    <div class="space-y-8">
-      {/* Consistent heading style */}
-      <h1 class="text-3xl font-bold text-gray-800 mb-6">API Value Demonstration Dashboard</h1>
+    <>
+      <div class="space-y-8">
+        {/* Consistent heading style */}
+        <h1 class="text-2xl font-bold text-gray-800">API Value Demonstration Dashboard</h1>
 
-      {/* --- Provider Information Management Section --- */}
-      <ProviderInfoSection />
+        {/* --- Provider Information Management Section --- */}
+        <ProviderInfoSection />
 
-      <br />
-      {/* --- Quality Indicators Reporting Section --- */}
-      <QualityIndicatorsSection />
+        <br />
+        {/* --- Quality Indicators Reporting Section --- */}
+        <QualityIndicatorsSection />
 
-      <br /> {/* <-- Add spacing */}
-      {/* --- Registered Nurse Attendance Section --- */}
-      <NursesSection /> {/* <-- Add the new component instance */}
+        <br /> {/* <-- Add spacing */}
+        {/* --- Registered Nurse Attendance Section --- */}
+        <NursesSection /> {/* <-- Add the new component instance */}
 
-      {/* Add more sections here for other APIs if needed */}
+        {/* Add more sections here for other APIs if needed */}
 
-    </div>
+      </div>
+    </>
   );
 }

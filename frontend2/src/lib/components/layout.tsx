@@ -1,6 +1,7 @@
 import type { ParentComponent } from 'solid-js';
 import { A } from "@solidjs/router"; // Import A for navigation links
 import Logo from '/favicon.svg';
+import Mulesoft from "~/assets/mulesoft.svg"
 
 export const Layout: ParentComponent = (props) => {
   // Define classes for active/inactive links for cleaner code
@@ -20,10 +21,11 @@ export const Layout: ParentComponent = (props) => {
 
             {/* Logo / Site Title Section */}
             <div class="flex-shrink-0 flex items-center">
-              <div class='flex items-center space-x-3'> {/* Adjusted spacing */}
-                <img class="h-8 w-auto" src={Logo} alt="Cardiogram Logo" />
-                {/* --- Updated Styles: Darker, bolder text --- */}
-                <span class="font-semibold text-lg text-gray-800 hidden sm:inline">DoHAC API Accelerator</span>
+              <div class='flex items-center space-x-1'> {/* Adjusted spacing */}
+                <img class="h-8 w-8" src={Logo} alt="Cardiogram Logo" />
+                <span>x</span>
+                <img class="h-8 w-8" src={Mulesoft} alt="Mulesoft Logo" />
+                <span class="pl-2 font-semibold text-lg text-gray-800 hidden sm:inline">DoHAC API Accelerator</span>
                 {/* --- End Updated Styles --- */}
               </div>
             </div>
@@ -69,8 +71,10 @@ export const Layout: ParentComponent = (props) => {
       {/* Page Content Area */}
       {/* --- Updated Styles: Consistent padding and max-width --- */}
       <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* --- End Updated Styles --- */}
-        {props.children}
+        <div class="space-y-6 p-4 md:p-6">
+          {/* --- End Updated Styles --- */}
+          {props.children}
+        </div>
       </main>
     </div>
   );

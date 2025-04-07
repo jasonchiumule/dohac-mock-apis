@@ -1,3 +1,9 @@
+# 0.5.3 - Update: css niceness for mobile
+- removed solid.svg
+- added mulesoft.svg
+- universal div container now in layout.tsx
+- inputs now not overflowing div container with w-9/10
+
 # 0.5.2 - Update: Dockerfile for frontend2
 - update to use the solidjs frontend2
 - deleted frontend (the react based one)
