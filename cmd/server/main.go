@@ -58,8 +58,8 @@ func main() {
 
 	// Handle static files with appropriate paths
 	router.Handle("/assets/*", fileServer)
-	router.Handle("/favicon.ico", fileServer)
-	router.Handle("/robots.txt", fileServer)
+	// router.Handle("/favicon.ico", fileServer)
+	// router.Handle("/robots.txt", fileServer)
 	router.Handle("/favicon.svg", fileServer)
 
 	// Serve index.html for all other routes (SPA routing)

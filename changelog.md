@@ -1,3 +1,7 @@
+# 0.5.5 - Add: API tester, option of Mulesoft proxy
+- using zagjs select
+- update apiTest.tsx with Mulesoft backend or Go backend
+
 # 0.5.4 - Update: text and css to fit walkthrough demo
 - text updated to makes sense with walkthrough demo
 - changed some css colors to match as well

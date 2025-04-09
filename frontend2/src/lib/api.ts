@@ -1,19 +1,16 @@
-// Import types from the schema file
 import type {
   Organization,
   HealthcareService,
   Questionnaire,
-  QuestionnaireResponse, // <-- Add this import
+  QuestionnaireResponse,
   RNAttendanceBundle,
-  Encounter, // <-- Import Encounter if needed for return type of PATCH
-  EncounterPatchPayload, // <-- Import the new patch payload type
-  // No need to import Bundle, Encounter etc. directly if only using RNAttendanceBundle
+  Encounter,
+  EncounterPatchPayload,
 } from './schema';
 
 // --- Authentication ---
 const MOCK_ACCESS_TOKEN = "mock_c88484a9-6cb3-4ad0-b9bd-5563567175ee_20230720151152";
-// Ensure your Vite proxy is set up correctly if running dev server on different port than Go backend
-const API_BASE_URL = "/api"; // Assumes proxy is set up or running on same origin
+// REMOVED: const API_BASE_URL = "/api"; Base URL will be passed as a parameter
 
 // --- Helper for Headers ---
 const getAuthHeaders = () => {
@@ -22,7 +19,7 @@ const getAuthHeaders = () => {
     'Authorization': `Bearer ${MOCK_ACCESS_TOKEN}`,
     'transaction_id': transactionId,
     'Accept': 'application/json',
-    'Content-Type': 'application/json', // Ensure this is set for POST
+    'Content-Type': 'application/json', // Ensure this is set for POST/PATCH
   };
 };
 
@@ -30,9 +27,11 @@ const getAuthHeaders = () => {
 
 /**
  * Fetches the list of providers (Organizations).
+ * @param baseUrl - The base URL for the API endpoint. Defaults to "/api".
  */
-export async function fetchProviders(): Promise<Organization[]> {
-  const url = `${API_BASE_URL}/Provider`;
+export async function fetchProviders(baseUrl: string = "/api"): Promise<Organization[]> {
+  const url = `${baseUrl}/Provider`; // Use baseUrl parameter
+  console.log(`Fetching Providers from: ${url}`);
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -54,9 +53,11 @@ export async function fetchProviders(): Promise<Organization[]> {
 /**
  * Fetches the list of healthcare services for a given organization.
  * @param organizationId - The ID of the organization (e.g., "PRV-12345")
+ * @param baseUrl - The base URL for the API endpoint. Defaults to "/api".
  */
-export async function fetchHealthcareServices(organizationId: string): Promise<HealthcareService[]> {
-  const url = `${API_BASE_URL}/HealthcareService?organization=${encodeURIComponent(organizationId)}`;
+export async function fetchHealthcareServices(organizationId: string, baseUrl: string = "/api"): Promise<HealthcareService[]> {
+  const url = `${baseUrl}/HealthcareService?organization=${encodeURIComponent(organizationId)}`; // Use baseUrl parameter
+  console.log(`Fetching HealthcareServices from: ${url}`);
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -77,9 +78,11 @@ export async function fetchHealthcareServices(organizationId: string): Promise<H
 
 /**
  * Fetches the list of available questionnaires.
+ * @param baseUrl - The base URL for the API endpoint. Defaults to "/api".
  */
-export async function fetchQuestionnaires(): Promise<Questionnaire[]> {
-  const url = `${API_BASE_URL}/Questionnaire`;
+export async function fetchQuestionnaires(baseUrl: string = "/api"): Promise<Questionnaire[]> {
+  const url = `${baseUrl}/Questionnaire`; // Use baseUrl parameter
+  console.log(`Fetching Questionnaires from: ${url}`);
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -102,9 +105,11 @@ export async function fetchQuestionnaires(): Promise<Questionnaire[]> {
  * Fetches Registered Nurse attendance records for a specific service.
  * @param serviceId - The ID of the healthcare service (e.g., "SVC-54321")
  * @param summary - Whether to fetch summary data (defaults to true based on example)
+ * @param baseUrl - The base URL for the API endpoint. Defaults to "/api".
  */
-export async function fetchRNAttendance(serviceId: string, summary: boolean = true): Promise<RNAttendanceBundle> {
-  const url = `${API_BASE_URL}/RegisteredNurseAttendance?service=${encodeURIComponent(serviceId)}&summary=${summary}`;
+export async function fetchRNAttendance(serviceId: string, summary: boolean = true, baseUrl: string = "/api"): Promise<RNAttendanceBundle> {
+  const url = `${baseUrl}/RegisteredNurseAttendance?service=${encodeURIComponent(serviceId)}&summary=${summary}`; // Use baseUrl parameter
+  console.log(`Fetching RN Attendance from: ${url}`);
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -114,7 +119,6 @@ export async function fetchRNAttendance(serviceId: string, summary: boolean = tr
       const errorBody = await response.text();
       throw new Error(`HTTP error! status: ${response.status} - ${response.statusText} - ${errorBody}`);
     }
-    // Assuming the response is the Bundle structure
     const data: RNAttendanceBundle = await response.json();
     console.log(`Fetched RN Attendance for ${serviceId}:`, data); // Log fetched data
     return data;
@@ -124,15 +128,15 @@ export async function fetchRNAttendance(serviceId: string, summary: boolean = tr
   }
 }
 
-
-// --- NEW FUNCTION ---
 /**
  * Posts a QuestionnaireResponse to the mock API.
  * @param responsePayload - The QuestionnaireResponse object to submit.
+ * @param baseUrl - The base URL for the API endpoint. Defaults to "/api".
  */
-export async function postQuestionnaireResponse(responsePayload: QuestionnaireResponse): Promise<any> { // Return type might be the created resource or just status confirmation
-  const url = `${API_BASE_URL}/QuestionnaireResponse`;
-  console.log("Posting Questionnaire Response:", JSON.stringify(responsePayload, null, 2)); // Log payload
+export async function postQuestionnaireResponse(responsePayload: QuestionnaireResponse, baseUrl: string = "/api"): Promise<any> { // Return type might be the created resource or just status confirmation
+  const url = `${baseUrl}/QuestionnaireResponse`; // Use baseUrl parameter
+  console.log(`Posting Questionnaire Response to: ${url}`);
+  console.log("Payload:", JSON.stringify(responsePayload, null, 2)); // Log payload
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -140,68 +144,90 @@ export async function postQuestionnaireResponse(responsePayload: QuestionnaireRe
       body: JSON.stringify(responsePayload),
     });
 
-    // Check if the response is successful (200 OK or 201 Created)
-    if (!response.ok) {
-      const errorBody = await response.text(); // Try to get error details from the body
-      console.error("API Error Response Body:", errorBody);
-      throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}. ${errorBody}`);
-    }
-
-    // Try parsing JSON, but handle cases where the body might be empty (e.g., on a 201 Created with no content)
-    const contentType = response.headers.get("content-type");
-    if (contentType && contentType.indexOf("application/json") !== -1) {
-      const data = await response.json();
-      console.log("Posted Questionnaire Response Result:", data);
-      return data; // Return the parsed JSON data (likely the created/updated resource)
-    } else {
-      console.log(`Posted Questionnaire Response successfully (Status: ${response.status}, No JSON body in response).`);
-      return { success: true, status: response.status }; // Return success indicator if no JSON
-    }
-  } catch (error) {
-    console.error("Error posting questionnaire response:", error);
-    // Check if it's an Error object before accessing message
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to post questionnaire response: ${errorMessage}`); // Re-throw a more specific error
-  }
-}
-// --- End of NEW FUNCTION ---
-
-// --- NEW FUNCTION for PATCH ---
-/**
- * Updates (Patches) a specific Registered Nurse attendance record (Encounter).
- * @param recordId - The ID of the Encounter record to update (e.g., "RN-12345")
- * @param patchPayload - The payload containing the fields to update.
- */
-export async function patchNurseAttendance(recordId: string, patchPayload: EncounterPatchPayload): Promise<Encounter> {
-  const url = `${API_BASE_URL}/RegisteredNurseAttendance/${encodeURIComponent(recordId)}`;
-  console.log(`Patching RN Attendance record ${recordId}:`, JSON.stringify(patchPayload, null, 2));
-  try {
-    const response = await fetch(url, {
-      method: 'PATCH',
-      headers: getAuthHeaders(), // Content-Type is needed for PATCH
-      body: JSON.stringify(patchPayload),
-    });
-
-    // Check if the response is successful (typically 200 OK for PATCH)
     if (!response.ok) {
       const errorBody = await response.text();
       console.error("API Error Response Body:", errorBody);
       throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}. ${errorBody}`);
     }
 
-    // Assuming PATCH returns the updated Encounter resource
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
-      const data: Encounter = await response.json();
-      console.log(`Patched RN Attendance record ${recordId} Result:`, data);
-      return data; // Return the updated resource
+      // Check if body has content before trying to parse
+      const textBody = await response.text();
+      if (textBody) {
+        try {
+          const data = JSON.parse(textBody);
+          console.log("Posted Questionnaire Response Result:", data);
+          return data;
+        } catch (parseError) {
+          console.error("Failed to parse JSON response body:", parseError);
+          // Decide how to handle - maybe return success status as below, or throw specific error
+          return { success: true, status: response.status, message: "Received non-empty, non-JSON response", body: textBody };
+        }
+      } else {
+        console.log(`Posted Questionnaire Response successfully (Status: ${response.status}, Empty JSON body).`);
+        return { success: true, status: response.status, message: "Empty JSON body" };
+      }
     } else {
-      console.warn(`Patched RN Attendance successfully (Status: ${response.status}), but response body was not JSON or was empty.`);
+      // Handle non-JSON responses (e.g., plain text, or empty body with status 201/204)
+      const responseBody = await response.text(); // Read text body even if not JSON
+      console.log(`Posted Questionnaire Response successfully (Status: ${response.status}, Content-Type: ${contentType || 'N/A'}). Response body:`, responseBody || '(empty)');
+      return { success: true, status: response.status, body: responseBody }; // Return success indicator and potentially the body
+    }
+  } catch (error) {
+    console.error("Error posting questionnaire response:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to post questionnaire response: ${errorMessage}`);
+  }
+}
+
+/**
+ * Updates (Patches) a specific Registered Nurse attendance record (Encounter).
+ * @param recordId - The ID of the Encounter record to update (e.g., "RN-12345")
+ * @param patchPayload - The payload containing the fields to update.
+ * @param baseUrl - The base URL for the API endpoint. Defaults to "/api".
+ */
+export async function patchNurseAttendance(recordId: string, patchPayload: EncounterPatchPayload, baseUrl: string = "/api"): Promise<Encounter> {
+  const url = `${baseUrl}/RegisteredNurseAttendance/${encodeURIComponent(recordId)}`; // Use baseUrl parameter
+  console.log(`Patching RN Attendance record ${recordId} at: ${url}`);
+  console.log("Payload:", JSON.stringify(patchPayload, null, 2));
+  try {
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: getAuthHeaders(), // Content-Type is already application/json here
+      body: JSON.stringify(patchPayload),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error("API Error Response Body:", errorBody);
+      throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}. ${errorBody}`);
+    }
+
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const textBody = await response.text();
+      if (textBody) {
+        try {
+          const data: Encounter = JSON.parse(textBody);
+          console.log(`Patched RN Attendance record ${recordId} Result:`, data);
+          return data;
+        } catch (parseError) {
+          console.error("Failed to parse JSON response body for PATCH:", parseError);
+          throw new Error("API did not return valid JSON as expected after successful PATCH.");
+        }
+      } else {
+        console.warn(`Patched RN Attendance successfully (Status: ${response.status}), but response body was empty.`);
+        throw new Error("API returned an empty body after successful PATCH.");
+      }
+
+    } else {
+      console.warn(`Patched RN Attendance successfully (Status: ${response.status}), but response body was not JSON or was empty. Content-Type: ${contentType}`);
       throw new Error("API did not return JSON as expected after successful PATCH.");
     }
   } catch (error) {
     console.error(`Error patching RN attendance record ${recordId}:`, error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to patch RN attendance record: ${errorMessage}`); // Re-throw a more specific error
+    throw new Error(`Failed to patch RN attendance record: ${errorMessage}`);
   }
 }
