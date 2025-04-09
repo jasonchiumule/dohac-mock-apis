@@ -2,6 +2,9 @@ import { createSignal, Show, Switch, Match } from 'solid-js';
 import type { Organization } from '~/lib/schema';
 import { fetchProviders } from '~/lib/api';
 
+//
+const newAddress = '99 Flamingo Parade, Melbourne, VIC 3000';
+
 // Helper function (kept local as it's only used here)
 const getAddressString = (org: Organization | undefined): string => {
   // ... (no changes in helper function logic)
@@ -21,18 +24,18 @@ type ProviderCheckState = 'initial' | 'loading' | 'checked' | 'error';
 const primaryButtonClasses = "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed";
 const secondaryButtonClasses = "inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"; // Using indigo focus for secondary as example
 const errorAlertClasses = "mt-4 p-3 bg-red-50 border border-red-300 text-red-700 rounded-md text-sm flex items-center";
-const successAlertClasses = "p-3 bg-green-50 border border-green-300 text-green-700 rounded-md text-sm flex items-center";
+// const successAlertClasses = "p-3 bg-green-50 border border-green-300 text-green-700 rounded-md text-sm flex items-center";
 const warningAlertClasses = "mt-4 p-3 bg-yellow-50 border border-yellow-300 text-yellow-700 rounded-md text-sm flex items-center";
-const infoAlertClasses = successAlertClasses; // Use green style for info here
+const infoAlertClasses = errorAlertClasses;
 const sectionCardClasses = "p-6 bg-white rounded-lg border border-gray-200"; // Flat card style
 const headingClasses = "text-xl font-semibold text-gray-800 mb-4 flex items-center";
 const subHeadingClasses = "text-lg font-medium text-gray-700 mb-2"; // Darker subheading
 const paragraphClasses = "text-sm text-gray-600 mb-4"; // Standard paragraph
 const beforeCardClasses = "border border-gray-200 p-4 rounded-md bg-gray-50";
-const afterCardClasses = "border border-blue-200 p-4 rounded-md bg-blue-50"; // Use theme color border
+const afterCardClasses = "border border-blue-200 p-4 rounded-md bg-green-50"; // Use theme color border
 const cardHeadingClasses = "text-md font-semibold text-gray-700 mb-2 flex items-center"; // Consistent card headings
 const listClasses = "list-disc list-inside text-sm text-gray-600 space-y-1";
-const afterListClasses = "list-disc list-inside text-sm text-blue-700 space-y-1"; // Theme color list text
+const afterListClasses = "list-disc list-inside text-sm text-green-700 space-y-1"; // Theme color list text
 
 export default function ProviderInfoSection() {
   // --- State Management ---
@@ -88,6 +91,7 @@ export default function ProviderInfoSection() {
               <p class={paragraphClasses}>
                 Manually checking provider details across different government portals is time-consuming. Updates require remembering to call or log in separately, risking outdated information and potential compliance issues.
               </p>
+              <p class={`${paragraphClasses} font-bold`}> We recently moved to <code class="font-mono bg-yellow-100 px-1 rounded">{newAddress}</code></p>
             </div>
 
             {/* Action Area */}
@@ -134,7 +138,7 @@ export default function ProviderInfoSection() {
             <div class={afterCardClasses}>
               {/* Use theme color for heading text */}
               <h4 class={`${cardHeadingClasses} text-blue-800`}>
-                <span class="i-carbon-flash text-blue-600 mr-2"></span>
+                <span class="i-carbon-flash text-green-700 mr-2"></span>
                 API Integration (After)
               </h4>
               <ul class={afterListClasses}>
@@ -142,9 +146,8 @@ export default function ProviderInfoSection() {
                 <li>Instant fetch of registered data</li>
                 <li>Direct comparison or flag for review</li>
                 <li class="font-semibold">Time Saved: ~5-15 mins per check</li>
-                <li>Reduced administrative burden</li>
+                <li>Reduced administrative burden and costly admin related errors</li>
                 <li>Improved data accuracy and compliance timeliness</li>
-                <li class="font-semibold">Estimated Cost Saving: ~$5-10 per check*</li>
               </ul>
               <p class="text-xs text-blue-600 mt-2">*Based on average admin hourly rates.</p>
             </div>
@@ -159,12 +162,15 @@ export default function ProviderInfoSection() {
             </div>
           }>
             {(provider) => ( // Use render prop form for safety
-              <div class={infoAlertClasses}> {/* Use info/success style */}
-                <span class="i-carbon-information text-lg mr-2"></span>
+              <div class={infoAlertClasses}> {/* Use info/error style */}
+                <span class="i-carbon-warning-alt text-lg mr-2"></span>
                 <span>
                   API Check Result for <strong>{provider().name || 'N/A'}</strong> (ID: {provider().id || 'N/A'}):
-                  Registered address is <code class="font-mono bg-green-100 px-1 rounded">{getAddressString(provider())}</code>. {/* Lighter code bg */}
-                  <br />If incorrect, contact the relevant authority (e.g., Health.gov.au on <a href="tel:1800020103" class="underline hover:text-green-800">1800 020 103</a>). {/* Darker hover */}
+                  <br />
+                  Government registered address is <code class="font-mono bg-red-100 px-1 rounded">{getAddressString(provider())}</code>.
+                  <br />
+                  Our database address is <code class="font-mono bg-red-100 px-1 rounded">{newAddress}</code>.
+                  <br />Address mismatch, please contact the relevant authority (e.g., Health.gov.au on <a href="tel:1800020103" class="underline hover:text-gray-800">1800 020 103</a>) to update address.
                 </span>
               </div>
             )}

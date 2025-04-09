@@ -176,7 +176,7 @@ export default function QualityIndicatorsSection() {
                                 class={formInputClasses}
                                 disabled={qiState() === 'submitting'}
                                 step={item.type === 'decimal' ? 'any' : '1'} // Allow decimals in number input
-                                placeholder={item.type === 'integer' || item.type === 'decimal' ? 'e.g., 123' : 'e.g., Text'}
+                                placeholder={item.type === 'integer' || item.type === 'decimal' ? 'e.g., 123' : 'e.g., Description and comments'}
                               />
                             </div>
                           )}
@@ -241,10 +241,9 @@ export default function QualityIndicatorsSection() {
                   <li>Automated data aggregation (potential)</li>
                   <li>Direct submission via API</li>
                   <li>Automated data validation rules (potential backend)</li>
-                  <li class="font-semibold">Time Saved: ~2 hours per service/quarter</li>
+                  <li class="font-semibold">Time Saved: ~3-4 hours per service/quarter</li>
                   <li>Eliminated manual entry errors</li>
                   <li>Improved submission timeliness (e.g., 100% on-time rate)</li>
-                  <li class="font-semibold">Estimated Cost Saving: ~$100-150 per service/quarter*</li>
                 </ul>
                 <p class="text-xs text-green-600 mt-2">*Based on average admin/clinical hourly rates.</p>
               </div>

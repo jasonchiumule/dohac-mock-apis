@@ -8,7 +8,7 @@ export default function Home() {
   const paragraphClasses = "text-base text-gray-600 mb-4 leading-relaxed"; // Standard paragraph with better line spacing
   const listClasses = "list-disc list-inside text-base text-gray-600 space-y-2 mb-4 pl-4"; // Styled list
   const linkClasses = "text-blue-600 hover:text-blue-800 hover:underline font-medium"; // Link style
-  const highlightClasses = "font-semibold text-blue-700"; // Highlight key benefits
+  const highlightClasses = "font-semibold bg-green-50"; // Highlight key benefits
 
   return (
     <> {/* Constrain width for readability */}

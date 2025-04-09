@@ -1,3 +1,7 @@
+# 0.5.4 - Update: text and css to fit walkthrough demo
+- text updated to makes sense with walkthrough demo
+- changed some css colors to match as well
+
 # 0.5.3 - Update: css niceness for mobile
 - removed solid.svg
 - added mulesoft.svg

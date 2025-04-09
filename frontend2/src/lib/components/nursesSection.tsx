@@ -17,10 +17,10 @@ const paragraphClasses = "text-sm text-gray-600 mb-4"; // Standard paragraph
 const formInputClasses = "mt-1 block w-9/10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"; // Flat input, blue focus
 const formLabelClasses = "block text-sm font-medium text-gray-700 mb-1";
 const beforeCardClasses = "border border-gray-200 p-4 rounded-md bg-gray-50";
-const afterCardClassesBlue = "border border-blue-200 p-4 rounded-md bg-blue-50"; // Use blue theme border
+const afterCardClasses = "border border-green-200 p-4 rounded-md bg-green-50"; // Use blue theme border
 const cardHeadingClasses = "text-md font-semibold text-gray-700 mb-2 flex items-center"; // Consistent card headings
 const listClasses = "list-disc list-inside text-sm text-gray-600 space-y-1";
-const afterListClassesBlue = "list-disc list-inside text-sm text-blue-700 space-y-1"; // Blue theme color list text
+const afterListClasses = "list-disc list-inside text-sm text-green-700 space-y-1"; // Blue theme color list text
 // const codeBlockClasses = "p-3 bg-gray-100 border border-gray-300 rounded-md text-xs font-mono overflow-x-auto"; // Not used, removed for brevity
 
 // --- Component ---
@@ -255,19 +255,19 @@ export default function NursesSection() {
                 </h4>
                 <ul class={listClasses}>
                   <li>Manual timesheet collection/entry</li>
-                  <li>Manual checks for 24/7 RN coverage</li>
+                  <li>Manual checks for 24/7 Registered Nurse coverage</li>
                   <li>Delayed identification of compliance gaps</li>
                   <li>Manual data aggregation for reporting</li>
                   <li>Risk of transcription errors</li>
                 </ul>
               </div>
               {/* After */}
-              <div class={afterCardClassesBlue}>
+              <div class={afterCardClasses}>
                 <h4 class={`${cardHeadingClasses} text-blue-800`}>
-                  <span class="i-carbon-flash text-blue-600 mr-2"></span>
+                  <span class="i-carbon-flash text-green-600 mr-2"></span>
                   API Integration (After)
                 </h4>
-                <ul class={afterListClassesBlue}>
+                <ul class={afterListClasses}>
                   <li>Automated data retrieval from rostering/HR systems (potential)</li>
                   <li>Direct query/update of attendance records via API</li>
                   <li>Real-time compliance monitoring capability</li>
@@ -276,7 +276,7 @@ export default function NursesSection() {
                   <li>Proactive management of staffing levels</li>
                   <li class="font-semibold">Faster Response to Audits/Queries</li>
                 </ul>
-                <p class="text-xs text-blue-600 mt-2">*Facilitates easier reporting and compliance verification.</p>
+                <p class="text-xs text-green-600 mt-2">*Facilitates easier reporting and compliance verification.</p>
               </div>
             </div>
           </div>

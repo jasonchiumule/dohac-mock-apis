@@ -8,7 +8,7 @@ export default function Dashboard() {
     <>
       <div class="space-y-8">
         {/* Consistent heading style */}
-        <h1 class="text-2xl font-bold text-gray-800">API Value Demonstration Dashboard</h1>
+        <h1 class="text-2xl font-bold text-gray-800">API Value Demonstration - Before and After DoHAC APIs</h1>
 
         {/* --- Provider Information Management Section --- */}
         <ProviderInfoSection />

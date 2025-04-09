@@ -5,9 +5,14 @@ meta {
 }
 
 get {
-  url: http://localhost:8080/api/RegisteredNurseAttendance
+  url: http://localhost:8080/api/RegisteredNurseAttendance?service=SVC-54321&summary=true
   body: none
   auth: none
+}
+
+params:query {
+  service: SVC-54321
+  summary: true
 }
 
 headers {
