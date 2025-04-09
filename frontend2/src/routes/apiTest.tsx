@@ -2,10 +2,9 @@ import { createSignal, Show, createMemo, createUniqueId, For } from 'solid-js';
 import { Portal } from 'solid-js/web';
 
 // --- Zag.js Imports ---
-import * as accordion from "@zag-js/accordion";
 import * as select from "@zag-js/select";
+import * as tooltip from "@zag-js/tooltip";
 import { normalizeProps, useMachine } from "@zag-js/solid";
-// import type { ValueChangeDetails as SelectValueChangeDetails } from "@zag-js/select"; // Import details type
 
 // Import ALL the API functions we want to test
 import {
@@ -14,7 +13,6 @@ import {
   fetchQuestionnaires,
   fetchRNAttendance,
   postQuestionnaireResponse,
-  // patchNurseAttendance, // Make sure patchNurseAttendance is imported if used later
 } from '~/lib/api';
 
 // Import necessary types for payload
@@ -22,25 +20,24 @@ import type { QuestionnaireResponse } from '~/lib/schema';
 
 // --- Style Constants ---
 const primaryButtonClasses = "inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed";
-const formInputClasses = "block w-9/10 md:w-36 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed";
+const formInputClasses = "block w-full md:w-48 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed";
 const formLabelClasses = "block text-sm font-medium text-gray-700 mb-1";
 const codeBlockClasses = "bg-gray-50 p-4 border border-gray-200 rounded-md overflow-x-auto text-sm font-mono";
 const textareaClasses = "block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm font-mono disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed";
-
-// --- Container Style (Shared by GET and POST) ---
 const sectionContainerClasses = "p-4 border border-gray-200 rounded-md bg-white shadow-sm mb-4";
 
-// --- Accordion Style Constants (Updated) ---
-const accordionTriggerClasses = "w-full flex justify-between items-center text-left text-lg text-gray-700 border-gray-200 bg-white border-1 rounded-sm font-sans";
-const accordionContentClasses = "pt-4 pb-4 text-sm text-gray-600 space-y-3";
-
-// --- Select Style Constants ---
+// --- Select Component Styles ---
 const selectTriggerClasses = "inline-flex justify-between w-full md:w-60 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed";
-const selectContentClasses = "absolute z-10 mt-1 w-full md:w-60 bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm";
-const selectItemClasses = "text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9";
+// UPDATED: Use border, match trigger width
+const selectContentClasses = "absolute z-10 mt-1 w-full md:w-50 bg-white shadow-lg max-h-60 rounded-md py-1 text-base border border-gray-300 overflow-auto focus:outline-none sm:text-sm";
+const selectItemClasses = "text-gray-900 cursor-default select-none relative py-2 pr-9 list-none";
 const selectItemHighlightedClasses = "text-white bg-blue-600";
 const selectItemTextClasses = "block truncate";
 const selectItemIndicatorClasses = "absolute inset-y-0 right-0 flex items-center pr-4";
+
+// --- Tooltip Styles ---
+const tooltipTriggerButtonClasses = "inline-flex items-center justify-center px-2 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"; // ADDED: Styles for consistency
+const tooltipContentClasses = "bg-gray-800 text-white text-xs rounded px-2 py-1 shadow-lg z-50";
 
 // --- Default JSON Payload for QuestionnaireResponse ---
 const defaultQuestionnaireResponsePayload = JSON.stringify({
@@ -69,6 +66,61 @@ const backendOptions: BackendOption[] = [
   { label: "Mulesoft Proxy", value: "https://dohac-accelerator-0ks4d8.yz4tr9-1.aus-s1.cloudhub.io/api" },
 ];
 
+// --- API Call Definitions ---
+type InputRequirement = 'orgId' | 'serviceId' | 'payload';
+interface ApiCallDefinition {
+  id: string; // Used as value for select
+  label: string; // Used as display label for select
+  description: string;
+  type: 'GET' | 'POST';
+  requiredInputs: InputRequirement[];
+}
+
+const apiCallDefinitions: ApiCallDefinition[] = [
+  {
+    id: 'fetchProviders',
+    label: 'GET /api/Provider',
+    description: 'Fetches a list of all provider Organizations.',
+    type: 'GET',
+    requiredInputs: [],
+  },
+  {
+    id: 'fetchHealthcareServices',
+    label: 'GET /HealthcareService',
+    description: 'Fetches Healthcare Services associated with a specific Organization ID.',
+    type: 'GET',
+    requiredInputs: ['orgId'],
+  },
+  {
+    id: 'fetchQuestionnaires',
+    label: 'GET /api/Questionnaire',
+    description: 'Fetches a list of available Questionnaires.',
+    type: 'GET',
+    requiredInputs: [],
+  },
+  {
+    id: 'fetchRNAttendance',
+    label: 'GET /api/RegisteredNurseAttendance',
+    description: 'Fetches RN Attendance Observations for a specific Service ID.',
+    type: 'GET',
+    requiredInputs: ['serviceId'],
+  },
+  {
+    id: 'postQuestionnaireResponse',
+    label: 'POST /QuestionnaireResponse',
+    description: 'Submits a new Questionnaire Response.',
+    type: 'POST',
+    requiredInputs: ['payload'],
+  },
+  // Add future API calls here
+];
+
+// Helper to create Zag.js compatible items from API definitions
+const apiCallSelectOptions = apiCallDefinitions.map(def => ({
+  label: def.label,
+  value: def.id, // Use the unique id as the value
+}));
+
 export default function ApiTest() {
   // --- State ---
   const [loading, setLoading] = createSignal(false);
@@ -78,46 +130,60 @@ export default function ApiTest() {
   const [serviceIdInput, setServiceIdInput] = createSignal("SVC-54321");
   const [questionnaireResponsePayload, setQuestionnaireResponsePayload] = createSignal(defaultQuestionnaireResponsePayload);
   const [selectedBackendUrl, setSelectedBackendUrl] = createSignal<string>(backendOptions[0].value); // Default to Go Proxy
+  const [selectedApiCallId, setSelectedApiCallId] = createSignal<string>(apiCallDefinitions[0].id); // Default to first API call ID
 
   // --- Backend Select State (Zag.js) ---
-  // const selectCollection = createMemo(() =>
-  //   select.collection({
-  //     items: backendOptions,
-  //     itemToString: (item) => item.label,
-  //     itemToValue: (item) => item.value,
-  //   })
-  // );
-
-  // FIX 1: useMachine returns the service directly
-  // FIX 2: Pass options directly, not in `context`
-  // FIX 3: Type `details` in onValueChange
-  const selectService = useMachine(select.machine, {
-    // collection: selectCollection(),
+  const backendSelectService = useMachine(select.machine, {
+    // Add context for proper initialization
     id: createUniqueId(),
-    collection: select.collection({
-      items: backendOptions
-    }
-    ),
+    collection: select.collection({ items: backendOptions }),
     defaultValue: ["/api"],
-    // name: "backend-select",
-    // defaultValue: [selectedBackendUrl()], // Initialize with the default backend URL
-    // closeOnSelect: true,
-    onValueChange: (details) => { // Explicitly type details
-      if (details.value.length > 0) {
-        setSelectedBackendUrl(details.value[0]);
-        console.log("Backend selected:", details.value[0]);
+    // selectedItems: [backendOptions.find(opt => opt.value === selectedBackendUrl())!], // Initialize with default
+    onValueChange: (details) => {
+      if (details.items.length > 0) {
+        setSelectedBackendUrl(details.items[0].value);
+        console.log("Backend selected:", details.items[0].value);
       }
     },
-  });
-  const selectApi = createMemo(() => select.connect(selectService, normalizeProps));
 
-  // --- Accordion State ---
-  // FIX 1 & 2 applied here too
-  const postAccordionService = useMachine(accordion.machine, {
-    id: createUniqueId(),
-    collapsible: true,
   });
-  const postAccordionApi = createMemo(() => accordion.connect(postAccordionService, normalizeProps));
+  const backendSelectApi = createMemo(() => select.connect(backendSelectService, normalizeProps));
+
+  // --- API Call Select State (Zag.js) --- NEW
+  const apiCallSelectService = useMachine(select.machine, {
+    // Add context for proper initialization
+    id: createUniqueId(),
+    collection: select.collection({ items: apiCallSelectOptions }),
+    // selectedItems: [apiCallSelectOptions.find(opt => opt.value === selectedApiCallId())!], // Initialize with default
+    defaultValue: ["fetchProviders"],
+    onValueChange: (details) => {
+      if (details.items.length > 0) {
+        setSelectedApiCallId(details.items[0].value);
+        console.log("API Call selected:", details.items[0].value);
+      }
+    },
+
+  });
+  const apiCallSelectApi = createMemo(() => select.connect(apiCallSelectService, normalizeProps));
+
+  // --- Tooltip State (Zag.js) ---
+  const tooltipService = useMachine(tooltip.machine, {
+    // Add context for proper initialization
+    id: createUniqueId(),
+    openDelay: 300,
+    closeDelay: 100,
+
+  });
+  const tooltipApi = createMemo(() => tooltip.connect(tooltipService, normalizeProps));
+
+  // --- Derived State ---
+  const selectedApiDefinition = createMemo(() => {
+    return apiCallDefinitions.find(def => def.id === selectedApiCallId());
+  });
+
+  const selectedApiDescription = createMemo(() => {
+    return selectedApiDefinition()?.description ?? "No API selected";
+  });
 
   // --- API Handlers ---
   const handleApiCall = async (fetchFn: () => Promise<any>) => {
@@ -139,29 +205,49 @@ export default function ApiTest() {
     }
   };
 
-  const handleFetchProviders = () => handleApiCall(() => fetchProviders(selectedBackendUrl()));
-  const handleFetchHealthcareServices = () => handleApiCall(() => fetchHealthcareServices(organizationIdInput(), selectedBackendUrl()));
-  const handleFetchQuestionnaires = () => handleApiCall(() => fetchQuestionnaires(selectedBackendUrl()));
-  const handleFetchRNAttendance = () => handleApiCall(() => fetchRNAttendance(serviceIdInput(), true, selectedBackendUrl()));
-  const handlePostQuestionnaireResponse = () => {
-    setError(null);
-    setApiResult(null);
-    try {
-      const payloadObject: QuestionnaireResponse = JSON.parse(questionnaireResponsePayload());
-      handleApiCall(() => postQuestionnaireResponse(payloadObject, selectedBackendUrl()));
-    } catch (e) {
-      const errorMessage = `Invalid JSON payload: ${e instanceof Error ? e.message : String(e)}`;
-      setError(errorMessage);
-      console.error(errorMessage);
-      setLoading(false);
+  const handleSelectedApiRequest = () => {
+    const definition = selectedApiDefinition();
+    if (!definition) {
+      setError("No valid API call selected.");
+      return;
+    }
+
+    const backend = selectedBackendUrl();
+
+    switch (definition.id) {
+      case 'fetchProviders':
+        handleApiCall(() => fetchProviders(backend));
+        break;
+      case 'fetchHealthcareServices':
+        handleApiCall(() => fetchHealthcareServices(organizationIdInput(), backend));
+        break;
+      case 'fetchQuestionnaires':
+        handleApiCall(() => fetchQuestionnaires(backend));
+        break;
+      case 'fetchRNAttendance':
+        // Assuming the boolean flag is for `allHistory` or similar
+        handleApiCall(() => fetchRNAttendance(serviceIdInput(), true, backend));
+        break;
+      case 'postQuestionnaireResponse':
+        setError(null); // Clear previous errors specifically for POST
+        setApiResult(null);
+        setLoading(true); // Set loading immediately for POST before parsing
+        try {
+          const payloadObject: QuestionnaireResponse = JSON.parse(questionnaireResponsePayload());
+          // JSON is valid, proceed with the generic handler
+          handleApiCall(() => postQuestionnaireResponse(payloadObject, backend));
+        } catch (e) {
+          const errorMessage = `Invalid JSON payload: ${e instanceof Error ? e.message : String(e)}`;
+          setError(errorMessage);
+          console.error(errorMessage);
+          setLoading(false); // Ensure loading is reset if JSON parse fails
+        }
+        break;
+      default:
+        setError(`API call definition not implemented: ${definition.id}`);
+        console.error(`API call definition not implemented: ${definition.id}`);
     }
   };
-
-  // const selectedBackendLabel = createMemo(() => {
-  //   const selectedValue = selectApi().valueAsString;
-  //   const option = backendOptions.find(opt => opt.value === selectedValue);
-  //   return option ? option.label : "Select Backend...";
-  // });
 
   return (
     <>
@@ -170,30 +256,81 @@ export default function ApiTest() {
       {/* --- Configuration Section --- */}
       <div class={sectionContainerClasses}>
         <h2 class="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">Configuration</h2>
-        <div class="flex flex-col md:flex-row md:items-center gap-4">
-          <div class="w-full md:w-auto">
-            <label {...selectApi().getLabelProps()} class={formLabelClasses}>
-              Target Backend:
+        <div class="w-full md:w-auto">
+          {/* Backend Select */}
+          <label {...backendSelectApi().getLabelProps()} class={formLabelClasses}>
+            Target Backend:
+          </label>
+          <div class="relative">
+            <button {...backendSelectApi().getTriggerProps()} class={selectTriggerClasses} disabled={loading()}>
+              {/* Display selected item label */}
+              <span class={selectItemTextClasses}>{backendSelectApi().selectedItems.length > 0 ? backendSelectApi().selectedItems[0].label : 'Select Backend...'}</span>
+              <span class="i-carbon-chevron-down ml-2 -mr-1 h-5 w-5 text-gray-400" aria-hidden="true"></span>
+            </button>
+
+            <Show when={backendSelectApi().open}>
+              <Portal>
+                <div {...backendSelectApi().getPositionerProps()}>
+                  <ul {...backendSelectApi().getContentProps()} class={selectContentClasses}>
+                    <For each={backendOptions}>
+                      {(item) => {
+                        const itemProps = backendSelectApi().getItemProps({ item });
+                        const itemState = backendSelectApi().getItemState({ item });
+                        return (
+                          <li
+                            {...itemProps}
+                            class={`${selectItemClasses} ${itemState.highlighted ? selectItemHighlightedClasses : ''}`}
+                          >
+                            <span class={`${selectItemTextClasses} ${itemState.selected ? 'font-semibold' : 'font-normal'}`}>
+                              {item.label}
+                            </span>
+                            <Show when={itemState.selected}>
+                              <span class={`${selectItemIndicatorClasses} ${itemState.highlighted ? 'text-white' : 'text-blue-600'}`}>
+                                <span class="i-carbon-checkmark h-5 w-5" aria-hidden="true"></span>
+                              </span>
+                            </Show>
+                          </li>
+                        );
+                      }}
+                    </For>
+                  </ul>
+                </div>
+              </Portal>
+            </Show>
+          </div>
+        </div>
+      </div>
+
+      {/* --- API Call Section --- */}
+      <div class={sectionContainerClasses}>
+        <h2 class="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">API Call</h2>
+
+        {/* API Select Dropdown & Info Tooltip */}
+        {/* UPDATED: Use items-center for alignment, gap for spacing */}
+        <div class="mb-4 flex items-center gap-2">
+          <div class="flex-grow">
+            {/* API Call Select (Zag.js) */}
+            <label {...apiCallSelectApi().getLabelProps()} class={formLabelClasses}>
+              Select API Call:
             </label>
             <div class="relative">
-              <button {...selectApi().getTriggerProps()} class={selectTriggerClasses} disabled={loading()}>
-                <span class={selectItemTextClasses}>{selectApi().valueAsString}</span>
+              <button {...apiCallSelectApi().getTriggerProps()} class={selectTriggerClasses} disabled={loading()}>
+                {/* Display selected item label */}
+                <span class={selectItemTextClasses}>{apiCallSelectApi().selectedItems.length > 0 ? apiCallSelectApi().selectedItems[0].label : 'Select API...'}</span>
                 <span class="i-carbon-chevron-down ml-2 -mr-1 h-5 w-5 text-gray-400" aria-hidden="true"></span>
               </button>
 
-              {/* FIX 4: Use `open` instead of `isOpen` */}
-              <Show when={selectApi().open}>
+              <Show when={apiCallSelectApi().open}>
                 <Portal>
-                  <div {...selectApi().getPositionerProps()}>
-                    <ul {...selectApi().getContentProps()} class={selectContentClasses}>
-                      <For each={backendOptions}>
+                  <div {...apiCallSelectApi().getPositionerProps()}>
+                    <ul {...apiCallSelectApi().getContentProps()} class={selectContentClasses}>
+                      <For each={apiCallSelectOptions}>
                         {(item) => {
-                          const itemState = selectApi().getItemState({ item });
+                          const itemProps = apiCallSelectApi().getItemProps({ item });
+                          const itemState = apiCallSelectApi().getItemState({ item });
                           return (
                             <li
-                              {...selectApi().getItemProps({ item })}
-                              // FIX 5: Use `highlighted` instead of `isHighlighted`
-                              // FIX 6: Use `selected` instead of `isSelected`
+                              {...itemProps}
                               class={`${selectItemClasses} ${itemState.highlighted ? selectItemHighlightedClasses : ''}`}
                             >
                               <span class={`${selectItemTextClasses} ${itemState.selected ? 'font-semibold' : 'font-normal'}`}>
@@ -214,108 +351,84 @@ export default function ApiTest() {
               </Show>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* --- API Call Controls (GET) --- */}
-      <div class={sectionContainerClasses}>
-        <h2 class="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">GET Requests</h2>
-        <div class="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-end md:gap-x-6 md:gap-y-4">
-          {/* Fetch Providers */}
-          <div class="flex flex-col">
-            <span class={formLabelClasses}>Providers:</span>
-            <button onClick={handleFetchProviders} disabled={loading()} class={`${primaryButtonClasses} w-full sm:w-auto`}>
-              <span class="i-carbon-building mr-2"></span>
-              Fetch Providers
+          {/* Tooltip Trigger (Information Icon) */}
+          {/* UPDATED: Apply button styles, align with select */}
+          <div class="self-end pb-[1px]"> {/* Adjust vertical alignment slightly */}
+            <button {...tooltipApi().getTriggerProps()} class={tooltipTriggerButtonClasses} disabled={loading()}>
+              <span class="i-carbon-information text-xl align-middle"></span>
             </button>
           </div>
 
-          {/* Fetch Healthcare Services */}
-          <div class="flex flex-col sm:flex-row sm:items-end gap-2">
+          {/* Tooltip Content */}
+          <Show when={tooltipApi().open}>
+            <Portal>
+              <div {...tooltipApi().getPositionerProps()}>
+                <div {...tooltipApi().getContentProps()} class={tooltipContentClasses}>
+                  {selectedApiDescription()}
+                </div>
+              </div>
+            </Portal>
+          </Show>
+        </div>
+
+        {/* Dynamic Input Fields Area */}
+        <div class="mb-4 space-y-4">
+          <Show when={selectedApiDefinition()?.requiredInputs.includes('orgId')}>
             <div>
-              <label for="orgId" class={formLabelClasses}>Org ID:</label>
+              <label for="orgIdInput" class={formLabelClasses}>Organization ID:</label>
               <input
-                id="orgId"
+                id="orgIdInput"
                 type="text"
                 value={organizationIdInput()}
                 onInput={(e) => setOrganizationIdInput(e.currentTarget.value)}
                 disabled={loading()}
                 class={formInputClasses}
+                placeholder="e.g., PRV-12345"
               />
             </div>
-            <button onClick={handleFetchHealthcareServices} disabled={loading()} class={`${primaryButtonClasses} w-full sm:w-auto`}>
-              <span class="i-carbon-cloud-services mr-2"></span>
-              Fetch Services
-            </button>
-          </div>
-
-          {/* Fetch Questionnaires */}
-          <div class="flex flex-col">
-            <span class={formLabelClasses}>Questionnaires:</span>
-            <button onClick={handleFetchQuestionnaires} disabled={loading()} class={`${primaryButtonClasses} w-full sm:w-auto`}>
-              <span class="i-carbon-result mr-2"></span>
-              Fetch Questionnaires
-            </button>
-          </div>
-
-          {/* Fetch RN Attendance */}
-          <div class="flex flex-col sm:flex-row sm:items-end gap-2">
+          </Show>
+          <Show when={selectedApiDefinition()?.requiredInputs.includes('serviceId')}>
             <div>
-              <label for="serviceId" class={formLabelClasses}>Service ID:</label>
+              <label for="serviceIdInput" class={formLabelClasses}>Service ID:</label>
               <input
-                id="serviceId"
+                id="serviceIdInput"
                 type="text"
                 value={serviceIdInput()}
                 onInput={(e) => setServiceIdInput(e.currentTarget.value)}
                 disabled={loading()}
                 class={formInputClasses}
+                placeholder="e.g., SVC-54321"
               />
             </div>
-            <button onClick={handleFetchRNAttendance} disabled={loading()} class={`${primaryButtonClasses} w-full sm:w-auto`}>
-              <span class="i-carbon-user-follow mr-2"></span>
-              Fetch RN Attendance
-            </button>
-          </div>
+          </Show>
+          <Show when={selectedApiDefinition()?.requiredInputs.includes('payload')}>
+            <div>
+              <label for="qrPayload" class={formLabelClasses}>
+                {selectedApiDefinition()?.label} JSON Payload:
+              </label>
+              <textarea
+                id="qrPayload"
+                rows="15"
+                class={textareaClasses}
+                value={questionnaireResponsePayload()}
+                onInput={(e) => setQuestionnaireResponsePayload(e.currentTarget.value)}
+                disabled={loading()}
+                placeholder="Enter valid JSON payload here..."
+              />
+              <p class="mt-1 text-xs text-gray-500">Ensure this is valid JSON for the selected request type.</p>
+            </div>
+          </Show>
+        </div>
+
+        {/* Unified Fetch Button */}
+        <div>
+          <button onClick={handleSelectedApiRequest} disabled={loading()} class={`${primaryButtonClasses} w-full sm:w-auto`}>
+            <span class="i-carbon-send mr-2"></span>
+            Send Request ({selectedApiDefinition()?.type})
+          </button>
         </div>
       </div>
-
-      {/* --- POST QuestionnaireResponse Section (Accordion) --- */}
-      <div class={sectionContainerClasses}>
-        <div {...postAccordionApi().getRootProps()}>
-          <div {...postAccordionApi().getItemProps({ value: "post-request" })}>
-            <h3>
-              <button {...postAccordionApi().getItemTriggerProps({ value: "post-request" })} class={accordionTriggerClasses}>
-                <span>POST /QuestionnaireResponse</span>
-                <span class="i-carbon-chevron-down transition-transform duration-200"
-                  classList={{ "rotate-180": postAccordionApi().value.includes("post-request") }}
-                ></span>
-              </button>
-            </h3>
-            <div {...postAccordionApi().getItemContentProps({ value: "post-request" })} class={accordionContentClasses}>
-              <div>
-                <label for="qrPayload" class={formLabelClasses}>
-                  QuestionnaireResponse JSON Payload:
-                </label>
-                <textarea
-                  id="qrPayload"
-                  rows="15"
-                  class={textareaClasses}
-                  value={questionnaireResponsePayload()}
-                  onInput={(e) => setQuestionnaireResponsePayload(e.currentTarget.value)}
-                  disabled={loading()}
-                  placeholder="Enter QuestionnaireResponse JSON here..."
-                />
-                <p class="mt-1 text-xs text-gray-500">Ensure this is valid JSON matching the QuestionnaireResponse schema.</p>
-              </div>
-              <button onClick={handlePostQuestionnaireResponse} disabled={loading()} class={primaryButtonClasses}>
-                <span class="i-carbon-send mr-2"></span>
-                Post Questionnaire Response
-              </button>
-            </div> {/* End Accordion Content */}
-          </div> {/* End Accordion Item */}
-        </div> {/* End Accordion Root */}
-      </div> {/* End Section Container for POST */}
-
 
       {/* --- Unified Display Area --- */}
       <div class="api-result-display space-y-2 mb-4">
@@ -340,7 +453,7 @@ export default function ApiTest() {
             </pre>
           </Show>
           <Show when={!apiResult() && !loading() && !error()}>
-            <p class="text-sm text-gray-500 italic">Select a backend, then click a button above or expand and click 'Post' to make an API call.</p>
+            <p class="text-sm text-gray-500 italic">Select a backend and API call, fill required inputs, then click 'Send Request'.</p>
           </Show>
         </div>
       </div>

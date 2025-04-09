@@ -1,3 +1,7 @@
+# 0.5.6 - Update: apiTest, select dropdown for api calls
+- replaced many buttons with a dropdown
+- using zagjs select and tooltip
+
 # 0.5.5 - Add: API tester, option of Mulesoft proxy
 - using zagjs select
 - update apiTest.tsx with Mulesoft backend or Go backend
