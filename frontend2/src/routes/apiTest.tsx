@@ -29,7 +29,7 @@ const sectionContainerClasses = "p-4 border border-gray-200 rounded-md bg-white 
 // --- Select Component Styles ---
 const selectTriggerClasses = "inline-flex justify-between w-full md:w-60 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed";
 // UPDATED: Use border, match trigger width
-const selectContentClasses = "absolute z-10 mt-1 w-full md:w-50 bg-white shadow-lg max-h-60 rounded-md py-1 text-base border border-gray-300 overflow-auto focus:outline-none sm:text-sm";
+const selectContentClasses = "absolute z-10 mt-1 w-60 bg-white shadow-lg max-h-60 rounded-md py-1 text-base border border-gray-300 overflow-auto focus:outline-none sm:text-sm";
 const selectItemClasses = "text-gray-900 cursor-default select-none relative py-2 pr-9 list-none";
 const selectItemHighlightedClasses = "text-white bg-blue-600";
 const selectItemTextClasses = "block truncate";

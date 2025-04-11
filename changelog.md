@@ -1,3 +1,6 @@
+# 0.5.8 - Update: mobile select dropdown fix
+- previously showed 0px width, now looks normal
+
 # 0.5.7 - Update: mobile friendly scrollTo and css
 - added createEffect with scrollTo to go back to relevant sections
 - added /api to the two missing links now that the Mulesoft Proxy is working
