@@ -1,24 +1,24 @@
-import { createSignal, Show, For, Switch, Match } from 'solid-js';
+import { createSignal, Show, For, Switch, Match, createEffect, on } from 'solid-js'; // Added createEffect, on
 import type { Questionnaire, QuestionnaireResponse } from '~/lib/schema';
 import { fetchQuestionnaires, postQuestionnaireResponse } from '~/lib/api';
 
-// --- Style Constants --- (Re-declared for clarity, could be shared)
+// --- Style Constants ---
 const primaryPurpleButtonClasses = "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed";
 const primaryGreenButtonClasses = "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed";
 const secondaryButtonClasses = "inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed";
 const errorAlertClasses = "mt-4 p-3 bg-red-50 border border-red-300 text-red-700 rounded-md text-sm flex items-center";
-const successAlertClasses = "p-4 bg-green-50 border border-green-300 text-green-700 rounded-md text-sm flex items-center mb-6"; // Added mb-6 here
-const sectionCardClasses = "p-6 bg-white rounded-lg border border-gray-200"; // Flat card style
+const successAlertClasses = "p-4 bg-green-50 border border-green-300 text-green-700 rounded-md text-sm flex items-center mb-6";
+const sectionCardClasses = "p-6 bg-white rounded-lg border border-gray-200";
 const headingClasses = "text-xl font-semibold text-gray-800 mb-4 flex items-center";
-const subHeadingClasses = "text-lg font-medium text-gray-700 mb-3"; // Darker subheading
-const paragraphClasses = "text-sm text-gray-600 mb-4"; // Standard paragraph
-const formInputClasses = "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"; // Flat input, lighter disabled bg
+const subHeadingClasses = "text-lg font-medium text-gray-700 mb-3";
+const paragraphClasses = "text-sm text-gray-600 mb-4";
+const formInputClasses = "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed";
 const formLabelClasses = "block text-sm font-medium text-gray-700 mb-1";
 const beforeCardClasses = "border border-gray-200 p-4 rounded-md bg-gray-50";
-const afterCardClassesGreen = "border border-green-200 p-4 rounded-md bg-green-50"; // Use green theme border
-const cardHeadingClasses = "text-md font-semibold text-gray-700 mb-2 flex items-center"; // Consistent card headings
+const afterCardClassesGreen = "border border-green-200 p-4 rounded-md bg-green-50";
+const cardHeadingClasses = "text-md font-semibold text-gray-700 mb-2 flex items-center";
 const listClasses = "list-disc list-inside text-sm text-gray-600 space-y-1";
-const afterListClassesGreen = "list-disc list-inside text-sm text-green-700 space-y-1"; // Green theme color list text
+const afterListClassesGreen = "list-disc list-inside text-sm text-green-700 space-y-1";
 
 export default function QualityIndicatorsSection() {
   // --- Quality Indicator State ---
@@ -26,8 +26,11 @@ export default function QualityIndicatorsSection() {
   const [qiLoadingError, setQiLoadingError] = createSignal<string | null>(null);
   const [qiSubmitError, setQiSubmitError] = createSignal<string | null>(null);
   const [questionnaire, setQuestionnaire] = createSignal<Questionnaire | null>(null);
-  // State holds form values as strings, as they come from input elements
   const [formAnswers, setFormAnswers] = createSignal<Record<string, string>>({});
+
+  // Refs for scrolling
+  let sectionRef: HTMLElement | undefined;
+  let submitErrorRef: HTMLDivElement | undefined;
 
   // --- Event Handlers ---
   const handleLoadQuestionnaire = async () => {
@@ -40,11 +43,9 @@ export default function QualityIndicatorsSection() {
       if (data && data.length > 0) {
         const loadedQuestionnaire = data[0];
         setQuestionnaire(loadedQuestionnaire);
-        // Initialize all answers as empty strings
         const initialAnswers: Record<string, string> = {};
         loadedQuestionnaire.item?.forEach(group => {
           group.item?.forEach(item => {
-            // Initialize with empty string regardless of type or required status
             initialAnswers[item.linkId] = '';
           });
         });
@@ -60,20 +61,15 @@ export default function QualityIndicatorsSection() {
   };
 
   const handleInputChange = (linkId: string, value: string) => {
-    // Store input value directly as string
     setFormAnswers(prev => ({ ...prev, [linkId]: value }));
   };
 
   const handleSubmitQIResponse = async () => {
     const currentQuestionnaire = questionnaire();
-    if (!currentQuestionnaire) return; // Should not happen in 'formVisible' state, but good check
+    if (!currentQuestionnaire) return;
     setQiState('submitting');
-    setQiSubmitError(null);
+    setQiSubmitError(null); // Clear previous errors
 
-    // --- PAYLOAD CONSTRUCTION (VALIDATION SKIPPED) ---
-    // Construct the response payload directly from the current formAnswers state.
-    // No validation (e.g., required fields, numeric checks) is performed here.
-    // The raw string values from the form inputs (including empty strings) are sent.
     const responsePayload: QuestionnaireResponse = {
       resourceType: 'QuestionnaireResponse',
       questionnaire: `Questionnaire/${currentQuestionnaire.id}`,
@@ -84,24 +80,18 @@ export default function QualityIndicatorsSection() {
         linkId: groupItem.linkId,
         text: groupItem.text,
         item: groupItem.item?.map(qItem => {
-          // Get the raw string value from the form state, default to empty string if missing
           const answerValue = formAnswers()[qItem.linkId] ?? '';
-
-          // Directly use the string value in valueString, regardless of the question type or content.
           const answerField = { valueString: answerValue };
-
           return {
             linkId: qItem.linkId,
             text: qItem.text,
-            // Always include the answer array with the valueString field, even if the string is empty.
             answer: [answerField]
           };
-        }) ?? [] // Handle case where a group might have no items
-      })) ?? [] // Handle case where questionnaire might have no groups
+        }) ?? []
+      })) ?? []
     };
-    // --- END PAYLOAD CONSTRUCTION ---
 
-    console.log("Submitting Payload (Validation Skipped):", JSON.stringify(responsePayload, null, 2)); // Log payload for debugging
+    console.log("Submitting Payload (Validation Skipped):", JSON.stringify(responsePayload, null, 2));
 
     try {
       await postQuestionnaireResponse(responsePayload);
@@ -112,8 +102,31 @@ export default function QualityIndicatorsSection() {
     }
   };
 
+  // Effect for scrolling after state changes
+  createEffect(on([qiState, qiSubmitError], ([currentState, currentError]) => {
+    // Scroll to top when successfully submitted
+    if (currentState === 'submitted') {
+      sectionRef?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    // Scroll to error message if submission failed
+    else if (currentState === 'formVisible' && currentError) {
+      // Slight delay ensures the error div is rendered before scrolling
+      setTimeout(() => {
+        submitErrorRef?.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Center error vertically
+      }, 50); // Small delay
+    }
+    // Optionally scroll to form when it becomes visible after loading
+    else if (currentState === 'formVisible' && !currentError && questionnaire()) { // Check questionnaire() to avoid scroll on initial load if form isn't ready
+      // Can uncomment this if desired, but often less jarring not to scroll here
+      // setTimeout(() => { // Delay might be needed if form takes time to render complex data
+      //     sectionRef?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // }, 50);
+    }
+  }));
+
   return (
-    <section class={sectionCardClasses}>
+    // Assign ref to the main section element
+    <section ref={sectionRef} class={sectionCardClasses}>
       <h2 class={headingClasses}>
         <span class="i-carbon-result text-2xl mr-2 text-purple-600"></span>
         Quality Indicators (QI) Reporting
@@ -150,7 +163,6 @@ export default function QualityIndicatorsSection() {
                 <p class={paragraphClasses}>
                   Enter any data below. Input validation is skipped for this demonstration, and the API allows direct submission regardless of content.
                 </p>
-                {/* Use onSubmit on the form, but the handler doesn't validate */}
                 <form onSubmit={(e) => { e.preventDefault(); handleSubmitQIResponse(); }}>
                   <For each={q().item}>
                     {(group) => (
@@ -161,21 +173,17 @@ export default function QualityIndicatorsSection() {
                             <div>
                               <label for={item.linkId} class={formLabelClasses}>
                                 {item.text}
-                                {/* Keep visual cue for required, but doesn't block submission */}
                                 {item.required ? <span class="text-gray-400 ml-1 text-xs">(Required in spec)</span> : ''}
                               </label>
                               <input
-                                // Use type="number" for UX hints, but value is handled as string
                                 type={item.type === 'integer' || item.type === 'decimal' ? 'number' : 'text'}
                                 id={item.linkId}
                                 name={item.linkId}
-                                value={formAnswers()[item.linkId] ?? ''} // Access string value
+                                value={formAnswers()[item.linkId] ?? ''}
                                 onInput={(e) => handleInputChange(item.linkId, e.currentTarget.value)}
-                                // Remove the browser-level `required` attribute to prevent its blocking behavior
-                                // required={item.required} // REMOVED
                                 class={formInputClasses}
                                 disabled={qiState() === 'submitting'}
-                                step={item.type === 'decimal' ? 'any' : '1'} // Allow decimals in number input
+                                step={item.type === 'decimal' ? 'any' : '1'}
                                 placeholder={item.type === 'integer' || item.type === 'decimal' ? 'e.g., 123' : 'e.g., Description and comments'}
                               />
                             </div>
@@ -185,17 +193,18 @@ export default function QualityIndicatorsSection() {
                     )}
                   </For>
 
+                  {/* Assign ref to the error message container */}
                   <Show when={qiSubmitError()}>
-                    <div class={`${errorAlertClasses} mb-4 mt-0`}>
+                    <div ref={submitErrorRef} class={`${errorAlertClasses} mb-4 mt-0`}>
                       <span class="i-carbon-warning-alt text-lg mr-2"></span>
                       Error submitting: {qiSubmitError()}
                     </div>
                   </Show>
 
                   <button
-                    type="submit" // Keep as submit type
+                    type="submit"
                     disabled={qiState() === 'submitting'}
-                    class={primaryGreenButtonClasses} // Green for submit
+                    class={primaryGreenButtonClasses}
                   >
                     <span class={qiState() === 'submitting' ? "i-carbon-circle-dash animate-spin mr-2" : "i-carbon-send-alt mr-2"}></span>
                     {qiState() === 'submitting' ? 'Submitting...' : 'Submit QI Response via API'}
@@ -208,6 +217,7 @@ export default function QualityIndicatorsSection() {
 
         {/* State C: Submitted */}
         <Match when={qiState() === 'submitted'}>
+          {/* Success message and benefits section will be scrolled into view by the effect */}
           <div class={successAlertClasses}>
             <span class="i-carbon-checkmark-outline text-lg mr-2"></span>
             QI Response Submitted Successfully via API!

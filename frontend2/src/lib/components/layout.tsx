@@ -6,7 +6,7 @@ import Mulesoft from "~/assets/mulesoft.svg"
 export const Layout: ParentComponent = (props) => {
   // Define classes for active/inactive links for cleaner code
   // --- Updated Styles ---
-  const baseLinkClasses = "inline-flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500";
+  const baseLinkClasses = "inline-flex items-center px-2 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500";
   const inactiveLinkClasses = "text-gray-700 hover:bg-gray-100 hover:text-gray-900";
   const activeLinkClasses = "bg-blue-600 text-white hover:bg-blue-700"; // Active link is primary blue
   // --- End Updated Styles ---
@@ -16,7 +16,7 @@ export const Layout: ParentComponent = (props) => {
       {/* --- Updated Styles: Subtle border instead of shadow --- */}
       <header class="bg-white border-b border-gray-200">
         {/* --- End Updated Styles --- */}
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> {/* Responsive container */}
+        <nav class="max-w-7xl mx-auto px-4 sm:px-4 lg:px-6"> {/* Responsive container */}
           <div class="flex justify-between items-center h-16"> {/* Flex container for logo and links */}
 
             {/* Logo / Site Title Section */}
@@ -41,8 +41,7 @@ export const Layout: ParentComponent = (props) => {
                 activeClass={activeLinkClasses}
                 end={true} // Match only the exact "/" path
               >
-                <span class="i-carbon-home text-lg mr-1"></span> {/* Removed responsive margin change */}
-                Home
+                <span class="i-carbon-home text-lg"></span>
               </A>
               <A
                 href="/api-test"

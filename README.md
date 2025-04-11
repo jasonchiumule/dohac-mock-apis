@@ -120,3 +120,11 @@ This is a mock implementation intended for development and testing. It has the f
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Fly.io Notes
+tag the images with this, `fly deploy --image-label [semver]`
+- build cicd.sh
+  - git push
+  - tests
+  - docker build, run
+  - fly deploy --image-label [semver]

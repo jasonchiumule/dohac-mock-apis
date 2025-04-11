@@ -86,7 +86,7 @@ const apiCallDefinitions: ApiCallDefinition[] = [
   },
   {
     id: 'fetchHealthcareServices',
-    label: 'GET /HealthcareService',
+    label: 'GET /api/HealthcareService',
     description: 'Fetches Healthcare Services associated with a specific Organization ID.',
     type: 'GET',
     requiredInputs: ['orgId'],
@@ -107,7 +107,7 @@ const apiCallDefinitions: ApiCallDefinition[] = [
   },
   {
     id: 'postQuestionnaireResponse',
-    label: 'POST /QuestionnaireResponse',
+    label: 'POST /api/QuestionnaireResponse',
     description: 'Submits a new Questionnaire Response.',
     type: 'POST',
     requiredInputs: ['payload'],

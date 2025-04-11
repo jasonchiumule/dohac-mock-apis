@@ -1,3 +1,8 @@
+# 0.5.7 - Update: mobile friendly scrollTo and css
+- added createEffect with scrollTo to go back to relevant sections
+- added /api to the two missing links now that the Mulesoft Proxy is working
+- home link is just the icon now
+
 # 0.5.6 - Update: apiTest, select dropdown for api calls
 - replaced many buttons with a dropdown
 - using zagjs select and tooltip

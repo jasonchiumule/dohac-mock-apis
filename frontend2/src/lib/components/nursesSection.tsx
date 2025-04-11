@@ -1,4 +1,4 @@
-import { createSignal, Show, For, Switch, Match } from 'solid-js';
+import { createSignal, Show, For, Switch, Match, createEffect, on } from 'solid-js'; // Added createEffect, on
 // Import API functions - corrected fetchNurseAttendances to fetchRNAttendance
 import { fetchRNAttendance, patchNurseAttendance } from '~/lib/api';
 // Import types from schema.ts instead of defining locally
@@ -21,7 +21,6 @@ const afterCardClasses = "border border-green-200 p-4 rounded-md bg-green-50"; /
 const cardHeadingClasses = "text-md font-semibold text-gray-700 mb-2 flex items-center"; // Consistent card headings
 const listClasses = "list-disc list-inside text-sm text-gray-600 space-y-1";
 const afterListClasses = "list-disc list-inside text-sm text-green-700 space-y-1"; // Blue theme color list text
-// const codeBlockClasses = "p-3 bg-gray-100 border border-gray-300 rounded-md text-xs font-mono overflow-x-auto"; // Not used, removed for brevity
 
 // --- Component ---
 export default function NursesSection() {
@@ -33,6 +32,10 @@ export default function NursesSection() {
   const [attendanceBundle, setAttendanceBundle] = createSignal<RNAttendanceBundle | null>(null);
   const [recordToUpdateId, setRecordToUpdateId] = createSignal<string | null>(null);
   const [updateNote, setUpdateNote] = createSignal(''); // State for the note input
+
+  // Refs for scrolling
+  let sectionRef: HTMLElement | undefined;
+  let submitErrorRef: HTMLDivElement | undefined;
 
   // Hardcoded Service ID for the demo
   const DEMO_SERVICE_ID = 'SVC-54321';
@@ -48,32 +51,24 @@ export default function NursesSection() {
     setUpdateNote(''); // Reset note input
 
     try {
-      // Fetch the summary for the demo service - Use fetchRNAttendance
       const data = await fetchRNAttendance(DEMO_SERVICE_ID, false);
-      console.log("Fetched Attendance Data:", data); // Log fetched data
-      // Type 'e' should now be correctly inferred as BundleEntry<Encounter>
+      console.log("Fetched Attendance Data:", data);
       if (data && data.entry && data.entry.length > 0) {
         setAttendanceBundle(data);
-        // For the demo, assume we want to update the specific record ID from the README example
-        // In a real app, you might let the user select a record.
         const record = data.entry.find(e => e.resource.id === DEMO_RECORD_ID_TO_PATCH);
         if (record) {
           setRecordToUpdateId(record.resource.id);
         } else {
-          // Fallback: if the specific record isn't found, maybe target the first?
           console.warn(`Demo record ${DEMO_RECORD_ID_TO_PATCH} not found in summary. Targetting first record if available.`);
-          // Check if entry[0] and entry[0].resource exist before accessing id
           if (data.entry[0]?.resource?.id) {
-            setRecordToUpdateId(data.entry[0].resource.id); // Use first record's ID if target not found
+            setRecordToUpdateId(data.entry[0].resource.id);
           } else {
             console.error("First record or its ID is missing in the attendance bundle.");
             throw new Error("Could not find a valid record ID in the fetched data.");
           }
         }
-
         setNurseState('formVisible');
       } else {
-        // Ensure data.entry is checked before assuming length 0 means no records
         if (data && !data.entry) {
           throw new Error(`Attendance data received but 'entry' array is missing for service ${DEMO_SERVICE_ID}.`);
         } else {
@@ -99,19 +94,15 @@ export default function NursesSection() {
     };
 
     setNurseState('submitting');
-    setSubmitError(null);
+    setSubmitError(null); // Clear previous errors
 
-    // --- PAYLOAD CONSTRUCTION ---
-    // Construct the PATCH payload using the imported EncounterPatchPayload type
     const patchPayload: EncounterPatchPayload = {
-      note: [{ text: updateNote() || `Updated via API at ${new Date().toISOString()}` }] // Add default note if empty
+      note: [{ text: updateNote() || `Updated via API at ${new Date().toISOString()}` }]
     };
-    // --- END PAYLOAD CONSTRUCTION ---
 
     console.log(`Submitting PATCH for record ${recordId}:`, JSON.stringify(patchPayload, null, 2));
 
     try {
-      // Call the PATCH API function
       await patchNurseAttendance(recordId, patchPayload);
       setNurseState('submitted');
     } catch (err: any) {
@@ -131,8 +122,30 @@ export default function NursesSection() {
     }
   }
 
+  // Effect for scrolling after state changes
+  createEffect(on([nurseState, submitError], ([currentState, currentError]) => {
+    // Scroll to top when successfully submitted
+    if (currentState === 'submitted') {
+      sectionRef?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    // Scroll to error message if submission failed
+    // Check if error is set *and* we are back in the formVisible state (after trying to submit)
+    else if (currentState === 'formVisible' && currentError) {
+      // We need a slight delay to ensure the DOM is updated before scrolling
+      setTimeout(() => {
+        submitErrorRef?.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Center error vertically
+      }, 50); // Small delay
+    }
+    // Optionally scroll to form when it becomes visible after loading (less jarring than submit scroll)
+    else if (currentState === 'formVisible' && !currentError) {
+      // Could scroll sectionRef here too if desired, but might be less necessary
+      // sectionRef?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }));
+
   return (
-    <section class={sectionCardClasses}>
+    // Assign ref to the main section element
+    <section ref={sectionRef} class={sectionCardClasses}>
       <h2 class={headingClasses}>
         <span class="i-carbon-user-nurse text-2xl mr-2 text-blue-600"></span>
         Registered Nurse (RN) Attendance Tracking
@@ -147,7 +160,7 @@ export default function NursesSection() {
           <button
             onClick={handleFetchAttendance}
             disabled={nurseState() === 'loading'}
-            class={primaryBlueButtonClasses} // Blue button for fetch
+            class={primaryBlueButtonClasses}
           >
             <span class={nurseState() === 'loading' ? "i-carbon-circle-dash animate-spin mr-2" : "i-carbon-download mr-2"}></span>
             {nurseState() === 'loading' ? 'Loading...' : `Fetch Attendance Summary (Service: ${DEMO_SERVICE_ID})`}
@@ -162,11 +175,9 @@ export default function NursesSection() {
 
         {/* State B: Form Visible (Display Summary + Update Option) */}
         <Match when={nurseState() === 'formVisible' || nurseState() === 'submitting'}>
-          {/* Use attendanceBundle() directly in Show */}
           <Show when={attendanceBundle()} fallback={<p class={paragraphClasses}>Loading data...</p>}>
-            {(bundle) => ( // bundle is Accessor<RNAttendanceBundle>
+            {(bundle) => (
               <>
-                {/* Access bundle content via bundle() */}
                 <h3 class={subHeadingClasses}>Attendance Summary for {bundle().entry?.[0]?.resource?.subject?.display ?? DEMO_SERVICE_ID}</h3>
                 <p class={paragraphClasses}>
                   Below is a summary of fetched attendance records. You can add a note to the record with ID <code class="text-xs bg-gray-100 p-1 rounded">{recordToUpdateId() ?? 'N/A'}</code> and submit the update via the PATCH API.
@@ -174,16 +185,13 @@ export default function NursesSection() {
 
                 {/* Display Fetched Data Summary */}
                 <div class="mb-6 space-y-3 max-h-60 overflow-y-auto border border-gray-200 p-3 rounded-md bg-gray-50">
-                  {/* Access bundle entries via bundle().entry */}
                   <For each={bundle().entry} fallback={<p class="text-sm text-gray-500">No attendance records found in the bundle.</p>}>
-                    {(entry) => ( // entry is BundleEntry<Encounter>
+                    {(entry) => (
                       <div class="text-sm border-b border-gray-100 pb-2 last:border-b-0">
                         <p><strong>Record ID:</strong> {entry.resource.id}</p>
-                        {/* Updated access for performer display */}
                         <p><strong>Nurse:</strong> {entry.resource.performer?.[0]?.actor?.display ?? 'Unknown'}</p>
                         <p><strong>Period:</strong> {formatDateTime(entry.resource.period?.start)} - {formatDateTime(entry.resource.period?.end)}</p>
                         <p><strong>Status:</strong> {entry.resource.status}</p>
-                        {/* Check if resource has note property */}
                         <Show when={entry.resource.note && entry.resource.note.length > 0}>
                           <p><strong>Notes:</strong> {entry.resource.note?.map(n => n.text).join(', ')}</p>
                         </Show>
@@ -211,8 +219,9 @@ export default function NursesSection() {
                       />
                     </div>
 
+                    {/* Assign ref to the error message container */}
                     <Show when={submitError()}>
-                      <div class={`${errorAlertClasses} mb-4 mt-0`}>
+                      <div ref={submitErrorRef} class={`${errorAlertClasses} mb-4 mt-0`}>
                         <span class="i-carbon-warning-alt text-lg mr-2"></span>
                         Error submitting update: {submitError()}
                       </div>
@@ -221,7 +230,7 @@ export default function NursesSection() {
                     <button
                       type="submit"
                       disabled={nurseState() === 'submitting' || !recordToUpdateId()}
-                      class={primaryGreenButtonClasses} // Green for submit/update
+                      class={primaryGreenButtonClasses}
                     >
                       <span class={nurseState() === 'submitting' ? "i-carbon-circle-dash animate-spin mr-2" : "i-carbon-send-alt mr-2"}></span>
                       {nurseState() === 'submitting' ? 'Submitting Update...' : 'Update Record via API (PATCH)'}
@@ -238,6 +247,7 @@ export default function NursesSection() {
 
         {/* State C: Submitted */}
         <Match when={nurseState() === 'submitted'}>
+          {/* Success message and benefits section will be scrolled into view by the effect */}
           <div class={successAlertClasses}>
             <span class="i-carbon-checkmark-outline text-lg mr-2"></span>
             Attendance Record Updated Successfully via API (PATCH)!
