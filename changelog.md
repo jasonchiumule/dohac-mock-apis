@@ -1,3 +1,6 @@
+# 0.5.9 - Update: some typos
+- login to multiple government portals was showing false info
+
 # 0.5.8 - Update: mobile select dropdown fix
 - previously showed 0px width, now looks normal
 

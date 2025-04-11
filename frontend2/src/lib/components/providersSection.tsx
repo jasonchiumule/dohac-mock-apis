@@ -143,7 +143,7 @@ export default function ProviderInfoSection() {
                 Manual Process (Before)
               </h4>
               <ul class={listClasses}>
-                <li>Log in to multiple portals (My Aged Care, PRODA)</li>
+                <li>Log in to government portals</li>
                 <li>Search for provider details</li>
                 <li>Manually compare with internal records</li>
                 <li>Time Requirement: ~5-15 mins per check</li>
