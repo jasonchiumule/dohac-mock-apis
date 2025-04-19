@@ -1,3 +1,6 @@
+# 0.5.10 - Update: README.md
+- updated README.md with accurate information
+
 # 0.5.9 - Update: some typos
 - login to multiple government portals was showing false info
 

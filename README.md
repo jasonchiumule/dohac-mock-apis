@@ -1,130 +1,108 @@
-# DOHAC Mock APIs
+# DoHAC Mock APIs & SPA
 
-A mock implementation of the Department of Health and Aged Care's B2G APIs for healthcare providers.
+This project provides a mock backend server written in Go (using Chi) that simulates several Department of Health and Aged Care (DoHAC) Business-to-Government (B2G) APIs.
 
-## Notes
-Frontend uses bun, vite, react, typescript + swc and shadcnui
-Install via shadcnui first, then get AI to write
-
-- Create demo with something here, need to simplify the dashboard likely
-- pull things from the backend
-- update docker and fly.io deploy
-
-## Overview
-
-This project provides a mock server that implements the following APIs:
-
-1. **Authentication API**: OAuth2 authentication and client registration
-2. **Provider Healthcare Service API**: Provider and service discovery
-3. **Quality Indicators API**: Questionnaire retrieval and submission
-4. **Registered Nurses API**: Attendance tracking and reporting
-
-The mock server is intended for accelerating development and testing of systems that integrate with the Department's APIs, without requiring access to production systems.
-
-## Getting Started
-
-### Prerequisites
-
-- Go 1.16 or higher
-- Bun 1.0+ (for the frontend demo)
-
-### Installation
-
-1. Clone the repository:
-   ```
-   git clone https://github.com/jasonchiu/dohac-mock-apis.git
-   cd dohac-mock-apis
-   ```
-
-2. Install dependencies:
-   ```
-   go mod download
-   cd frontend && bun install
-   ```
-
-### Running the Server
-
-Start the server:
-```
-go run cmd/server/main.go
-```
-
-The server will start on port 8080 by default. You can configure a different port using the `PORT` environment variable. The server will also serve the built frontend from the `/cmd/server/spa` directory.
-
-For development, you can start the frontend separately:
-```
-cd frontend && bun run dev
-```
-
-The development frontend will start on port 5173 by default.
-
-### Building the Frontend
-
-To build the frontend for production:
-```
-cd frontend && bun run build
-```
-
-The built files will be placed in the `/cmd/server/spa` directory automatically.
-
-## API Documentation
-
-The API documentation is based on the OpenAPI specifications provided in the `llm-context` directory. The mock implementation follows these specifications but simplifies some aspects, particularly authentication.
-
-For detailed examples and usage scenarios, see the [examples documentation](docs/examples/README.md).
+It also embeds and serves a SolidJS Single Page Application (SPA) that provides a user interface for demonstrating the value of these APIs and testing interactions with the mock endpoints.
 
 ## Features
 
-- **Simplified Authentication**: Mock OAuth2 implementation that accepts any token that starts with "mock_"
-- **Example Data**: Pre-populated with example data for providers, services, quality indicators, and nurse attendances
-- **Full API Implementation**: Implements all endpoints from the original APIs
-- **Realistic Responses**: Returns properly structured FHIR-compliant responses
-- **Demo Frontend**: Interactive dashboards demonstrating the value of API integration
+*   **Go Backend:** Uses the Chi router for handling HTTP requests.
+*   **Mock APIs:** Provides mock implementations for:
+    *   Authentication (`/api/oauth2/...`)
+    *   Provider (`/api/Provider`)
+    *   HealthcareService (`/api/HealthcareService`)
+    *   Questionnaire (`/api/Questionnaire`)
+    *   QuestionnaireResponse (`/api/QuestionnaireResponse`)
+    *   RegisteredNurseAttendance (`/api/RegisteredNurseAttendance`)
+*   **Embedded Frontend:** The SolidJS SPA (from the `frontend2` directory) is built and embedded directly into the Go binary using Go's `embed` package.
+*   **SPA Serving:** The Go server serves the `index.html` of the SPA for the root route (`/`) and relies on the SPA's router (Solid Router) for client-side navigation. Static assets (`/assets/*`, `favicon.svg`) are served directly.
+*   **CORS Enabled:** The API endpoints have permissive CORS headers for easier development.
 
-## Architecture
+## Technology Stack
 
-The application uses the following structure:
+*   **Backend:** Go 1.21+, Chi v5
+*   **Frontend:** SolidJS, Vite, Bun, UnoCSS, Zag.js
+*   **Embedding:** Go `embed` package
 
-- `cmd/server`: Main application entry point
-- `cmd/server/spa`: Serving the built frontend files
-- `internal/api`: API configuration and router setup
-- `internal/handlers`: Request handlers for each API
-- `internal/middleware`: Middleware components, including authentication
-- `internal/models`: Data models for the API resources
-- `docs/examples`: Documentation and examples
-- `frontend`: React-based demo application (Bun, Vite, TypeScript, shadcn/ui) showcasing API integration value
+## Project Structure
 
-## Value Demonstration
+*   `cmd/server/`: Contains the main Go application (`main.go`) and the `spa` directory where the built frontend assets are embedded from.
+*   `internal/`: Contains the Go backend logic:
+    *   `api/`: Router setup.
+    *   `handlers/`: HTTP handlers for each API resource group.
+    *   `middleware/`: Custom middleware (e.g., mock auth).
+    *   `models/`: Struct definitions for API resources.
+*   `frontend2/`: Contains the SolidJS SPA source code.
 
-The project includes two demonstration scenarios:
+## Prerequisites
 
-1. **Automated Compliance Management System**: Integrates all APIs to provide a real-time compliance dashboard, reducing administrative burden and ensuring regulatory requirements are met.
+*   Go (version 1.21 or later recommended)
+*   Bun (for building the frontend)
 
-2. **Care Quality Optimization Platform**: Correlates nurse staffing data with quality indicators to enable data-driven staffing decisions and improve resident outcomes.
+## Getting Started
 
-These demonstrations showcase how API integration delivers tangible benefits:
-- Reduced administrative burden
-- Improved data accuracy
-- Enhanced compliance monitoring
-- More time for resident care
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd dohac-mock-apis
+    ```
 
-## Limitations
+2.  **Build the Frontend SPA:**
+    *   Navigate to the frontend directory:
+        ```bash
+        cd frontend2
+        ```
+    *   Install dependencies:
+        ```bash
+        bun install
+        ```
+    *   Build the SPA:
+        ```bash
+        bun run build
+        ```
+        This will generate the static assets in the `frontend2/dist` directory.
 
-This is a mock implementation intended for development and testing. It has the following limitations:
+3.  **Prepare Embedded Files:**
+    *   Ensure the `cmd/server/spa` directory exists. If not, create it.
+    *   Copy the contents of the `frontend2/dist` directory into the `cmd/server/spa` directory.
+        ```bash
+        # From the frontend2 directory:
+        rm -rf ../cmd/server/spa/* # Clear old files (optional)
+        cp -R dist/* ../cmd/server/spa/
+        ```
+       *(Alternatively, adjust the frontend build process to output directly to `cmd/server/spa`)*
 
-- Simplified authentication with no real JWT validation
-- In-memory data storage with pre-defined examples
-- No validation of business rules or constraints
-- No integration with external systems
+4.  **Run the Go Server:**
+    *   Navigate to the server directory:
+        ```bash
+        cd ../cmd/server
+        ```
+    *   Run the server:
+        ```bash
+        go run main.go
+        ```
 
-## License
+5.  **Access the Application:**
+    *   Open your web browser and go to `http://localhost:8080` (or the port specified by the `PORT` environment variable).
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## API Endpoints
 
-## Fly.io Notes
-tag the images with this, `fly deploy --image-label [semver]`
-- build cicd.sh
-  - git push
-  - tests
-  - docker build, run
-  - fly deploy --image-label [semver]
+The mock APIs are served under the `/api` path. Examples:
+
+*   `GET /api/health`
+*   `POST /api/oauth2/access-tokens`
+*   `GET /api/Provider`
+*   `GET /api/HealthcareService?organization=PRV-12345`
+*   `GET /api/Questionnaire`
+*   `POST /api/QuestionnaireResponse`
+*   `GET /api/RegisteredNurseAttendance?service=SVC-54321`
+*   `PATCH /api/RegisteredNurseAttendance/RN-12345`
+
+Refer to the handler code in `internal/handlers/` for details on mock data and behavior. The SPA's "API Test" page (`/api-test`) allows direct interaction with these endpoints.
+
+## Configuration
+
+*   **Port:** The server runs on port `8080` by default. You can change this by setting the `PORT` environment variable.
+    ```bash
+    PORT=3000 go run main.go
+    ```
