@@ -1,7 +1,11 @@
 package auth
 
 import (
+	"bytes" // Added import
 	"encoding/json"
+	"fmt" // Added import
+	"io"  // Added import
+	"log" // Added import
 	"net/http"
 	"time"
 
@@ -24,12 +28,31 @@ func RegisterHandlers(r chi.Router) {
 
 // createAccessToken handles token requests
 func createAccessToken(w http.ResponseWriter, r *http.Request) {
+	// Log headers
+	log.Printf("createAccessToken: Request Headers: %+v", r.Header)
+
+	// Log raw body (useful for debugging client issues like Mule)
+	// Note: For 'application/x-www-form-urlencoded', the body is form data, not JSON.
+	// Reading it raw here is for debugging, then it's parsed by r.ParseForm().
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("createAccessToken: Error reading request body: %v", err)
+		render.Status(r, http.StatusInternalServerError)
+		render.JSON(w, r, map[string]string{"error": "Could not read request body"})
+		return
+	}
+	// IMPORTANT: Restore the body so r.ParseForm() can read it.
+	r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+	log.Printf("createAccessToken: Raw Request Body: %s", string(bodyBytes))
+
 	// Parse form data for application/x-www-form-urlencoded content type
 	if err := r.ParseForm(); err != nil {
+		log.Printf("createAccessToken: Error parsing form: %v. Body: %s", err, string(bodyBytes))
 		render.Status(r, http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{"error": "Invalid form data"})
 		return
 	}
+	log.Printf("createAccessToken: Parsed Form Data: %+v", r.Form)
 
 	// Extract form values
 	req := models.TokenRequest{
@@ -40,9 +63,11 @@ func createAccessToken(w http.ResponseWriter, r *http.Request) {
 		ClientAssertionType: r.FormValue("client_assertion_type"),
 		Scope:               r.FormValue("scope"),
 	}
+	log.Printf("createAccessToken: Populated TokenRequest struct: %+v", req)
 
 	// Validate required fields
 	if req.GrantType == "" || req.ClientID == "" {
+		log.Printf("createAccessToken: Validation failed: grant_type and client_id are required. Request: %+v", req)
 		render.Status(r, http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{"error": "grant_type and client_id are required"})
 		return
@@ -58,6 +83,7 @@ func createAccessToken(w http.ResponseWriter, r *http.Request) {
 		ExpiresIn:   3600,
 		Scope:       req.Scope,
 	}
+	log.Printf("createAccessToken: Response Payload: %+v", resp)
 
 	render.Status(r, http.StatusCreated)
 	render.JSON(w, r, resp)
@@ -67,34 +93,56 @@ func createAccessToken(w http.ResponseWriter, r *http.Request) {
 func registerClient(w http.ResponseWriter, r *http.Request) {
 	var req models.ClientRegistrationRequest
 
+	// Log headers
+	log.Printf("registerClient: Request Headers: %+v", r.Header)
+
+	// Log the raw request body
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("registerClient: Error reading request body: %v", err)
+		render.Status(r, http.StatusInternalServerError)
+		render.JSON(w, r, map[string]string{"error": "Could not read request body"})
+		return
+	}
+	// Restore the body for further processing
+	r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+	log.Printf("registerClient: Received raw registration request body: %s", string(bodyBytes))
+
 	// Decode JSON request
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Printf("registerClient: Error decoding JSON request: %v. Body: %s", err, string(bodyBytes))
 		render.Status(r, http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{"error": "Invalid request body"})
 		return
 	}
 
+	log.Printf("registerClient: Decoded registration request: %+v", req)
+
 	// Validate required fields
-	if req.ClientName == "" || req.SoftwareID == "" || req.SoftwareVersion == "" {
+	// if req.ClientName == "" || req.ClientURI == "" || req.JWT == "" || req.SoftwareID == "" || req.SoftwareVersionID == "" || len(req.RedirectURIs) == 0 || req.X509 == "" {
+	// Make JWT and X509 optional by removing them from the validation check
+	if req.ClientName == "" || req.ClientURI == "" || req.SoftwareID == "" || req.SoftwareVersionID == "" || len(req.RedirectURIs) == 0 {
+		errorMsg := "client_name, client_uri, software_id, software_version_id, and redirect_uris are required"
+		log.Printf("registerClient: Validation failed for registration request: %s. Request: %+v", errorMsg, req)
 		render.Status(r, http.StatusBadRequest)
-		render.JSON(w, r, map[string]string{"error": "client_name, software_id, and software_version are required"})
+		// Update the error message to reflect that JWT and X.509 are no longer listed as strictly required
+		render.JSON(w, r, map[string]string{"error": errorMsg})
 		return
 	}
 
 	// Create mock registration response
-	now := time.Now().Unix()
-	resp := models.ClientRegistrationResponse{
-		ClientID:         "c88484a9-6cb3-4ad0-b9bd-" + time.Now().Format("150405"),
-		ClientIDIssuedAt: now,
-		ClientName:       req.ClientName,
-		SoftwareID:       req.SoftwareID,
-		SoftwareVersion:  req.SoftwareVersion,
-		RedirectURIs:     req.RedirectURIs,
-		JWK:              req.JWK,
-		X509:             req.X509,
-	}
+	generatedClientID := "c64484a9-6cb3-4ad0-b9bd-" + time.Now().Format("150405") // Example client ID generation
 
-	render.Status(r, http.StatusOK)
+	resp := models.ClientRegistrationResponse{
+		ClientName:   req.ClientName,
+		ClientID:     generatedClientID,
+		ClientSecret: "xxxxxxxxxxxxxx", // Hardcoded client secret
+		ClientURI:    fmt.Sprintf("https://svt-iam.health.gov.au:443/am/oauth2/realms/root/realms/dohac-api/register?client_id=%s", generatedClientID),
+		RedirectURIs: req.RedirectURIs,
+	}
+	log.Printf("registerClient: Response Payload: %+v", resp)
+
+	render.Status(r, http.StatusOK) // As per example, output is returned with 200 OK. Could be 201 Created.
 	render.JSON(w, r, resp)
 }
 
@@ -102,7 +150,11 @@ func registerClient(w http.ResponseWriter, r *http.Request) {
 func updateClient(w http.ResponseWriter, r *http.Request) {
 	// Get client ID from URL
 	clientID := chi.URLParam(r, "id")
+	log.Printf("updateClient: ClientID from URL: %s", clientID)
+	log.Printf("updateClient: Request Headers: %+v", r.Header)
+
 	if clientID == "" {
+		log.Printf("updateClient: Validation failed: Client ID is required but was empty.")
 		render.Status(r, http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{"error": "Client ID is required"})
 		return
@@ -110,24 +162,37 @@ func updateClient(w http.ResponseWriter, r *http.Request) {
 
 	var req models.ClientUpdateRequest
 
+	// Log raw request body
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("updateClient: Error reading request body: %v", err)
+		render.Status(r, http.StatusInternalServerError)
+		render.JSON(w, r, map[string]string{"error": "Could not read request body"})
+		return
+	}
+	// Restore the body for further processing
+	r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+	log.Printf("updateClient: Raw Request Body: %s", string(bodyBytes))
+
 	// Decode JSON request
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Printf("updateClient: Error decoding JSON request: %v. Body: %s", err, string(bodyBytes))
 		render.Status(r, http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{"error": "Invalid request body"})
 		return
 	}
+	log.Printf("updateClient: Decoded UpdateRequest struct: %+v", req)
 
 	// Create mock update response
+	// As ClientRegistrationResponse structure has changed, updateClient response also changes.
 	resp := models.ClientRegistrationResponse{
-		ClientID:         clientID,
-		ClientIDIssuedAt: time.Now().Unix() - 3600, // Issued an hour ago
-		ClientName:       req.ClientName,
-		SoftwareVersion:  req.SoftwareVersion,
-		RedirectURIs:     req.RedirectURIs,
-		JWK:              req.JWK,
-		X509:             req.X509,
-		SoftwareID:       "example-software-id", // This would come from the original registration
+		ClientID:     clientID,
+		ClientName:   req.ClientName,                                                                                                          // From ClientUpdateRequest
+		ClientSecret: "xxxxxxxxxxxxxx",                                                                                                        // Mocked, consistent with new registration response
+		ClientURI:    fmt.Sprintf("https://svt-iam.health.gov.au:443/am/oauth2/realms/root/realms/dohac-api/register?client_id=%s", clientID), // Mocked
+		RedirectURIs: req.RedirectURIs,                                                                                                        // From ClientUpdateRequest
 	}
+	log.Printf("updateClient: Response Payload: %+v", resp)
 
 	render.Status(r, http.StatusOK)
 	render.JSON(w, r, resp)
@@ -137,7 +202,11 @@ func updateClient(w http.ResponseWriter, r *http.Request) {
 func deleteClient(w http.ResponseWriter, r *http.Request) {
 	// Get client ID from URL
 	clientID := chi.URLParam(r, "id")
+	log.Printf("deleteClient: ClientID from URL: %s", clientID)
+	log.Printf("deleteClient: Request Headers: %+v", r.Header)
+
 	if clientID == "" {
+		log.Printf("deleteClient: Validation failed: Client ID is required but was empty.")
 		render.Status(r, http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{"error": "Client ID is required"})
 		return
@@ -145,6 +214,7 @@ func deleteClient(w http.ResponseWriter, r *http.Request) {
 
 	// In a real implementation, we would delete the client from a database
 	// For this mock, we'll just return a success response
+	log.Printf("deleteClient: Processed deletion for ClientID: %s. Responding with 204 No Content.", clientID)
 
 	// Return 204 No Content for successful deletion
 	w.WriteHeader(http.StatusNoContent)

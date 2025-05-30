@@ -1,16 +1,57 @@
 meta {
   name: local-registeredNurseAttendance-id-patch
   type: http
-  seq: 9
+  seq: 11
 }
 
 patch {
-  url: http://localhost:8080/api/RegisteredNurseAttendance/RN-12345
-  body: none
+  url: http://localhost:8080/api/RegisteredNurseAttendance/Sub-123-456
+  body: json
   auth: none
 }
 
 headers {
   Authorization: Bearer mock_c88484a9-6cb3-4ad0-b9bd-5563567175ee_20230720151152
-  transaction_id: trans-131415
+}
+
+body:json {
+  {
+    "attendanceDays": [
+      {
+        "attendanceDayStatus": "Nurse not on site",
+        "id": "SD-230926-1524",
+        "nonAttendanceTime": [
+          {
+            "alternateArrangement": "No alternate care arrangements",
+            "unavailableEndTime": "12:30:00",
+            "unavailableReason": "Temporary absence - unplanned",
+            "unavailableStartTime": "12:00:00"
+          },
+          {
+            "alternateArrangement": "No alternate care arrangements",
+            "unavailableEndTime": "13:30:00",
+            "unavailableReason": "Temporary absence - unplanned",
+            "unavailableStartTime": "13:00:00"
+          }
+        ],
+        "reportingDate": "2023-11-01"
+      },
+      {
+        "attendanceDayStatus": "Nurse On Site",
+        "id": "SD-230926-1525",
+        "reportingDate": "2023-11-02"
+      }
+    ],
+    "nominatedServiceIdentifier": {
+      "system": "https://api.health.gov.au/integrationID",
+      "use": "official",
+      "value": "SRV-1111"
+    },
+    "reportingPeriod": {
+      "end": "2023-11-30",
+      "start": "2023-11-01"
+    },
+    "resourceType": "RegisteredNurseAttendance",
+    "submissionStatus": "In Progress"
+  }
 }

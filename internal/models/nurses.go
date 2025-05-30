@@ -60,3 +60,60 @@ type AttendanceSummary struct {
 	CompliantWeek  bool      `json:"compliantWeek"`
 	CompliantMonth bool      `json:"compliantMonth"`
 }
+
+// New structs for PATCH /RegisteredNurseAttendance/{id} payload
+
+// NonAttendanceTime represents the non-attendance time details for a registered nurse.
+type NonAttendanceTime struct {
+	AlternateArrangement        string  `json:"alternateArrangement,omitempty"`
+	UnavailableEndTime          string  `json:"unavailableEndTime"`
+	UnavailableReason           string  `json:"unavailableReason,omitempty"`
+	UnavailableStartTime        string  `json:"unavailableStartTime"`
+	AbsenceType                 string  `json:"absenceType,omitempty"`
+	AccessToClinicalDocumentation *bool   `json:"accessToClinicalDocumentation,omitempty"`
+	AccessToSupport             string  `json:"accessToSupport"`
+	AuthorityDelegatedTo        string  `json:"authorityDelegatedTo,omitempty"`
+	ID                          string  `json:"id,omitempty"` // e.g., "RNU-3583"
+}
+
+// AttendanceDay represents the attendance details for a specific day.
+type AttendanceDay struct {
+	AttendanceDayStatus string              `json:"attendanceDayStatus"`
+	ID                  string              `json:"id"` // e.g., "SD-230926-1524"
+	NonAttendanceTime   []NonAttendanceTime `json:"nonAttendanceTime,omitempty"`
+	ReportingDate       string              `json:"reportingDate"` // Format: "YYYY-MM-DD"
+}
+
+// NominatedServiceIdentifier represents the identifier for the nominated service.
+type NominatedServiceIdentifier struct {
+	System string `json:"system"` // e.g., "https://api.health.gov.au/integrationID"
+	Use    string `json:"use,omitempty"`    // e.g., "official"
+	Value  string `json:"value"`  // e.g., "SRV-1111"
+}
+
+// ReportingPeriodPatch represents the reporting period with string dates for the PATCH payload.
+type ReportingPeriodPatch struct {
+	End   string `json:"end"`   // Format: "YYYY-MM-DD"
+	Start string `json:"start"` // Format: "YYYY-MM-DD"
+}
+
+// RegisteredNurseAttendancePatchPayload represents the payload for updating registered nurse attendance.
+type RegisteredNurseAttendancePatchPayload struct {
+	ActivelyRecruiting              *bool                      `json:"activelyRecruiting,omitempty"`
+	AttendanceDays                  []AttendanceDay            `json:"attendanceDays"`
+	ID                              string                     `json:"id,omitempty"` // Logical ID of the resource, e.g., "Sub-240708-504"
+	NominatedServiceIdentifier      NominatedServiceIdentifier `json:"nominatedServiceIdentifier"`
+	ReporterDeclaration             *bool                      `json:"reporterDeclaration,omitempty"`
+	ReportingPeriod                 ReportingPeriodPatch       `json:"reportingPeriod"`
+	ResourceType                    string                     `json:"resourceType"` // Should be "RegisteredNurseAttendance"
+	SubmissionStatus                string                     `json:"submissionStatus"`
+	TransferHealthFacilityOther     string                     `json:"transferHealthFacilityOther,omitempty"`
+	TransferHealthFacilityType      string                     `json:"transferHealthFacilityType,omitempty"`
+	TransferOption                  *bool                      `json:"transferOption,omitempty"`
+	VacancyFilled                   *bool                      `json:"vacancyFilled,omitempty"`
+	VacancyOpenDuration             string                     `json:"vacancyOpenDuration,omitempty"`
+	TotalCoverageHours              *float64                   `json:"totalCoverageHours,omitempty"`
+	TotalUnavailableHours           *float64                   `json:"totalUnavailableHours,omitempty"`
+	TotalHoursWithoutAltArrangement *float64                   `json:"totalHoursWithoutAltArrangement,omitempty"`
+	CoveragePercentage              *float64                   `json:"coveragePercentage,omitempty"`
+}

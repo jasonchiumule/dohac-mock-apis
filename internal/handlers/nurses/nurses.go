@@ -1,6 +1,7 @@
 package nurses
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -252,27 +253,22 @@ func getAttendanceByID(w http.ResponseWriter, r *http.Request) {
 func updateAttendance(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
-	// In a real implementation, we would validate the JWT token and update
-	// the attendance in a database. For this mock, we'll return a success response.
-
-	// Find attendance by ID
-	for i, attendance := range mockAttendances {
-		if attendance.ID == id {
-			// Simulate update
-			attendance.Status = "finished"
-			attendance.Note = append(attendance.Note, models.Annotation{
-				Text: "Updated via API at " + time.Now().Format(time.RFC3339),
-			})
-
-			// Update in mock data
-			mockAttendances[i] = attendance
-
-			render.JSON(w, r, attendance)
-			return
-		}
+	// Decode the request body
+	var payload models.RegisteredNurseAttendancePatchPayload
+	if err := render.DecodeJSON(r.Body, &payload); err != nil {
+		render.Status(r, http.StatusBadRequest)
+		render.JSON(w, r, map[string]string{"error": "Invalid request payload: " + err.Error()})
+		return
 	}
 
-	// If no attendance is found, return 404
-	render.Status(r, http.StatusNotFound)
-	render.JSON(w, r, map[string]string{"error": "Registered nurse attendance not found"})
+	// For this mock, we are not validating the id against mockAttendances
+	// or actually updating any data. We just acknowledge the PATCH request.
+
+	// transaction_id header can be retrieved using r.Header.Get("transaction_id")
+	// For now, we are not using it as per the focused request.
+
+	responseMessage := map[string]string{
+		"message": fmt.Sprintf("successful PATCH to /RegisteredNurseAttendance/%s", id),
+	}
+	render.JSON(w, r, responseMessage)
 }

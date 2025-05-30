@@ -22,24 +22,23 @@ type TokenResponse struct {
 
 // ClientRegistrationRequest represents a client registration request
 type ClientRegistrationRequest struct {
-	ClientName      string   `json:"client_name"`
-	SoftwareID      string   `json:"software_id"`
-	SoftwareVersion string   `json:"software_version"`
-	RedirectURIs    []string `json:"redirect_uris,omitempty"`
-	JWK             string   `json:"jwk,omitempty"`
-	X509            string   `json:"x509,omitempty"`
+	ClientName        string   `json:"client_name"`
+	ClientURI         string   `json:"client_uri"`
+	JWT               string   `json:"jwt"`
+	RedirectURIs      []string `json:"redirect_uris"` // Removed omitempty
+	SoftwareID        string   `json:"software_id"`
+	SoftwareVersionID string   `json:"software_version_id"` // Added, replaces SoftwareVersion
+	X509              string   `json:"x_509"`                 // Changed from x509, removed omitempty
 }
 
 // ClientRegistrationResponse represents a client registration response
 type ClientRegistrationResponse struct {
-	ClientID         string   `json:"client_id"`
-	ClientIDIssuedAt int64    `json:"client_id_issued_at"`
-	ClientName       string   `json:"client_name"`
-	SoftwareID       string   `json:"software_id"`
-	SoftwareVersion  string   `json:"software_version"`
-	RedirectURIs     []string `json:"redirect_uris,omitempty"`
-	JWK              string   `json:"jwk,omitempty"`
-	X509             string   `json:"x509,omitempty"`
+	ClientName    string   `json:"client_name"`
+	ClientID      string   `json:"client_id"`
+	ClientSecret  string   `json:"client_secret"` // Added
+	ClientURI     string   `json:"client_uri"`    // Added
+	RedirectURIs  []string `json:"redirect_uris"` // Removed omitempty
+	// Removed ClientIDIssuedAt, SoftwareID, SoftwareVersion, JWK, X509
 }
 
 // ClientUpdateRequest represents a client update request

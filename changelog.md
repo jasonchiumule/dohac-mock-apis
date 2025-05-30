@@ -1,3 +1,9 @@
+# 0.5.11 - Update: auth and nurses endpoints
+- update logging and changed some logic for the oauth2 endpoints
+- update logic to nurses endpoint
+- added B2G test files in /test-bench
+- added bruno tests
+
 # 0.5.10 - Update: README.md
 - updated README.md with accurate information
 

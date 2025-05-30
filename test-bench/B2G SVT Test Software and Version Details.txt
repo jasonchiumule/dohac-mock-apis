@@ -1,0 +1,4 @@
+Software details
+- Software Id is: SW-000003
+- Conformant Software Version Id (v1.0): 43431d63-e316-453b-b4b6-18da7b71a66c
+- Non-Conformant Software Version Id (v2.0): 06d24b54-cbf8-4fe4-b7c1-c959aa6c3256

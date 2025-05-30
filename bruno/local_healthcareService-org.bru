@@ -1,0 +1,20 @@
+meta {
+  name: local_healthcareService-org
+  type: http
+  seq: 7
+}
+
+get {
+  url: http://localhost:8080/api/HealthcareService?organization=PRV-67890
+  body: none
+  auth: none
+}
+
+params:query {
+  organization: PRV-67890
+}
+
+headers {
+  Authorization: Bearer mock_c88484a9-6cb3-4ad0-b9bd-5563567175ee_20230720151152
+  ~transaction_id: trans-456
+}
