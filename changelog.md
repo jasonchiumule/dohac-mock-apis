@@ -1,3 +1,7 @@
+# 0.5.12 - Update: nurse and provider section wording
+- frontend wording to make sense with the actual use case
+- ready to deploy
+
 # 0.5.11 - Update: auth and nurses endpoints
 - update logging and changed some logic for the oauth2 endpoints
 - update logic to nurses endpoint

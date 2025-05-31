@@ -31,7 +31,9 @@ export default function NursesSection() {
   // Use the imported RNAttendanceBundle type
   const [attendanceBundle, setAttendanceBundle] = createSignal<RNAttendanceBundle | null>(null);
   const [recordToUpdateId, setRecordToUpdateId] = createSignal<string | null>(null);
-  const [updateNote, setUpdateNote] = createSignal(''); // State for the note input
+  const [updateNote, setUpdateNote] = createSignal('');
+  const [reportingStatus, setReportingStatus] = createSignal('');
+  const [absenceReason, setAbsenceReason] = createSignal('');
 
   // Refs for scrolling
   let sectionRef: HTMLElement | undefined;
@@ -49,6 +51,8 @@ export default function NursesSection() {
     setAttendanceBundle(null);
     setRecordToUpdateId(null);
     setUpdateNote(''); // Reset note input
+    setReportingStatus('');
+    setAbsenceReason('');
 
     try {
       const data = await fetchRNAttendance(DEMO_SERVICE_ID, false);
@@ -88,27 +92,42 @@ export default function NursesSection() {
 
   const handleUpdateAttendance = async () => {
     const recordId = recordToUpdateId();
+    const status = reportingStatus();
+    
     if (!recordId) {
       setSubmitError("No record selected or available for update.");
       return;
-    };
+    }
+    
+    if (!status) {
+      setSubmitError("Please select a reporting scenario.");
+      return;
+    }
 
     setNurseState('submitting');
-    setSubmitError(null); // Clear previous errors
+    setSubmitError(null);
+
+    let reportingNote = status === 'full-coverage'
+      ? 'Monthly Report: Nurse was on-site for 24hrs that day'
+      : `Monthly Report: Nurse was not on-site for full/part of the day. Reason: ${absenceReason() || 'Not specified'}`;
+    
+    if (updateNote()) {
+      reportingNote += `. Additional notes: ${updateNote()}`;
+    }
 
     const patchPayload: EncounterPatchPayload = {
-      note: [{ text: updateNote() || `Updated via API at ${new Date().toISOString()}` }]
+      note: [{ text: reportingNote }]
     };
 
-    console.log(`Submitting PATCH for record ${recordId}:`, JSON.stringify(patchPayload, null, 2));
+    console.log(`Submitting monthly report PATCH for record ${recordId}:`, JSON.stringify(patchPayload, null, 2));
 
     try {
       await patchNurseAttendance(recordId, patchPayload);
       setNurseState('submitted');
     } catch (err: any) {
-      console.error("Error patching attendance:", err);
-      setSubmitError(err.message || "Failed to update attendance record.");
-      setNurseState('formVisible'); // Go back to form on error
+      console.error("Error submitting monthly report:", err);
+      setSubmitError(err.message || "Failed to submit monthly report.");
+      setNurseState('formVisible');
     }
   };
 
@@ -148,14 +167,14 @@ export default function NursesSection() {
     <section ref={sectionRef} class={sectionCardClasses}>
       <h2 class={headingClasses}>
         <span class="i-carbon-user-nurse text-2xl mr-2 text-blue-600"></span>
-        Registered Nurse (RN) Attendance Tracking
+        Mandatory Monthly RN Attendance Reporting
       </h2>
 
       <Switch>
         {/* State A: Initial */}
         <Match when={nurseState() === 'initial' || nurseState() === 'loading'}>
           <p class={paragraphClasses}>
-            Manually tracking and reporting RN attendance can be time-consuming and prone to errors, potentially impacting compliance checks.
+            Monthly RN attendance reporting is mandatory for compliance. Manual compilation of 24-hour coverage records and absence documentation is time-consuming and error-prone.
           </p>
           <button
             onClick={handleFetchAttendance}
@@ -163,7 +182,7 @@ export default function NursesSection() {
             class={primaryBlueButtonClasses}
           >
             <span class={nurseState() === 'loading' ? "i-carbon-circle-dash animate-spin mr-2" : "i-carbon-download mr-2"}></span>
-            {nurseState() === 'loading' ? 'Loading...' : `Fetch Attendance Summary (Service: ${DEMO_SERVICE_ID})`}
+            {nurseState() === 'loading' ? 'Loading...' : `Fetch Monthly Attendance Data (Service: ${DEMO_SERVICE_ID})`}
           </button>
           <Show when={loadingError()}>
             <div class={errorAlertClasses}>
@@ -180,7 +199,7 @@ export default function NursesSection() {
               <>
                 <h3 class={subHeadingClasses}>Attendance Summary for {bundle().entry?.[0]?.resource?.subject?.display ?? DEMO_SERVICE_ID}</h3>
                 <p class={paragraphClasses}>
-                  Below is a summary of fetched attendance records. You can add a note to the record with ID <code class="text-xs bg-gray-100 p-1 rounded">{recordToUpdateId() ?? 'N/A'}</code> and submit the update via the PATCH API.
+                  Below is attendance data for monthly reporting. Select the appropriate scenario and submit your monthly report for record <code class="text-xs bg-gray-100 p-1 rounded">{recordToUpdateId() ?? 'N/A'}</code>.
                 </p>
 
                 {/* Display Fetched Data Summary */}
@@ -200,12 +219,46 @@ export default function NursesSection() {
                   </For>
                 </div>
 
-                {/* Form for Update (Simplified: Just a Note) */}
+                {/* Form for Monthly Reporting Update */}
                 <Show when={recordToUpdateId()}>
                   <form onSubmit={(e) => { e.preventDefault(); handleUpdateAttendance(); }}>
                     <div class="mb-4">
+                      <label class={formLabelClasses}>
+                        Monthly Reporting Status for Record <code class="text-xs bg-gray-100 p-1 rounded">{recordToUpdateId()}</code>:
+                      </label>
+                      <select
+                        value={reportingStatus()}
+                        onChange={(e) => setReportingStatus(e.currentTarget.value)}
+                        class={formInputClasses}
+                        disabled={nurseState() === 'submitting'}
+                      >
+                        <option value="">Select reporting scenario...</option>
+                        <option value="full-coverage">Nurse was on-site for 24hrs that day</option>
+                        <option value="partial-absence">Nurse was not on-site for full/part of the day</option>
+                      </select>
+                    </div>
+
+                    <Show when={reportingStatus() === 'partial-absence'}>
+                      <div class="mb-4">
+                        <label for="absenceReason" class={formLabelClasses}>
+                          Reason for absence/partial coverage:
+                        </label>
+                        <textarea
+                          id="absenceReason"
+                          name="absenceReason"
+                          rows={2}
+                          value={absenceReason()}
+                          onInput={(e) => setAbsenceReason(e.currentTarget.value)}
+                          class={formInputClasses}
+                          placeholder="e.g., Sick leave, Emergency call-out, Scheduled break coverage"
+                          disabled={nurseState() === 'submitting'}
+                        />
+                      </div>
+                    </Show>
+
+                    <div class="mb-4">
                       <label for="updateNote" class={formLabelClasses}>
-                        Add/Update Note for Record <code class="text-xs bg-gray-100 p-1 rounded">{recordToUpdateId()}</code>:
+                        Additional Notes (Optional):
                       </label>
                       <textarea
                         id="updateNote"
@@ -214,7 +267,7 @@ export default function NursesSection() {
                         value={updateNote()}
                         onInput={(e) => handleNoteChange(e.currentTarget.value)}
                         class={formInputClasses}
-                        placeholder="e.g., Correction to end time documented."
+                        placeholder="Additional reporting details or corrections"
                         disabled={nurseState() === 'submitting'}
                       />
                     </div>
@@ -233,7 +286,7 @@ export default function NursesSection() {
                       class={primaryGreenButtonClasses}
                     >
                       <span class={nurseState() === 'submitting' ? "i-carbon-circle-dash animate-spin mr-2" : "i-carbon-send-alt mr-2"}></span>
-                      {nurseState() === 'submitting' ? 'Submitting Update...' : 'Update Record via API (PATCH)'}
+                      {nurseState() === 'submitting' ? 'Submitting Monthly Report...' : 'Submit Monthly Report via API (PATCH)'}
                     </button>
                   </form>
                 </Show>
@@ -250,43 +303,44 @@ export default function NursesSection() {
           {/* Success message and benefits section will be scrolled into view by the effect */}
           <div class={successAlertClasses}>
             <span class="i-carbon-checkmark-outline text-lg mr-2"></span>
-            Attendance Record Updated Successfully via API (PATCH)!
+            Monthly Attendance Report Submitted Successfully via API!
           </div>
 
           {/* Savings Statistics */}
           <div>
-            <h3 class={subHeadingClasses}>Automated Attendance Management Benefits</h3>
+            <h3 class={subHeadingClasses}>Automated Monthly Reporting Benefits</h3>
             <div class="grid md:grid-cols-2 gap-6">
               {/* Before */}
               <div class={beforeCardClasses}>
                 <h4 class={cardHeadingClasses}>
                   <span class="i-carbon-time text-red-500 mr-2"></span>
-                  Manual Process (Before)
+                  Manual Monthly Reporting (Before)
                 </h4>
                 <ul class={listClasses}>
-                  <li>Manual timesheet collection/entry</li>
-                  <li>Manual checks for 24/7 Registered Nurse coverage</li>
-                  <li>Delayed identification of compliance gaps</li>
-                  <li>Manual data aggregation for reporting</li>
-                  <li>Risk of transcription errors</li>
+                  <li>Manual compilation of daily attendance records</li>
+                  <li>Paper-based or spreadsheet tracking of 24hr coverage</li>
+                  <li>Manual documentation of absences and reasons</li>
+                  <li>Time-consuming monthly report preparation</li>
+                  <li>Risk of missing compliance deadlines</li>
+                  <li>Difficulty tracking patterns across multiple nurses</li>
                 </ul>
               </div>
               {/* After */}
               <div class={afterCardClasses}>
                 <h4 class={`${cardHeadingClasses} text-blue-800`}>
                   <span class="i-carbon-flash text-green-600 mr-2"></span>
-                  API Integration (After)
+                  API-Driven Reporting (After)
                 </h4>
                 <ul class={afterListClasses}>
-                  <li>Automated data retrieval from rostering/HR systems (potential)</li>
-                  <li>Direct query/update of attendance records via API</li>
-                  <li>Real-time compliance monitoring capability</li>
-                  <li class="font-semibold">Reduced Admin Time: Significant reduction in manual checks</li>
-                  <li>Improved data accuracy and auditability</li>
-                  <li>Proactive management of staffing levels</li>
-                  <li class="font-semibold">Faster Response to Audits/Queries</li>
+                  <li>Automated monthly report generation</li>
+                  <li>Standardized reporting of coverage scenarios</li>
+                  <li>Structured absence reason documentation</li>
+                  <li class="font-semibold">Reduced Monthly Reporting Time: 80% time savings</li>
+                  <li>Consistent compliance with reporting requirements</li>
+                  <li>Real-time visibility into coverage patterns</li>
+                  <li class="font-semibold">Automated Audit Trail Generation</li>
                 </ul>
-                <p class="text-xs text-green-600 mt-2">*Facilitates easier reporting and compliance verification.</p>
+                <p class="text-xs text-green-600 mt-2">*Ensures timely submission of mandatory monthly reports.</p>
               </div>
             </div>
           </div>
@@ -306,10 +360,10 @@ export default function NursesSection() {
       <div class="mt-6 pt-4 border-t border-gray-200">
         <h3 class={`${cardHeadingClasses} text-gray-800 mb-1`}>
           <span class="i-carbon-chart-line text-lg mr-2 text-blue-600"></span>
-          Value Proposition
+          Monthly Reporting Value Proposition
         </h3>
         <p class="text-sm text-gray-600">
-          Integrating with the Registered Nurse Attendance API allows for streamlined tracking, real-time compliance monitoring, reduced administrative overhead associated with manual checks, and improved accuracy of attendance records. This supports better workforce management and simplifies regulatory reporting.
+          Automating mandatory monthly RN attendance reporting through API integration ensures consistent compliance, reduces administrative burden, and provides structured documentation of 24-hour coverage scenarios and absence reasons. This streamlines regulatory reporting and improves audit readiness.
         </p>
       </div>
     </section>

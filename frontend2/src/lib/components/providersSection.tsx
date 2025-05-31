@@ -2,8 +2,6 @@ import { createSignal, Show, Switch, Match, createEffect, on } from 'solid-js'; 
 import type { Organization } from '~/lib/schema';
 import { fetchProviders } from '~/lib/api';
 
-const newAddress = '99 Flamingo Parade, Melbourne, VIC 3000';
-
 // Helper function
 const getAddressString = (org: Organization | undefined): string => {
   if (!org || !org.address || org.address.length === 0) {
@@ -23,7 +21,7 @@ const primaryButtonClasses = "inline-flex items-center px-4 py-2 border border-t
 const secondaryButtonClasses = "inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed";
 const errorAlertClasses = "mt-4 p-3 bg-red-50 border border-red-300 text-red-700 rounded-md text-sm flex items-center";
 const warningAlertClasses = "mt-4 p-3 bg-yellow-50 border border-yellow-300 text-yellow-700 rounded-md text-sm flex items-center";
-const infoAlertClasses = errorAlertClasses; // Using error style for info alert in this case
+const infoAlertClasses = "mt-4 p-3 bg-blue-50 border border-blue-300 text-blue-700 rounded-md text-sm flex items-center"; // Updated for neutral info
 const sectionCardClasses = "p-6 bg-white rounded-lg border border-gray-200";
 const headingClasses = "text-xl font-semibold text-gray-800 mb-4 flex items-center";
 const subHeadingClasses = "text-lg font-medium text-gray-700 mb-2";
@@ -91,8 +89,8 @@ export default function ProviderInfoSection() {
     // Assign ref to the main section element
     <section ref={sectionRef} class={sectionCardClasses}>
       <h2 class={headingClasses}>
-        <span class="i-carbon-building text-2xl mr-2 text-blue-600"></span>
-        Provider Information Management
+        <span class="i-carbon-connect text-2xl mr-2 text-blue-600"></span> {/* Icon changed */}
+        Provider ID Discovery & API Access {/* Text changed */}
       </h2>
 
       <Switch>
@@ -101,23 +99,23 @@ export default function ProviderInfoSection() {
           <div class="grid md:grid-cols-2 gap-6">
             {/* Before (Manual Process Description) */}
             <div>
-              <h3 class={subHeadingClasses}>Manual Process</h3>
+              <h3 class={subHeadingClasses}>Previous Method: Manual ID Lookup</h3> {/* Heading changed */}
               <p class={paragraphClasses}>
-                Manually checking provider details across different government portals is time-consuming. Updates require remembering to call or log in separately, risking outdated information and potential compliance issues.
+                Previously, identifying the correct Provider ID for API integration required manual searches across various systems or documentation. This could be error-prone and delay the process of interacting with provider-specific APIs. {/* Paragraph changed */}
               </p>
-              <p class={`${paragraphClasses} font-bold`}> We recently moved to <code class="font-mono bg-yellow-100 px-1 rounded">{newAddress}</code></p>
+              {/* The paragraph displaying newAddress (previously here) is removed. */}
             </div>
 
             {/* Action Area */}
             <div>
-              <h3 class={subHeadingClasses}>Automated Check</h3>
+              <h3 class={subHeadingClasses}>Automated Provider ID Retrieval</h3> {/* Heading changed */}
               <button
                 onClick={handleCheckProviderAddress}
                 disabled={providerCheckState() === 'loading'}
                 class={primaryButtonClasses}
               >
                 <span class={providerCheckState() === 'loading' ? "i-carbon-circle-dash animate-spin mr-2" : "i-carbon-search mr-2"}></span>
-                {providerCheckState() === 'loading' ? 'Checking...' : 'Check Registered Address via API'}
+                {providerCheckState() === 'loading' ? 'Fetching ID...' : 'Fetch Provider ID via API'} {/* Text changed */}
               </button>
 
               {/* Error message shown here if state is 'error' */}
@@ -134,37 +132,35 @@ export default function ProviderInfoSection() {
         {/* State: Checked (API Call Successful or Errored - content below handles error display) */}
         <Match when={providerCheckState() === 'checked'}>
           {/* Results area - will be scrolled into view */}
-          <h3 class={`${subHeadingClasses} mb-3`}>API Check Results</h3>
+          <h3 class={`${subHeadingClasses} mb-3`}>Provider ID Retrieval Results</h3> {/* Heading changed */}
           <div class="grid md:grid-cols-2 gap-6 mb-6">
             {/* Before */}
             <div class={beforeCardClasses}>
               <h4 class={cardHeadingClasses}>
                 <span class="i-carbon-time text-red-500 mr-2"></span>
-                Manual Process (Before)
+                Manual ID Lookup (Before) {/* Heading changed */}
               </h4>
               <ul class={listClasses}>
-                <li>Log in to government portals</li>
-                <li>Search for provider details</li>
-                <li>Manually compare with internal records</li>
-                <li>Time Requirement: ~5-15 mins per check</li>
-                <li>Risk of overlooking discrepancies</li>
+                <li>Manually search portals or documents for Provider IDs</li> {/* Item changed */}
+                <li>Risk of using incorrect or outdated IDs</li> {/* Item changed */}
+                <li>Time spent on lookup instead of API integration</li> {/* Item changed */}
+                <li>Potential delays in accessing necessary API endpoints</li> {/* Item added */}
               </ul>
             </div>
             {/* After */}
             <div class={afterCardClasses}>
               <h4 class={`${cardHeadingClasses} text-blue-800`}>
                 <span class="i-carbon-flash text-green-700 mr-2"></span>
-                API Integration (After)
+                API-Driven ID Retrieval (After) {/* Heading changed */}
               </h4>
               <ul class={afterListClasses}>
-                <li>Single button click within existing system</li>
-                <li>Instant fetch of registered data</li>
-                <li>Direct comparison or flag for review</li>
-                <li class="font-semibold">Time Saved: ~5-15 mins per check</li>
-                <li>Reduced administrative burden and costly admin related errors</li>
-                <li>Improved data accuracy and compliance timeliness</li>
+                <li>Single button click to fetch the Provider ID</li> {/* Item changed */}
+                <li>Instant retrieval of the required ID for API calls</li> {/* Item changed */}
+                <li>Ensures correct ID is used for targeted API interactions</li> {/* Item changed */}
+                <li class="font-semibold">Enables streamlined API integration</li> {/* Item changed */}
+                <li>Reduces setup time for API-dependent workflows</li> {/* Item added */}
+                <li>Foundation for automated provider-specific processes</li> {/* Item added */}
               </ul>
-              <p class="text-xs text-blue-600 mt-2">*Based on average admin hourly rates.</p>
             </div>
           </div>
 
@@ -172,19 +168,21 @@ export default function ProviderInfoSection() {
           <Show when={targetProvider()} fallback={
             <div class={warningAlertClasses}>
               <span class="i-carbon-warning text-lg mr-2"></span>
-              {providerData() === null ? "Loading provider data..." : providerData()?.length === 0 ? "API returned no provider data." : "Target provider (ID: PRV-12345) not found in the API results."}
+              {providerData() === null ? "Loading provider data..." : providerData()?.length === 0 ? "API returned no provider data." : "Target provider (ID: PRV-12345) not found. Unable to retrieve ID."} {/* Text changed */}
             </div>
           }>
             {(provider) => (
-              <div class={infoAlertClasses}>
-                <span class="i-carbon-warning-alt text-lg mr-2"></span>
+              <div class={infoAlertClasses}> {/* Style will now be blue-themed via updated infoAlertClasses */}
+                <span class="i-carbon-information text-lg mr-2"></span> {/* Icon changed to information */}
                 <span>
-                  API Check Result for <strong>{provider().name || 'N/A'}</strong> (ID: {provider().id || 'N/A'}):
+                  API Call Successful for <strong>{provider().name || 'N/A'}</strong> (ID: {provider().id || 'N/A'}):
                   <br />
-                  Government registered address is <code class="font-mono bg-red-100 px-1 rounded">{getAddressString(provider())}</code>.
+                  Provider ID <code class="font-mono bg-blue-100 px-1 rounded">{provider().id || 'N/A'}</code> has been retrieved.
                   <br />
-                  Our database address is <code class="font-mono bg-red-100 px-1 rounded">{newAddress}</code>.
-                  <br />Address mismatch, please contact the relevant authority (e.g., Health.gov.au on <a href="tel:1800020103" class="underline hover:text-gray-800">1800 020 103</a>) to update address.
+                  This ID is required for subsequent API interactions with this provider.
+                  <br />
+                  Registered Address (for reference): <code class="font-mono bg-gray-100 px-1 rounded">{getAddressString(provider())}</code>.
+                  {/* Address mismatch and contact authority lines removed */}
                 </span>
               </div>
             )}
@@ -196,7 +194,7 @@ export default function ProviderInfoSection() {
             class={`${secondaryButtonClasses} mt-6`}
           >
             <span class="i-carbon-reset mr-1"></span>
-            Check Again / Reset
+            Fetch Again / Reset {/* Text changed */}
           </button>
         </Match>
       </Switch>
@@ -204,11 +202,11 @@ export default function ProviderInfoSection() {
       {/* General Value Proposition */}
       <div class="mt-6 pt-4 border-t border-gray-200">
         <h3 class={`${cardHeadingClasses} text-gray-800 mb-1`}>
-          <span class="i-carbon-chart-line text-lg mr-2 text-green-600"></span> {/* Icon color was blue, changed to green for consistency? Or keep blue? Keeping green for now */}
-          Value Proposition
+          <span class="i-carbon-api text-lg mr-2 text-green-600"></span> {/* Icon changed */}
+          Streamlined API Access {/* Heading changed */}
         </h3>
         <p class="text-sm text-gray-600">
-          Automated checks via API reduce administrative overhead, minimize manual errors, and ensure provider information is consistent and up-to-date. Future API capabilities might allow direct updates, further streamlining compliance workflows.
+          Automated Provider ID retrieval is the first step towards seamless integration with provider-specific APIs. This ensures that your system can accurately target and communicate with the correct provider, enabling a wide range of automated workflows and data exchange capabilities. {/* Paragraph changed */}
         </p>
       </div>
     </section>
