@@ -1,8 +1,9 @@
-import { createSignal, Show, For, Switch, Match, createEffect, on } from 'solid-js'; // Added createEffect, on
+import { createSignal, Show, For, Switch, Match, createEffect, on } from 'solid-js';
 // Import API functions - corrected fetchNurseAttendances to fetchRNAttendance
-import { fetchRNAttendance, patchNurseAttendance } from '~/lib/api';
+import { fetchRNAttendance, patchNurseAttendance, patchNurseAttendanceWithCsv } from '~/lib/api'; // Added patchNurseAttendanceWithCsv
 // Import types from schema.ts instead of defining locally
 import type { RNAttendanceBundle, EncounterPatchPayload } from '~/lib/schema'; // Use RNAttendanceBundle and add EncounterPatchPayload
+
 
 // --- Style Constants --- (Reused/Adapted from QualityIndicatorsSection)
 const primaryBlueButtonClasses = "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"; // Changed to Blue theme
@@ -35,16 +36,101 @@ export default function NursesSection() {
   const [reportingStatus, setReportingStatus] = createSignal('');
   const [absenceReason, setAbsenceReason] = createSignal('');
 
+  // --- CSV File Upload State ---
+  const [csvUploadState, setCsvUploadState] = createSignal<'idle' | 'uploading' | 'uploaded' | 'error'>('idle');
+  const [selectedCsvFile, setSelectedCsvFile] = createSignal<File | null>(null);
+  const [csvUploadError, setCsvUploadError] = createSignal<string | null>(null);
+  const [csvUploadSuccessMessage, setCsvUploadSuccessMessage] = createSignal<string | null>(null);
+  const [isDragging, setIsDragging] = createSignal(false);
+
+  // --- CSV Data State ---
+  const [csvHeaders, setCsvHeaders] = createSignal<string[]>([]);
+  const [csvRows, setCsvRows] = createSignal<string[][]>([]);
+
   // Refs for scrolling
   let sectionRef: HTMLElement | undefined;
   let submitErrorRef: HTMLDivElement | undefined;
+  let csvUploadSectionRef: HTMLElement | undefined; // Ref for CSV upload section
+  let csvFileInputRef: HTMLInputElement | undefined;
 
   // Hardcoded Service ID for the demo
   const DEMO_SERVICE_ID = 'SVC-54321';
   // Hardcoded Record ID to patch (assuming it's the first one fetched in the summary)
   const DEMO_RECORD_ID_TO_PATCH = 'RN-12345';
+  // Hardcoded Record ID for CSV upload demo
+  const DEMO_CSV_UPLOAD_RECORD_ID = 'Sub-123-456'; // From curl example
 
   // --- Event Handlers ---
+  const processFiles = (files: FileList | null) => {
+    setCsvUploadError(null);
+    setCsvUploadSuccessMessage(null);
+    setCsvHeaders([]);
+    setCsvRows([]);
+
+    if (files && files.length > 0) {
+      if (files.length > 1) {
+        setCsvUploadError("Too many files. Please upload only one CSV file.");
+        setSelectedCsvFile(null);
+        if (csvFileInputRef) csvFileInputRef.value = ''; // Clear the input
+        return;
+      }
+
+      const file = files[0];
+      if (file.type !== "text/csv" && !file.name.endsWith(".csv")) {
+        setCsvUploadError("The selected file type is not allowed. Please upload a CSV file.");
+        setSelectedCsvFile(null);
+        if (csvFileInputRef) csvFileInputRef.value = ''; // Clear the input
+        return;
+      }
+
+      setSelectedCsvFile(file);
+
+      // Read and parse the CSV file
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        if (text) {
+          // A simple CSV parser: splits by newline, then by comma.
+          // This doesn't handle commas within quoted fields, but is fine for this demo.
+          const allRows = text.split('\n').map(row => row.trim().split(','));
+          if (allRows.length > 0) {
+            setCsvHeaders(allRows[0]);
+            // Get the first 5 data rows (after the header)
+            setCsvRows(allRows.slice(1, 6));
+          }
+        }
+      };
+      reader.onerror = () => {
+        setCsvUploadError("Failed to read the file.");
+      };
+      reader.readAsText(file);
+
+    } else {
+      setSelectedCsvFile(null);
+    }
+  };
+
+  const handleCsvFileSelect = (event: Event) => {
+    const input = event.currentTarget as HTMLInputElement;
+    processFiles(input.files);
+  };
+
+  const handleDragOver = (e: DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    processFiles(e.dataTransfer?.files ?? null);
+  };
+
   const handleFetchAttendance = async () => {
     setNurseState('loading');
     setLoadingError(null);
@@ -131,6 +217,38 @@ export default function NursesSection() {
     }
   };
 
+  // --- CSV Upload Event Handler ---
+  const handleCsvUpload = async () => {
+    if (!selectedCsvFile()) {
+      setCsvUploadError("No CSV file selected. Please select a file to upload.");
+      return;
+    }
+    if (!DEMO_CSV_UPLOAD_RECORD_ID) {
+      setCsvUploadError("Demo CSV Upload Record ID is not configured."); // Should not happen with const
+      return;
+    }
+
+    setCsvUploadState('uploading');
+    setCsvUploadError(null);
+    setCsvUploadSuccessMessage(null);
+
+    try {
+      const file = selectedCsvFile()!;
+      console.log(`Uploading CSV file ${file.name} for record ${DEMO_CSV_UPLOAD_RECORD_ID}`);
+      const result = await patchNurseAttendanceWithCsv(DEMO_CSV_UPLOAD_RECORD_ID, file);
+      setCsvUploadState('uploaded');
+      setCsvUploadSuccessMessage(`Successfully uploaded ${file.name} and updated record ${result.id || DEMO_CSV_UPLOAD_RECORD_ID}.`);
+      setSelectedCsvFile(null); // Clear selection after successful upload
+      if (csvFileInputRef) {
+        csvFileInputRef.value = '';
+      }
+    } catch (err: any) {
+      console.error("Error uploading CSV:", err);
+      setCsvUploadError(err.message || "Failed to upload CSV file.");
+      setCsvUploadState('error'); // Or 'idle' to allow retry
+    }
+  };
+
   // Helper to format date/time
   const formatDateTime = (isoString: string | undefined): string => {
     if (!isoString) return 'N/A';
@@ -163,7 +281,8 @@ export default function NursesSection() {
   }));
 
   return (
-    // Assign ref to the main section element
+    <> {/* Added fragment wrapper */}
+    {/* Assign ref to the main section element */}
     <section ref={sectionRef} class={sectionCardClasses}>
       <h2 class={headingClasses}>
         <span class="i-carbon-user-nurse text-2xl mr-2 text-blue-600"></span>
@@ -367,5 +486,138 @@ export default function NursesSection() {
         </p>
       </div>
     </section>
+
+    {/* --- New Section: Bulk Update via CSV --- */}
+    <section ref={csvUploadSectionRef} class={`${sectionCardClasses} mt-8`}>
+      <h2 class={headingClasses}>
+        <span class="i-carbon-upload text-2xl mr-2 text-blue-600"></span>
+        Bulk Update Nurse Attendance via CSV
+      </h2>
+      <p class={paragraphClasses}>
+        Upload a CSV file containing detailed nurse attendance data to update a specific submission record (e.g., <code class="text-xs bg-gray-100 p-1 rounded">{DEMO_CSV_UPLOAD_RECORD_ID}</code>).
+        The backend will process this CSV to update the relevant attendance information.
+      </p>
+
+      <div
+        class={`${formInputClasses} border-dashed border-2 p-6 text-center cursor-pointer transition-colors ${isDragging() ? 'border-blue-500 bg-blue-50' : 'hover:border-blue-400'}`}
+        onClick={() => csvFileInputRef?.click()}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <input
+          ref={csvFileInputRef}
+          type="file"
+          class="hidden"
+          accept="text/csv,.csv"
+          onChange={handleCsvFileSelect}
+        />
+        <span class="i-carbon-cloud-upload text-3xl text-gray-400 mb-2 block"></span>
+        <Switch>
+          <Match when={isDragging()}>
+            <p class="text-sm font-semibold text-blue-600">Drop the file here</p>
+          </Match>
+          <Match when={selectedCsvFile()}>
+            <p class="text-sm text-gray-600">Drag & drop or <span class="font-semibold text-blue-600">click to replace</span>.</p>
+          </Match>
+          <Match when={!selectedCsvFile()}>
+            <p class="text-sm text-gray-600"><span class="font-semibold text-blue-600">Click to upload</span> or drag and drop.</p>
+          </Match>
+        </Switch>
+        <p class="text-xs text-gray-500 mt-1">CSV file only</p>
+      </div>
+
+      <Show when={selectedCsvFile()}>
+        {(file) => (
+          <div class="mt-4 flex items-center justify-between p-2 border border-gray-200 rounded-md bg-gray-50">
+            <div class="flex items-center">
+              <span class="i-carbon-document-csv text-xl mr-2 text-gray-600"></span>
+              <span class="text-sm font-medium text-gray-700">{file().name}</span>
+              <span class="text-xs text-gray-500 ml-2">({(file().size / 1024).toFixed(1)} KB)</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCsvFile(null);
+                setCsvHeaders([]);
+                setCsvRows([]);
+                if (csvFileInputRef) {
+                  csvFileInputRef.value = '';
+                }
+              }}
+              class="text-red-500 hover:text-red-700"
+            >
+              <span class="i-carbon-trash-can text-lg"></span>
+            </button>
+          </div>
+        )}
+      </Show>
+
+      {/* CSV Preview Table */}
+      <Show when={csvRows().length > 0}>
+        <div class="mt-4 overflow-x-auto">
+          <h4 class="text-md font-semibold text-gray-700 mb-2">CSV Preview (First 5 Rows)</h4>
+          <table class="min-w-full divide-y divide-gray-200 border border-gray-200 text-xs">
+            <thead class="bg-gray-50">
+              <tr>
+                <For each={csvHeaders()}>
+                  {(header) => (
+                    <th scope="col" class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">
+                      {header}
+                    </th>
+                  )}
+                </For>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <For each={csvRows()}>
+                {(row) => (
+                  <tr>
+                    <For each={row}>
+                      {(cell) => (
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-500">{cell}</td>
+                      )}
+                    </For>
+                  </tr>
+                )}
+              </For>
+            </tbody>
+          </table>
+        </div>
+      </Show>
+
+      <Show when={csvUploadError()}>
+        <div class={`${errorAlertClasses} mt-4`}>
+          <span class="i-carbon-warning-alt text-lg mr-2"></span>
+          {csvUploadError()}
+        </div>
+      </Show>
+      <Show when={csvUploadSuccessMessage()}>
+        <div class={`${successAlertClasses} mt-4`}>
+          <span class="i-carbon-checkmark-outline text-lg mr-2"></span>
+          {csvUploadSuccessMessage()}
+        </div>
+      </Show>
+
+      <button
+        onClick={handleCsvUpload}
+        disabled={!selectedCsvFile() || csvUploadState() === 'uploading'}
+        class={`${primaryBlueButtonClasses} mt-6 w-full md:w-auto`}
+      >
+        <span class={csvUploadState() === 'uploading' ? "i-carbon-circle-dash animate-spin mr-2" : "i-carbon-send-alt mr-2"}></span>
+        {csvUploadState() === 'uploading' ? 'Uploading CSV...' : `Upload CSV for Record ${DEMO_CSV_UPLOAD_RECORD_ID}`}
+      </button>
+
+      <div class="mt-6 pt-4 border-t border-gray-200">
+        <h3 class={`${cardHeadingClasses} text-gray-800 mb-1`}>
+          <span class="i-carbon-document-import text-lg mr-2 text-blue-600"></span>
+          CSV Upload Value Proposition
+        </h3>
+        <p class="text-sm text-gray-600">
+          Using CSV uploads allows for bulk updates or detailed submissions of nurse attendance data, integrating seamlessly with backend processing. This method is efficient for complex datasets and complements direct API interactions for comprehensive data management.
+        </p>
+      </div>
+    </section>
+    </> /* Added fragment wrapper */
   );
 }

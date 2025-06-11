@@ -13,14 +13,17 @@ const MOCK_ACCESS_TOKEN = "mock_c88484a9-6cb3-4ad0-b9bd-5563567175ee_20230720151
 // REMOVED: const API_BASE_URL = "/api"; Base URL will be passed as a parameter
 
 // --- Helper for Headers ---
-const getAuthHeaders = () => {
+const getAuthHeaders = (includeContentTypeJson = true) => {
   const transactionId = `trans-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`; // More unique ID
-  return {
+  const headers: Record<string, string> = {
     'Authorization': `Bearer ${MOCK_ACCESS_TOKEN}`,
     'transaction_id': transactionId,
     'Accept': 'application/json',
-    'Content-Type': 'application/json', // Ensure this is set for POST/PATCH
   };
+  if (includeContentTypeJson) {
+    headers['Content-Type'] = 'application/json'; // Ensure this is set for POST/PATCH with JSON
+  }
+  return headers;
 };
 
 // --- API Fetch Functions ---
@@ -140,7 +143,7 @@ export async function postQuestionnaireResponse(responsePayload: QuestionnaireRe
   try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: getAuthHeaders(), // Content-Type is already application/json here
+      headers: getAuthHeaders(true), // Explicitly include Content-Type for JSON
       body: JSON.stringify(responsePayload),
     });
 
@@ -188,14 +191,15 @@ export async function postQuestionnaireResponse(responsePayload: QuestionnaireRe
  * @param baseUrl - The base URL for the API endpoint. Defaults to "/api".
  */
 export async function patchNurseAttendance(recordId: string, patchPayload: EncounterPatchPayload, baseUrl: string = "/api"): Promise<Encounter> {
-  const url = `${baseUrl}/RegisteredNurseAttendance/${encodeURIComponent(recordId)}`; // Use baseUrl parameter
-  console.log(`Patching RN Attendance record ${recordId} at: ${url}`);
+  const url = `${baseUrl}/RegisteredNurseAttendance/${encodeURIComponent(recordId)}`;
+  console.log(`Patching RN Attendance record ${recordId} with JSON at: ${url}`);
   console.log("Payload:", JSON.stringify(patchPayload, null, 2));
+
   try {
     const response = await fetch(url, {
       method: 'PATCH',
-      headers: getAuthHeaders(), // Content-Type is already application/json here
-      body: JSON.stringify(patchPayload),
+      headers: getAuthHeaders(true), // Set Content-Type to application/json
+      body: JSON.stringify(patchPayload), // Send JSON string directly
     });
 
     if (!response.ok) {
@@ -229,5 +233,59 @@ export async function patchNurseAttendance(recordId: string, patchPayload: Encou
     console.error(`Error patching RN attendance record ${recordId}:`, error);
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new Error(`Failed to patch RN attendance record: ${errorMessage}`);
+  }
+}
+
+/**
+ * Updates (Patches) a specific Registered Nurse attendance record (Encounter) using a CSV file.
+ * @param recordId - The ID of the Encounter record to update (e.g., "Sub-123-456")
+ * @param csvFile - The CSV file to upload.
+ * @param baseUrl - The base URL for the API endpoint. Defaults to "/api".
+ */
+export async function patchNurseAttendanceWithCsv(recordId: string, csvFile: File, baseUrl: string = "/api"): Promise<Encounter> {
+  const url = `${baseUrl}/RegisteredNurseAttendance/${encodeURIComponent(recordId)}`;
+  console.log(`Patching RN Attendance record ${recordId} with CSV file at: ${url}`);
+  console.log("File:", csvFile.name, "Type:", csvFile.type, "Size:", csvFile.size);
+
+  const formData = new FormData();
+  formData.append('csv', csvFile);
+
+  try {
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: getAuthHeaders(false), // Do NOT include Content-Type for FormData
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error("API Error Response Body:", errorBody);
+      throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}. ${errorBody}`);
+    }
+
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const textBody = await response.text();
+      if (textBody) {
+        try {
+          const data: Encounter = JSON.parse(textBody);
+          console.log(`Patched RN Attendance record ${recordId} with CSV Result:`, data);
+          return data;
+        } catch (parseError) {
+          console.error("Failed to parse JSON response body for CSV PATCH:", parseError);
+          throw new Error("API did not return valid JSON as expected after successful CSV PATCH.");
+        }
+      } else {
+        console.warn(`Patched RN Attendance with CSV successfully (Status: ${response.status}), but response body was empty.`);
+        throw new Error("API returned an empty body after successful CSV PATCH.");
+      }
+    } else {
+      console.warn(`Patched RN Attendance with CSV successfully (Status: ${response.status}), but response body was not JSON or was empty. Content-Type: ${contentType}`);
+      throw new Error("API did not return JSON as expected after successful CSV PATCH.");
+    }
+  } catch (error) {
+    console.error(`Error patching RN attendance record ${recordId} with CSV:`, error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to patch RN attendance record with CSV: ${errorMessage}`);
   }
 }

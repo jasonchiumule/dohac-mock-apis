@@ -2,8 +2,10 @@ package nurses
 
 import (
 	"fmt"
+	"log" // Added for logging
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -249,26 +251,104 @@ func getAttendanceByID(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, map[string]string{"error": "Registered nurse attendance not found"})
 }
 
-// updateAttendance updates a registered nurse attendance
+// updateAttendance updates a registered nurse attendance by processing a JSON payload or an uploaded CSV file.
 func updateAttendance(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
+	contentType := r.Header.Get("Content-Type")
 
-	// Decode the request body
-	var payload models.RegisteredNurseAttendancePatchPayload
-	if err := render.DecodeJSON(r.Body, &payload); err != nil {
-		render.Status(r, http.StatusBadRequest)
-		render.JSON(w, r, map[string]string{"error": "Invalid request payload: " + err.Error()})
+	// Handle CSV PATCH for submission IDs (e.g., "Sub-123-456") separately
+	// because they don't correspond to an existing record in our mock data.
+	if strings.Contains(contentType, "multipart/form-data") && strings.HasPrefix(id, "Sub-") {
+		if err := r.ParseMultipartForm(10 << 20); err != nil {
+			render.Status(r, http.StatusBadRequest)
+			render.JSON(w, r, map[string]string{"error": "Could not parse multipart form: " + err.Error()})
+			return
+		}
+
+		file, handler, err := r.FormFile("csv")
+		if err != nil {
+			render.Status(r, http.StatusBadRequest)
+			render.JSON(w, r, map[string]string{"error": "Could not retrieve CSV file: " + err.Error()})
+			return
+		}
+		defer file.Close()
+
+		log.Printf("Received CSV file for submission: %s, Size: %d bytes for ID: %s", handler.Filename, handler.Size, id)
+
+		// Mock a successful response since we are not updating a real record.
+		mockResponse := models.RegisteredNurseAttendance{
+			ResourceType: "Encounter",
+			ID:           id,
+			Status:       "completed",
+			Subject: models.Reference{
+				Reference: "HealthcareService/SVC-54321",
+				Display:   "Sunset Residential Care",
+			},
+			Note: []models.Annotation{
+				{
+					Text: fmt.Sprintf("CSV file '%s' processed for submission %s at %s.", handler.Filename, id, time.Now().Format(time.RFC3339)),
+				},
+			},
+		}
+		render.JSON(w, r, mockResponse)
 		return
 	}
 
-	// For this mock, we are not validating the id against mockAttendances
-	// or actually updating any data. We just acknowledge the PATCH request.
-
-	// transaction_id header can be retrieved using r.Header.Get("transaction_id")
-	// For now, we are not using it as per the focused request.
-
-	responseMessage := map[string]string{
-		"message": fmt.Sprintf("successful PATCH to /RegisteredNurseAttendance/%s", id),
+	// For all other requests (JSON patch, or CSV patch for existing records),
+	// we must find the record first.
+	var attendanceToUpdate *models.RegisteredNurseAttendance
+	for i := range mockAttendances {
+		if mockAttendances[i].ID == id {
+			attendanceToUpdate = &mockAttendances[i]
+			break
+		}
 	}
-	render.JSON(w, r, responseMessage)
+
+	if attendanceToUpdate == nil {
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "Registered nurse attendance not found"})
+		return
+	}
+
+	// Now, handle the specific content type.
+	if strings.Contains(contentType, "application/json") {
+		// Handle JSON PATCH
+		var patchPayload struct {
+			Note []models.Annotation `json:"note"`
+		}
+		if err := render.DecodeJSON(r.Body, &patchPayload); err != nil {
+			render.Status(r, http.StatusBadRequest)
+			render.JSON(w, r, map[string]string{"error": "Invalid JSON payload: " + err.Error()})
+			return
+		}
+		attendanceToUpdate.Note = patchPayload.Note
+		log.Printf("Updated note via JSON for attendance record ID: %s", id)
+		render.JSON(w, r, attendanceToUpdate)
+
+	} else if strings.Contains(contentType, "multipart/form-data") {
+		// Handle CSV PATCH for an existing record
+		if err := r.ParseMultipartForm(10 << 20); err != nil {
+			render.Status(r, http.StatusBadRequest)
+			render.JSON(w, r, map[string]string{"error": "Could not parse multipart form: " + err.Error()})
+			return
+		}
+		file, handler, err := r.FormFile("csv")
+		if err != nil {
+			render.Status(r, http.StatusBadRequest)
+			render.JSON(w, r, map[string]string{"error": "Could not retrieve CSV file: " + err.Error()})
+			return
+		}
+		defer file.Close()
+
+		log.Printf("Received CSV file: %s, Size: %d bytes for ID: %s", handler.Filename, handler.Size, id)
+		attendanceToUpdate.Note = append(attendanceToUpdate.Note, models.Annotation{
+			Text: fmt.Sprintf("CSV file '%s' processed at %s.", handler.Filename, time.Now().Format(time.RFC3339)),
+		})
+		log.Printf("Updated note via CSV for attendance record ID: %s", id)
+		render.JSON(w, r, attendanceToUpdate)
+
+	} else {
+		render.Status(r, http.StatusUnsupportedMediaType)
+		render.JSON(w, r, map[string]string{"error": "Unsupported Content-Type: " + contentType + ". Must be 'application/json' or 'multipart/form-data'."})
+	}
 }

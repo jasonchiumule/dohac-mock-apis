@@ -3,7 +3,7 @@ import { Portal } from 'solid-js/web';
 
 // --- Zag.js Imports ---
 import * as select from "@zag-js/select";
-import * as tooltip from "@zag-js/tooltip";
+import type { ValueChangeDetails } from "@zag-js/select";
 import { normalizeProps, useMachine } from "@zag-js/solid";
 
 // Import ALL the API functions we want to test
@@ -34,10 +34,6 @@ const selectItemClasses = "text-gray-900 cursor-default select-none relative py-
 const selectItemHighlightedClasses = "text-white bg-blue-600";
 const selectItemTextClasses = "block truncate";
 const selectItemIndicatorClasses = "absolute inset-y-0 right-0 flex items-center pr-4";
-
-// --- Tooltip Styles ---
-const tooltipTriggerButtonClasses = "inline-flex items-center justify-center px-2 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"; // ADDED: Styles for consistency
-const tooltipContentClasses = "bg-gray-800 text-white text-xs rounded px-2 py-1 shadow-lg z-50";
 
 // --- Default JSON Payload for QuestionnaireResponse ---
 const defaultQuestionnaireResponsePayload = JSON.stringify({
@@ -133,48 +129,32 @@ export default function ApiTest() {
   const [selectedApiCallId, setSelectedApiCallId] = createSignal<string>(apiCallDefinitions[0].id); // Default to first API call ID
 
   // --- Backend Select State (Zag.js) ---
-  const backendSelectService = useMachine(select.machine, {
-    // Add context for proper initialization
+  const backendSelectService = useMachine(select.machine as any, {
     id: createUniqueId(),
     collection: select.collection({ items: backendOptions }),
-    defaultValue: ["/api"],
-    // selectedItems: [backendOptions.find(opt => opt.value === selectedBackendUrl())!], // Initialize with default
-    onValueChange: (details) => {
-      if (details.items.length > 0) {
-        setSelectedBackendUrl(details.items[0].value);
-        console.log("Backend selected:", details.items[0].value);
+    value: [selectedBackendUrl()],
+    onValueChange: (details: ValueChangeDetails) => {
+      if (details.value.length > 0) {
+        setSelectedBackendUrl(details.value[0]);
+        console.log("Backend selected:", details.value[0]);
       }
     },
-
   });
-  const backendSelectApi = createMemo(() => select.connect(backendSelectService, normalizeProps));
+  const backendSelectApi = createMemo(() => select.connect(backendSelectService as any, normalizeProps));
 
   // --- API Call Select State (Zag.js) --- NEW
-  const apiCallSelectService = useMachine(select.machine, {
-    // Add context for proper initialization
+  const apiCallSelectService = useMachine(select.machine as any, {
     id: createUniqueId(),
     collection: select.collection({ items: apiCallSelectOptions }),
-    // selectedItems: [apiCallSelectOptions.find(opt => opt.value === selectedApiCallId())!], // Initialize with default
-    defaultValue: ["fetchProviders"],
-    onValueChange: (details) => {
-      if (details.items.length > 0) {
-        setSelectedApiCallId(details.items[0].value);
-        console.log("API Call selected:", details.items[0].value);
+    value: [selectedApiCallId()],
+    onValueChange: (details: ValueChangeDetails) => {
+      if (details.value.length > 0) {
+        setSelectedApiCallId(details.value[0]);
+        console.log("API Call selected:", details.value[0]);
       }
     },
-
   });
-  const apiCallSelectApi = createMemo(() => select.connect(apiCallSelectService, normalizeProps));
-
-  // --- Tooltip State (Zag.js) ---
-  const tooltipService = useMachine(tooltip.machine, {
-    // Add context for proper initialization
-    id: createUniqueId(),
-    openDelay: 300,
-    closeDelay: 100,
-
-  });
-  const tooltipApi = createMemo(() => tooltip.connect(tooltipService, normalizeProps));
+  const apiCallSelectApi = createMemo(() => select.connect(apiCallSelectService as any, normalizeProps));
 
   // --- Derived State ---
   const selectedApiDefinition = createMemo(() => {
@@ -264,7 +244,7 @@ export default function ApiTest() {
           <div class="relative">
             <button {...backendSelectApi().getTriggerProps()} class={selectTriggerClasses} disabled={loading()}>
               {/* Display selected item label */}
-              <span class={selectItemTextClasses}>{backendSelectApi().selectedItems.length > 0 ? backendSelectApi().selectedItems[0].label : 'Select Backend...'}</span>
+              <span class={selectItemTextClasses}>{backendSelectApi().value.length > 0 ? backendSelectApi().collection.stringifyItem(backendSelectApi().value[0]) : 'Select Backend...'}</span>
               <span class="i-carbon-chevron-down ml-2 -mr-1 h-5 w-5 text-gray-400" aria-hidden="true"></span>
             </button>
 
@@ -307,7 +287,7 @@ export default function ApiTest() {
 
         {/* API Select Dropdown & Info Tooltip */}
         {/* UPDATED: Use items-center for alignment, gap for spacing */}
-        <div class="mb-4 flex items-center gap-2">
+        <div class="mb-4">
           <div class="flex-grow">
             {/* API Call Select (Zag.js) */}
             <label {...apiCallSelectApi().getLabelProps()} class={formLabelClasses}>
@@ -316,7 +296,7 @@ export default function ApiTest() {
             <div class="relative">
               <button {...apiCallSelectApi().getTriggerProps()} class={selectTriggerClasses} disabled={loading()}>
                 {/* Display selected item label */}
-                <span class={selectItemTextClasses}>{apiCallSelectApi().selectedItems.length > 0 ? apiCallSelectApi().selectedItems[0].label : 'Select API...'}</span>
+                <span class={selectItemTextClasses}>{apiCallSelectApi().value.length > 0 ? apiCallSelectApi().collection.stringifyItem(apiCallSelectApi().value[0]) : 'Select API...'}</span>
                 <span class="i-carbon-chevron-down ml-2 -mr-1 h-5 w-5 text-gray-400" aria-hidden="true"></span>
               </button>
 
@@ -351,25 +331,7 @@ export default function ApiTest() {
               </Show>
             </div>
           </div>
-
-          {/* Tooltip Trigger (Information Icon) */}
-          {/* UPDATED: Apply button styles, align with select */}
-          <div class="self-end pb-[1px]"> {/* Adjust vertical alignment slightly */}
-            <button {...tooltipApi().getTriggerProps()} class={tooltipTriggerButtonClasses} disabled={loading()}>
-              <span class="i-carbon-information text-xl align-middle"></span>
-            </button>
-          </div>
-
-          {/* Tooltip Content */}
-          <Show when={tooltipApi().open}>
-            <Portal>
-              <div {...tooltipApi().getPositionerProps()}>
-                <div {...tooltipApi().getContentProps()} class={tooltipContentClasses}>
-                  {selectedApiDescription()}
-                </div>
-              </div>
-            </Portal>
-          </Show>
+          <p class="mt-2 text-sm text-gray-600">{selectedApiDescription()}</p>
         </div>
 
         {/* Dynamic Input Fields Area */}

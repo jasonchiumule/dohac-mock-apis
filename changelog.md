@@ -1,3 +1,8 @@
+# 0.5.13 - Update: nurse endpoint bulk csv upload
+- removed: zagjs tooltip and file-upload
+- update: go nurse apis and frontend solidjs nurse and api components
+- add: test bench data
+
 # 0.5.12 - Update: nurse and provider section wording
 - frontend wording to make sense with the actual use case
 - ready to deploy

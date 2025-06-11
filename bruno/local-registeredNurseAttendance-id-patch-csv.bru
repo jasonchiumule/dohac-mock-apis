@@ -1,12 +1,12 @@
 meta {
-  name: local-registeredNurseAttendance-id-patch
+  name: local-registeredNurseAttendance-id-patch-csv
   type: http
-  seq: 12
+  seq: 13
 }
 
 patch {
   url: http://localhost:8080/api/RegisteredNurseAttendance/Sub-123-456
-  body: json
+  body: multipartForm
   auth: none
 }
 
@@ -54,4 +54,8 @@ body:json {
     "resourceType": "RegisteredNurseAttendance",
     "submissionStatus": "In Progress"
   }
+}
+
+body:multipart-form {
+  csv: @file(/Users/jason.chiu/Documents/Git Projects/dohac-mock-apis/test-bench/nurse_attendance_data.csv) @contentType(application/csv)
 }
